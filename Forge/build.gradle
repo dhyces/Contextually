@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
+    mappings channel: "${mapping_id}", version: "${mapping_version}"
     
     if (project.hasProperty('forge_ats_enabled') && project.findProperty('forge_ats_enabled').toBoolean()) {
         // This location is hardcoded in Forge and can not be changed.
