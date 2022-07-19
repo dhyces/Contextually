@@ -25,6 +25,9 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     protected Stream<ResourceLocation> getResourcesToLoad() {
         var resourceManager = Minecraft.getInstance().getResourceManager();
         var resourcesMap = resourceManager.listResources("textures/key", c -> c.getPath().endsWith(".png"));
-        return resourcesMap.keySet().stream();
+        // TODO: make this better. Not a big fan of having so much abstract string manipulation. One idea is to have a
+        //  sort of "registration" where we store a map and manually add all of the resource locations for each key.
+        //  This has the benefit of being able to immediately access an RL from an InputConstant.
+        return resourcesMap.keySet().stream().map(c -> ContextuallyCommon.modloc(c.getPath().substring(13, c.getPath().length()-4)));
     }
 }
