@@ -25,6 +25,16 @@ public class KeyConstants {
     public static final String KEY_7 = "7_key";
     public static final String KEY_8 = "8_key";
     public static final String KEY_9 = "9_key";
+    public static final String KEY_NUMPAD_0 = "0_numpad_key";
+    public static final String KEY_NUMPAD_1 = "1_numpad_key";
+    public static final String KEY_NUMPAD_2 = "2_numpad_key";
+    public static final String KEY_NUMPAD_3 = "3_numpad_key";
+    public static final String KEY_NUMPAD_4 = "4_numpad_key";
+    public static final String KEY_NUMPAD_5 = "5_numpad_key";
+    public static final String KEY_NUMPAD_6 = "6_numpad_key";
+    public static final String KEY_NUMPAD_7 = "7_numpad_key";
+    public static final String KEY_NUMPAD_8 = "8_numpad_key";
+    public static final String KEY_NUMPAD_9 = "9_numpad_key";
     public static final String KEY_A = "a_key";
     public static final String KEY_B = "b_key";
     public static final String KEY_C = "c_key";
@@ -175,16 +185,16 @@ public class KeyConstants {
         add(InputConstants.KEY_F11, KEY_F11);
         add(InputConstants.KEY_F12, KEY_F12);
         add(InputConstants.KEY_NUMLOCK, KEY_NUMLOCK);
-        add(InputConstants.KEY_NUMPAD0, KEY_0); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD1, KEY_1); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD2, KEY_2); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD3, KEY_3); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD4, KEY_4); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD5, KEY_5); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD6, KEY_6); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD7, KEY_7); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD8, KEY_8); // TODO: needs dedicated texture
-        add(InputConstants.KEY_NUMPAD9, KEY_9); // TODO: needs dedicated texture
+        add(InputConstants.KEY_NUMPAD0, KEY_NUMPAD_0);
+        add(InputConstants.KEY_NUMPAD1, KEY_NUMPAD_1);
+        add(InputConstants.KEY_NUMPAD2, KEY_NUMPAD_2);
+        add(InputConstants.KEY_NUMPAD3, KEY_NUMPAD_3);
+        add(InputConstants.KEY_NUMPAD4, KEY_NUMPAD_4);
+        add(InputConstants.KEY_NUMPAD5, KEY_NUMPAD_5);
+        add(InputConstants.KEY_NUMPAD6, KEY_NUMPAD_6);
+        add(InputConstants.KEY_NUMPAD7, KEY_NUMPAD_7);
+        add(InputConstants.KEY_NUMPAD8, KEY_NUMPAD_8);
+        add(InputConstants.KEY_NUMPAD9, KEY_NUMPAD_9);
         add(InputConstants.KEY_ADD, KEY_NUMPAD_ADD);
         add(InputConstants.KEY_NUMPADCOMMA, KEY_NUMPAD_DECIMAL);
         add(InputConstants.KEY_NUMPADENTER, KEY_NUMPAD_ENTER);
