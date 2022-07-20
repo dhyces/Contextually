@@ -92,8 +92,7 @@ public class KeyConstants {
     public static final String CONTROL_RIGHT_KEY = "ctrl_right_key";
     public static final String SHIFT_LEFT_KEY = "shift_left_key";
     public static final String SHIFT_RIGHT_KEY = "shift_right_key";
-    public static final String WIN_LEFT_KEY = "win_left_key";
-    public static final String WIN_RIGHT_KEY = "win_right_key";
+    public static final String WIN_KEY = "win_key"; // TODO: Does this need split up?
     public static final String ENTER_KEY = "enter_key";
     public static final String ESCAPE_KEY = "esc_key";
     public static final String BACKSPACE_KEY = "backspace_key";
@@ -214,11 +213,11 @@ public class KeyConstants {
         add(InputConstants.KEY_LALT, ALT_LEFT_KEY);
         add(InputConstants.KEY_LCONTROL, CONTROL_LEFT_KEY);
         add(InputConstants.KEY_LSHIFT, SHIFT_LEFT_KEY);
-        add(InputConstants.KEY_LWIN, WIN_LEFT_KEY);
+        add(InputConstants.KEY_LWIN, WIN_KEY);
         add(InputConstants.KEY_RALT, ALT_RIGHT_KEY);
         add(InputConstants.KEY_RCONTROL, CONTROL_RIGHT_KEY);
         add(InputConstants.KEY_RSHIFT, SHIFT_RIGHT_KEY);
-        add(InputConstants.KEY_RWIN, WIN_RIGHT_KEY);
+        add(InputConstants.KEY_RWIN, WIN_KEY);
         add(InputConstants.KEY_RETURN, ENTER_KEY);
         add(InputConstants.KEY_ESCAPE, ESCAPE_KEY);
         add(InputConstants.KEY_BACKSPACE, BACKSPACE_KEY);
