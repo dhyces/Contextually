@@ -67,13 +67,15 @@ public class KeyConstants {
     public static final String KEY_NUMPAD_ADD = "plus_tall_key";
     public static final String KEY_NUMPAD_ENTER = "enter_tall_key";
     public static final String KEY_NUMPAD_MULTIPLY = "asterisk_key";
+    public static final String KEY_NUMPAD_DIVIDE = "slash_key";
+    public static final String KEY_NUMPAD_DECIMAL = "decimal_key";
     public static final String KEY_MINUS = "minus_key";
     public static final String KEY_DOWN = "arrow_down_key";
     public static final String KEY_LEFT = "arrow_left_key";
     public static final String KEY_RIGHT = "arrow_right_key";
     public static final String KEY_UP = "arrow_up_key";
     public static final String KEY_QUOTE = "quote_key";
-    public static final String KEY_BACKSLASH = "slash_key";
+    public static final String KEY_BACKSLASH = "backslash_key";
     public static final String KEY_MARK_LEFT = "mark_left_key";
     public static final String KEY_MARK_RIGHT = "mark_right_key";
     public static final String KEY_ADD = "plus_key";
@@ -84,10 +86,14 @@ public class KeyConstants {
     public static final String QUESTION_KEY = "question_key";
     public static final String SPACE_KEY = "space_key";
     public static final String TAB_KEY = "tab_key";
-    public static final String ALT_KEY = "alt_key"; // TODO: need dedicated left and right textures?
-    public static final String CONTROL_KEY = "ctrl_key"; // TODO: need dedicated left and right textures?
-    public static final String SHIFT_KEY = "shift_key"; // TODO: need dedicated left and right textures?
-    public static final String WIN_KEY = "win_key"; // TODO: need dedicated left and right textures?
+    public static final String ALT_LEFT_KEY = "alt_left_key";
+    public static final String ALT_RIGHT_KEY = "alt_right_key";
+    public static final String CONTROL_LEFT_KEY = "ctrl_left_key";
+    public static final String CONTROL_RIGHT_KEY = "ctrl_right_key";
+    public static final String SHIFT_LEFT_KEY = "shift_left_key";
+    public static final String SHIFT_RIGHT_KEY = "shift_right_key";
+    public static final String WIN_LEFT_KEY = "win_left_key";
+    public static final String WIN_RIGHT_KEY = "win_right_key";
     public static final String ENTER_KEY = "enter_key";
     public static final String ESCAPE_KEY = "esc_key";
     public static final String BACKSPACE_KEY = "backspace_key";
@@ -107,7 +113,6 @@ public class KeyConstants {
     public static final String BACKSPACE_ALT_KEY = "backspace_alt_key";
     public static final String COMMAND_KEY = "command_key";
     public static final String ENTER_ALT_KEY = "enter_alt_key";
-    public static final String SHIFT_ALT_KEY = "shift_alt_key";
 
     public static ResourceLocation get(int value) {
         return KEY_LOCATIONS.get(value);
@@ -182,11 +187,11 @@ public class KeyConstants {
         add(InputConstants.KEY_NUMPAD8, KEY_8); // TODO: needs dedicated texture
         add(InputConstants.KEY_NUMPAD9, KEY_9); // TODO: needs dedicated texture
         add(InputConstants.KEY_ADD, KEY_NUMPAD_ADD);
-        add(InputConstants.KEY_NUMPADCOMMA, DELETE_KEY); // TODO: This may be mistaken for a dedicated delete key. This resembles the decimal on the numpad
+        add(InputConstants.KEY_NUMPADCOMMA, KEY_NUMPAD_DECIMAL);
         add(InputConstants.KEY_NUMPADENTER, KEY_NUMPAD_ENTER);
         //add(InputConstants.KEY_NUMPADEQUALS, KEY_NUMPAD_ENTER); // TODO: needs dedicated texture
         add(InputConstants.KEY_MULTIPLY, KEY_NUMPAD_MULTIPLY);
-        //add(331, KEY_NUMPAD_DIVIDE); // TODO: needs dedicated texture
+        add(331, KEY_NUMPAD_DIVIDE);
         add(333, KEY_MINUS);
         add(InputConstants.KEY_MINUS, KEY_MINUS);
         add(InputConstants.KEY_DOWN, KEY_DOWN);
@@ -206,14 +211,14 @@ public class KeyConstants {
         add(InputConstants.KEY_SLASH, QUESTION_KEY);
         add(InputConstants.KEY_SPACE, SPACE_KEY);
         add(InputConstants.KEY_TAB, TAB_KEY);
-        add(InputConstants.KEY_LALT, ALT_KEY);
-        add(InputConstants.KEY_LCONTROL, CONTROL_KEY);
-        add(InputConstants.KEY_LSHIFT, SHIFT_KEY);
-        add(InputConstants.KEY_LWIN, WIN_KEY);
-        add(InputConstants.KEY_RALT, ALT_KEY);
-        add(InputConstants.KEY_RCONTROL, CONTROL_KEY);
-        add(InputConstants.KEY_RSHIFT, SHIFT_KEY);
-        add(InputConstants.KEY_RWIN, WIN_KEY);
+        add(InputConstants.KEY_LALT, ALT_LEFT_KEY);
+        add(InputConstants.KEY_LCONTROL, CONTROL_LEFT_KEY);
+        add(InputConstants.KEY_LSHIFT, SHIFT_LEFT_KEY);
+        add(InputConstants.KEY_LWIN, WIN_LEFT_KEY);
+        add(InputConstants.KEY_RALT, ALT_RIGHT_KEY);
+        add(InputConstants.KEY_RCONTROL, CONTROL_RIGHT_KEY);
+        add(InputConstants.KEY_RSHIFT, SHIFT_RIGHT_KEY);
+        add(InputConstants.KEY_RWIN, WIN_RIGHT_KEY);
         add(InputConstants.KEY_RETURN, ENTER_KEY);
         add(InputConstants.KEY_ESCAPE, ESCAPE_KEY);
         add(InputConstants.KEY_BACKSPACE, BACKSPACE_KEY);
@@ -248,12 +253,6 @@ public class KeyConstants {
 //        addKey(KEYSYM, "key.keyboard.f23", 312);
 //        addKey(KEYSYM, "key.keyboard.f24", 313);
 //        addKey(KEYSYM, "key.keyboard.f25", 314);
-//        addKey(KEYSYM, "key.keyboard.apostrophe", 39);
-//        addKey(KEYSYM, "key.keyboard.slash", 47);
-//        addKey(KEYSYM, "key.keyboard.comma", 44);
-//        addKey(KEYSYM, "key.keyboard.equal", 61);
-//        addKey(KEYSYM, "key.keyboard.grave.accent", 96);
-//        addKey(KEYSYM, "key.keyboard.period", 46);
     }
 
 }
