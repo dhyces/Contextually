@@ -3,5 +3,6 @@
   "contextually.contexts.default_entity_attack": "Attack",
   "contextually.contexts.villager_use": "Trade",
   "contextually.contexts.lever_use": "Flick",
-  "contextually.contexts.cow": "Milk"
+  "contextually.contexts.bucket_water": "Pick up water",
+  "contextually.contexts.cow_use": "Milk"
 }
