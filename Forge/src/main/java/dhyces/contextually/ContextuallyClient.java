@@ -9,8 +9,6 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import java.util.List;
-
 public class ContextuallyClient {
     static KeyMappingTextureManager keyTextures;
     static KeyContextManager keyContexts;
@@ -27,6 +25,7 @@ public class ContextuallyClient {
         keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().textureManager);
         keyContexts = new KeyContextManager();
         event.registerReloadListener(keyTextures);
+//        event.registerReloadListener(keyContexts);
     }
 
     private static void registerGuis(RegisterGuiOverlaysEvent event) {
@@ -39,9 +38,5 @@ public class ContextuallyClient {
 
     public static KeyContextManager getContextManager() {
         return keyContexts;
-    }
-
-    public List<ResourceLocation> collectResources() {
-        return List.of();
     }
 }
