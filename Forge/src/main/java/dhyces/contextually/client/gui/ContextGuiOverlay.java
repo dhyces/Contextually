@@ -3,6 +3,7 @@ package dhyces.contextually.client.gui;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
@@ -36,13 +37,15 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var mc = gui.getMinecraft();
         var clientPlayer = mc.player;
         var clientLevel = mc.level;
-        var font = mc.font;
-        var hitResult = mc.hitResult;
-        var fluidHitResult = fluidPass(clientPlayer, partialTick);
 
         // Gather contexts
         Set<ContextRenderHolder<?>> contextList = new LinkedHashSet<>();
 
+        // Global contexts
+        contextList.add(new ContextRenderHolder<>(clientPlayer, ContextuallyClient.getContextManager().getGlobalContexts()));
+
+        // HitResult (entity and solid block) contexts
+        var hitResult = mc.hitResult;
         if (!hitResult.getType().equals(HitResult.Type.MISS)) {
             if (hitResult instanceof EntityHitResult entityHitResult) {
                 var entity = entityHitResult.getEntity();
@@ -56,6 +59,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
                 contextList.add(new ContextRenderHolder<>(block, contexts));
             }
         }
+
+        // Fluid HitResult contexts
+        var fluidHitResult = fluidPass(clientPlayer, partialTick);
         if (!fluidHitResult.getType().equals(HitResult.Type.MISS) && fluidHitResult instanceof BlockHitResult fluidResult) {
             var fluid = clientLevel.getFluidState(fluidResult.getBlockPos());
             if (!fluid.isEmpty()) {
