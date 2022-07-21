@@ -1,0 +1,7 @@
+{
+  "contextually.contexts.default_block_attack": "Mine block",
+  "contextually.contexts.default_entity_attack": "Attack",
+  "contextually.contexts.villager_use": "Trade",
+  "contextually.contexts.lever_use": "Flick",
+  "contextually.contexts.cow": "Milk"
+}

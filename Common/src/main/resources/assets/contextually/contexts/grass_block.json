@@ -1,0 +1,8 @@
+{
+  "target_block": "minecraft:grass_block"
+  "conditions": [],
+  "keys": {
+    "mapping": "key.use",
+    "key": 16
+  }
+}
