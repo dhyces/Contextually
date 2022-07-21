@@ -19,6 +19,7 @@ public interface IKeyContext<T> {
     void renderIcons(T contextObject, ForgeGui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     void renderText(T contextObject, ForgeGui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     int width(Font font);
+    void invalidateCache();
 
     @NotNull ResourceLocation getID();
     @NotNull Set<ResourceLocation> getKeys();
