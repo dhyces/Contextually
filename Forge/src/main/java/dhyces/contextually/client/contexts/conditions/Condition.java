@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,6 +92,23 @@ public abstract class Condition implements IConditionPredicate {
                 return player.getMainHandItem().is(item) || player.getOffhandItem().is(item);
             }
             return player.getItemInHand(hand).is(item);
+        }
+    }
+
+    public static class PlayerHeldBlockCondition extends Condition {
+
+        @Nullable final InteractionHand hand;
+
+        public PlayerHeldBlockCondition(@Nullable InteractionHand hand) {
+            this.hand = hand;
+        }
+
+        @Override
+        public boolean test(Object target, ClientLevel level, AbstractClientPlayer player) {
+            if (hand == null) {
+                return player.getMainHandItem().getItem() instanceof BlockItem || player.getOffhandItem().getItem() instanceof BlockItem;
+            }
+            return player.getItemInHand(hand).getItem() instanceof BlockItem;
         }
     }
 
