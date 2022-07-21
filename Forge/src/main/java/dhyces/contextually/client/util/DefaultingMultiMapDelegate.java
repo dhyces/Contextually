@@ -28,6 +28,10 @@ public class DefaultingMultiMapDelegate<K, V> {
         return Collections.unmodifiableCollection(defaultValue);
     }
 
+    public boolean containsKey(K value) {
+        return map.containsKey(value);
+    }
+
     public boolean put(K key, V value) {
         return map.put(key, value);
     }
