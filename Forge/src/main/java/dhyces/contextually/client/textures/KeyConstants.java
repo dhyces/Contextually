@@ -3,13 +3,34 @@ package dhyces.contextually.client.textures;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.InputConstants;
 import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.client.contexts.objects.IKeyContext;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class KeyConstants {
 
     static final Map<Integer, ResourceLocation> KEY_LOCATIONS = Maps.newHashMap();
+    static final Function<String, Integer> KEY_STRING_MAP = new Function<>() {
+        static final Map<String, KeyMapping> MAP;
+
+        @Override
+        public Integer apply(String s) {
+            return MAP.get(s).getKey().getValue();
+        }
+
+        static {
+            Map<String, KeyMapping> map = Maps.newHashMap();
+            for (KeyMapping mapping : Minecraft.getInstance().options.keyMappings) {
+                map.put(mapping.getName(), mapping);
+            }
+            MAP = Maps.toMap(map.keySet(), c -> map.get(c));
+        }
+    };
 
     public static final String UNKNOWN = "missingno";
     public static final String MOUSE_BUTTON_LEFT = "mouse_left_key";
@@ -127,6 +148,10 @@ public class KeyConstants {
         return KEY_LOCATIONS.get(value);
     }
 
+    public static int get(String keyMappingName) {
+        return KEY_STRING_MAP.apply(keyMappingName);
+    }
+
     private static void add(int keyValue, String id) {
         KEY_LOCATIONS.put(keyValue, ContextuallyCommon.modloc(id));
     }
@@ -223,11 +248,11 @@ public class KeyConstants {
         add(InputConstants.KEY_LALT, ALT_LEFT_KEY);
         add(InputConstants.KEY_LCONTROL, CONTROL_LEFT_KEY);
         add(InputConstants.KEY_LSHIFT, SHIFT_LEFT_KEY);
-        add(InputConstants.KEY_LWIN, WIN_KEY);
+        add(InputConstants.KEY_LWIN, Minecraft.ON_OSX ? COMMAND_KEY : WIN_KEY);
         add(InputConstants.KEY_RALT, ALT_RIGHT_KEY);
         add(InputConstants.KEY_RCONTROL, CONTROL_RIGHT_KEY);
         add(InputConstants.KEY_RSHIFT, SHIFT_RIGHT_KEY);
-        add(InputConstants.KEY_RWIN, WIN_KEY);
+        add(InputConstants.KEY_RWIN, Minecraft.ON_OSX ? COMMAND_KEY : WIN_KEY);
         add(InputConstants.KEY_RETURN, ENTER_KEY);
         add(InputConstants.KEY_ESCAPE, ESCAPE_KEY);
         add(InputConstants.KEY_BACKSPACE, BACKSPACE_KEY);
