@@ -1,5 +1,6 @@
 package dhyces.contextually;
 
+import dhyces.contextually.client.contexts.KeyContextManager;
 import dhyces.contextually.client.gui.ContextGuiOverlay;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class ContextuallyClient {
     static KeyMappingTextureManager keyTextures;
+    static KeyContextManager keyContexts;
 
     ContextuallyClient() {
     }
@@ -23,6 +25,7 @@ public class ContextuallyClient {
 
     private static void registerReloadables(RegisterClientReloadListenersEvent event) {
         keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().textureManager);
+        keyContexts = new KeyContextManager();
         event.registerReloadListener(keyTextures);
     }
 
@@ -30,8 +33,12 @@ public class ContextuallyClient {
         event.registerAbove(new ResourceLocation("item_name"), "key_contexts", new ContextGuiOverlay());
     }
 
-    public static KeyMappingTextureManager getKeyTextureManager() {
+    public static KeyMappingTextureManager getTextureManager() {
         return keyTextures;
+    }
+
+    public static KeyContextManager getContextManager() {
+        return keyContexts;
     }
 
     public List<ResourceLocation> collectResources() {
