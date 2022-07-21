@@ -21,7 +21,7 @@ public class DefaultingMultiMapDelegate<K, V> {
     }
 
     public boolean isDefault(Collection<V> collection) {
-        return defaultValue.equals(collection);
+        return defaultValue.equals(collection) || defaultValue.containsAll(collection);
     }
 
     public Collection<V> getDefaultValue() {
@@ -41,6 +41,6 @@ public class DefaultingMultiMapDelegate<K, V> {
         if (ret.isEmpty()) {
             ret = defaultValue;
         }
-        return ret;
+        return Collections.unmodifiableCollection(ret);
     }
 }
