@@ -1,27 +1,30 @@
 package dhyces.contextually.client.gui;
 
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.eventbus.api.Event;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public class ContextGuiOverlay implements IGuiOverlay {
-
-    public static int LAST_PRESS = -1;
 
     public ContextGuiOverlay() {
     }
@@ -37,22 +40,58 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var hitResult = mc.hitResult;
         var fluidHitResult = fluidPass(clientPlayer, partialTick);
 
-//        if (!fluidHitResult.getType().equals(HitResult.Type.MISS)) {
-//            hitResult = fluidHitResult;
-//        }
+        // Gather contexts
+        Set<ContextRenderHolder<?>> contextList = new LinkedHashSet<>();
 
-        if (hitResult.getType().equals(HitResult.Type.MISS))
-            return;
-
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            var entity = entityHitResult.getEntity();
-            var contexts = ContextuallyClient.getContextManager().getContextsForEntity(entity);
-            renderContexts(gui, poseStack, entity, contexts, partialTick, width, height);
-        } else if (hitResult instanceof BlockHitResult blockHitResult) {
-            var block = clientLevel.getBlockState(blockHitResult.getBlockPos());
-            var contexts = ContextuallyClient.getContextManager().getContextsForBlock(block);
-            renderContexts(gui, poseStack, block, contexts, partialTick, width, height);
+        if (!hitResult.getType().equals(HitResult.Type.MISS)) {
+            if (hitResult instanceof EntityHitResult entityHitResult) {
+                var entity = entityHitResult.getEntity();
+                var contexts = ContextuallyClient.getContextManager().getContextsForEntity(entity);
+                // TODO: add an event
+                contextList.add(new ContextRenderHolder<>(entity, contexts));
+            } else if (hitResult instanceof BlockHitResult blockHitResult) {
+                var block = clientLevel.getBlockState(blockHitResult.getBlockPos());
+                var contexts = ContextuallyClient.getContextManager().getContextsForBlock(block);
+                // TODO: add an event
+                contextList.add(new ContextRenderHolder<>(block, contexts));
+            }
         }
+        if (!fluidHitResult.getType().equals(HitResult.Type.MISS) && fluidHitResult instanceof BlockHitResult fluidResult) {
+            var fluid = clientLevel.getFluidState(fluidResult.getBlockPos());
+            if (!fluid.isEmpty()) {
+                var contexts = ContextuallyClient.getContextManager().getContextsForFluid(fluid);
+                // TODO: add an event
+                contextList.add(new ContextRenderHolder<>(fluid.createLegacyBlock(), contexts));
+            }
+        }
+
+        var heightPos = height - 16 - 32;
+        // Render contexts
+        for (ContextRenderHolder<?> holder : contextList) {
+            var context = holder.contextObject();
+            for (IKeyContext<?> keyContext : holder.contextCollection()) {
+                if (checkConditions(keyContext, context, gui.getMinecraft().level, gui.getMinecraft().player)) {
+                    keyContext.renderIcons(cast(context), gui, poseStack, partialTick, width - keyContext.width(gui.getFont()) - IKeyContext.PADDING, heightPos, width, height);
+                    heightPos -= 16 + IKeyContext.SMALL_PADDING;
+                }
+            }
+        }
+        heightPos = height - 16 - 32;
+        for (ContextRenderHolder<?> holder : contextList) {
+            var context = holder.contextObject();
+            for (IKeyContext<?> keyContext : holder.contextCollection()) {
+                if (checkConditions(keyContext, context, gui.getMinecraft().level, gui.getMinecraft().player)) {
+                    keyContext.renderText(cast(context), gui, poseStack, partialTick, width - keyContext.width(gui.getFont()) - IKeyContext.PADDING, heightPos + 4, width, height);
+                    heightPos -= 16 + IKeyContext.SMALL_PADDING;
+                }
+            }
+        }
+    }
+
+    // We should know that the type matches
+    @SuppressWarnings("unchecked")
+    private <X> X cast(Object o) {
+        return (X)o;
     }
 
     private <T> void renderContexts(ForgeGui gui, PoseStack poseStack, T contextObject, Collection<IKeyContext<T>> contexts, float partialTick, int width, int height) {
@@ -79,4 +118,6 @@ public class ContextGuiOverlay implements IGuiOverlay {
     private HitResult fluidPass(AbstractClientPlayer pPlayer, float partialTick) {
         return pPlayer.pick(pPlayer.getReachDistance(), partialTick, true);
     }
+
+    record ContextRenderHolder<T>(T contextObject, Collection<IKeyContext<T>> contextCollection) {}
 }
