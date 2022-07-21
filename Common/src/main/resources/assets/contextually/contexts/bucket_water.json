@@ -1,4 +1,5 @@
 {
+  "loader": "contextually:block_context",
   "target_block": "minecraft:water",
   "conditions": [
     {

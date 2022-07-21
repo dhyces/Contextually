@@ -1,5 +1,6 @@
 {
-  "target_block": "minecraft:grass_block"
+  "loader": "contextually:block_context",
+  "target_block": "minecraft:grass_block",
   "conditions": [],
   "keys": {
     "mapping": "key.use",

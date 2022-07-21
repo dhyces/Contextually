@@ -1,4 +1,5 @@
 {
+  "loader": "contextually:global_context",
   "keys": {
     "mapping": "key.inventory"
   }
