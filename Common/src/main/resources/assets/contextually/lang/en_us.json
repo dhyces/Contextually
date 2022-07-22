@@ -4,7 +4,9 @@
   "contextually.contexts.default_block_use": "Place block",
   "contextually.contexts.default_entity_attack": "Attack",
   "contextually.contexts.villager_use": "Trade",
-  "contextually.contexts.lever_use": "Flick",
+  "contextually.contexts.lever_use_off": "Flick on",
+  "contextually.contexts.lever_use_on": "Flick off",
+  "contextually.contexts.inventory_block_use": "Open inventory",
   "contextually.contexts.bucket_water": "Pick up water",
   "contextually.contexts.cow_use": "Milk"
 }

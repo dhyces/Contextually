@@ -1,10 +1,9 @@
 {
   "loader": "contextually:block_context",
-  "target_block": "minecraft:water",
+  "target_block": "*",
   "conditions": [
     {
-      "condition": "contextually:player_held_item",
-      "item": "minecraft:bucket"
+      "condition": "contextually:player_held_block"
     }
   ],
   "keys": [

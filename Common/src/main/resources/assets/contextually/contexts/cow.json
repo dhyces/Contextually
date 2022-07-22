@@ -3,12 +3,13 @@
   "target_entity": "minecraft:cow",
   "conditions": [
     {
-      "player_held_item": {
-        "id": "minecraft:bucket"
-      }
+      "condition": "contextually:player_held_item",
+      "item": "minecraft:bucket"
     }
   ],
-  "keys": {
-    "mapping": "key.use"
-  }
+  "keys": [
+    {
+      "mapping": "key.use"
+    }
+  ]
 }
