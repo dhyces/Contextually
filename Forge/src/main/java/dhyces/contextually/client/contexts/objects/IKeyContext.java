@@ -2,6 +2,7 @@ package dhyces.contextually.client.contexts.objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.keys.Key;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +23,6 @@ public interface IKeyContext<T> {
     void invalidateCache();
 
     @NotNull ResourceLocation getID();
-    @NotNull Set<ResourceLocation> getKeys();
+    @NotNull Set<Key> getKeys();
     @NotNull Set<Condition> getConditions();
 }

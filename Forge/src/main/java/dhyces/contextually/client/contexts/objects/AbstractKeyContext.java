@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.keys.Key;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,17 +17,17 @@ import java.util.Set;
 public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     final ResourceLocation id;
-    final Set<ResourceLocation> keys;
+    final Set<Key> keys;
     final Set<Condition> conditions;
     final Component text;
 
     private int widthCache = -1;
 
-    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<ResourceLocation> keys) {
+    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys) {
         this(id, keys, Set.of());
     }
 
-    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<ResourceLocation> keys, @NotNull Set<Condition> conditions) {
+    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<Condition> conditions) {
         this.id = id;
         this.keys = keys;
         this.conditions = conditions;
@@ -64,8 +65,8 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     protected void renderKeys(ForgeGui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
         var plusCount = keys.size() - 1;
-        for (ResourceLocation rl : keys) {
-            gui.blit(poseStack, pX, pY, gui.getBlitOffset(), 16, 16, ContextuallyClient.getTextureManager().get(rl));
+        for (Key key : keys) {
+            gui.blit(poseStack, pX, pY, gui.getBlitOffset(), 16, 16, ContextuallyClient.getTextureManager().get(key.resolveTextureLocation()));
             pX += 16;
             if (plusCount > 0) {
                 pX += SMALL_PADDING;
@@ -111,7 +112,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @NotNull
     @Override
-    public Set<ResourceLocation> getKeys() {
+    public Set<Key> getKeys() {
         return keys;
     }
 
