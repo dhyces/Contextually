@@ -1,6 +1,7 @@
 package dhyces.contextually.client.util;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class DefaultingMultiMapDelegate<K, V> {
     }
 
     public boolean isDefault(Collection<V> collection) {
-        return defaultValue.equals(collection) || defaultValue.containsAll(collection);
+        return defaultValue.equals(collection) || collection.containsAll(defaultValue);
     }
 
     public Collection<V> getDefaultValue() {
@@ -33,7 +34,11 @@ public class DefaultingMultiMapDelegate<K, V> {
     }
 
     public boolean put(K key, V value) {
-        return map.put(key, value);
+        throw new UnsupportedOperationException();
+    }
+
+    public void clear() {
+        map.clear();
     }
 
     public Collection<V> get(K key) {
