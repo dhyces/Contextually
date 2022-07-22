@@ -2,7 +2,7 @@ package dhyces.contextually.client.contexts.objects;
 
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.keys.Key;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class GlobalKeyContext extends AbstractKeyContext<Player> {
 
-    public GlobalKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<Condition> conditions) {
+    public GlobalKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
         super(id, keys, conditions);
     }
 

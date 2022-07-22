@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.client.contexts.KeyContextLoader;
-import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.keys.Key;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import net.minecraft.resources.ResourceLocation;
@@ -23,8 +23,8 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     JsonObject serialize(@NotNull ResourceLocation id, @NotNull Pair<Collection<E>, T> context);
 
-    default Set<Condition> readConditions(@Nullable JsonArray conditionArray) {
-        ImmutableSet.Builder<Condition> builder = ImmutableSet.builder();
+    default Set<IConditionPredicate> readConditions(@Nullable JsonArray conditionArray) {
+        ImmutableSet.Builder<IConditionPredicate> builder = ImmutableSet.builder();
         if (conditionArray != null) {
             for (JsonElement o : conditionArray) {
                 try {

@@ -1,10 +1,9 @@
 package dhyces.contextually.client.contexts.objects;
 
 import com.google.common.base.Objects;
-import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
-import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.keys.Key;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -18,7 +17,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     final ResourceLocation id;
     final Set<Key> keys;
-    final Set<Condition> conditions;
+    final Set<IConditionPredicate> conditions;
     final Component text;
 
     private int widthCache = -1;
@@ -27,7 +26,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
         this(id, keys, Set.of());
     }
 
-    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<Condition> conditions) {
+    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
         this.id = id;
         this.keys = keys;
         this.conditions = conditions;
@@ -106,7 +105,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @NotNull
     @Override
-    public Set<Condition> getConditions() {
+    public Set<IConditionPredicate> getConditions() {
         return conditions;
     }
 

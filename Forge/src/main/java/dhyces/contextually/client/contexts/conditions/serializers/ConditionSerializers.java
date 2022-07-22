@@ -1,97 +1,18 @@
 package dhyces.contextually.client.contexts.conditions.serializers;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import static dhyces.contextually.ContextuallyCommon.modloc;
-
-import dhyces.contextually.client.contexts.KeyContextLoader;
-import dhyces.contextually.client.contexts.conditions.Condition;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraftforge.registries.ForgeRegistries;
+import dhyces.contextually.client.contexts.conditions.objects.*;
 
 public class ConditionSerializers {
 
-    private static InteractionHand getHand(JsonElement handJson) {
-        if (handJson == null) return null;
-        return switch (handJson.getAsString()) {
-            case "main" -> InteractionHand.MAIN_HAND;
-            case "offhand" -> InteractionHand.OFF_HAND;
-            default -> throw new IllegalArgumentException("Hand specified is invalid.");
-        };
-    }
-
-    public static final IConditionSerializer PLAYER_HELD_ITEM_SERIALIZER = new IConditionSerializer() {
-        @Override
-        public Condition deserialize(JsonObject json) {
-            var location = ResourceLocation.of(json.get("item").getAsString(), ':');
-            var item = ForgeRegistries.ITEMS.getValue(location);
-            var handJson = json.get("hand");
-            return new Condition.PlayerHeldItemCondition(item, getHand(handJson));
-        }
-
-        @Override
-        public JsonObject serialize(Condition context) {
-            return null;
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return modloc("player_held_item");
-        }
-    };
-
-    public static final IConditionSerializer PLAYER_HELD_BLOCK_SERIALIZER = new IConditionSerializer() {
-        @Override
-        public Condition deserialize(JsonObject json) {
-            var handJson = json.get("hand");
-            return new Condition.PlayerHeldBlockCondition(getHand(handJson));
-        }
-
-        @Override
-        public JsonObject serialize(Condition context) {
-            return null;
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return modloc("player_held_block");
-        }
-    };
-
-    public static final IConditionSerializer VILLAGER_PROFESSION_SERIALIZER = new IConditionSerializer() {
-        @Override
-        public Condition deserialize(JsonObject json) {
-            var professionJson = json.get("profession");
-            return new Condition.VillagerProfessionCondition(ResourceLocation.of(professionJson.getAsString(), ':'));
-        }
-
-        @Override
-        public JsonObject serialize(Condition context) {
-            return null;
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return modloc("villager_profession");
-        }
-    };
-
-    public static final IConditionSerializer NOT_SERIALIZER = new IConditionSerializer() {
-        @Override
-        public Condition deserialize(JsonObject json) {
-            var wrappedCondition = json.getAsJsonObject("not");
-            return new Condition.NotCondition(KeyContextLoader.deserializeCondition(wrappedCondition));
-        }
-
-        @Override
-        public JsonObject serialize(Condition context) {
-            return null;
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return modloc("not");
-        }
-    };
+    // TODO: potentially a SaddleableEntityCondition?
+    // TODO: potentially a SaddledEntityCondition?
+    public static final IConditionSerializer<TargetEntityNbtCondition> TARGET_ENTITY_NBT_SERIALIZER = new TargetEntityNbtCondition.Serializer();
+    public static final IConditionSerializer<TargetHeldItemNbtCondition> TARGET_HELD_NBT_SERIALIZER = new TargetHeldItemNbtCondition.Serializer();
+    public static final IConditionSerializer<PlayerHeldItemCondition> PLAYER_HELD_ITEM_SERIALIZER = new PlayerHeldItemCondition.Serializer();
+    public static final IConditionSerializer<PlayerHeldBlockCondition> PLAYER_HELD_BLOCK_SERIALIZER = new PlayerHeldBlockCondition.Serializer();
+    public static final IConditionSerializer<PlayerKeyHeldCondition> PLAYER_KEY_HELD_SERIALIZER = new PlayerKeyHeldCondition.Serializer();
+    public static final IConditionSerializer<VillagerProfessionCondition> VILLAGER_PROFESSION_SERIALIZER = new VillagerProfessionCondition.Serializer();
+    public static final IConditionSerializer<NotCondition> NOT_SERIALIZER = new NotCondition.Serializer();
+    public static final IConditionSerializer<AndCondition> AND_SERIALIZER = new AndCondition.Serializer();
+    public static final IConditionSerializer<OrCondition> OR_SERIALIZER = new OrCondition.Serializer();
 }

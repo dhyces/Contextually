@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.ContextuallyCommon;
-import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.conditions.serializers.ConditionSerializers;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import dhyces.contextually.client.contexts.keys.Key;
@@ -28,7 +28,7 @@ import java.util.*;
 public class KeyContextLoader {
 
     private static final ImmutableMap<String, IKeySerializer> KEY_SERIALIZERS_MAP;
-    private static final ImmutableSet<IConditionSerializer> CONDITION_SERIALIZERS;
+    private static final ImmutableSet<IConditionSerializer<?>> CONDITION_SERIALIZERS;
     private static final ImmutableMap<ResourceLocation, IContextSerializer<?, ?>> CONTEXT_SERIALIZERS;
     private final ResourceManager resourceManager;
 
@@ -69,9 +69,9 @@ public class KeyContextLoader {
     }
 
     @NotNull
-    public static Condition deserializeCondition(JsonObject conditionObject) {
+    public static IConditionPredicate deserializeCondition(JsonObject conditionObject) {
         Objects.requireNonNull(conditionObject);
-        for (IConditionSerializer serializer : CONDITION_SERIALIZERS) {
+        for (IConditionSerializer<?> serializer : CONDITION_SERIALIZERS) {
             if (serializer.getId().toString().equals(conditionObject.get("condition").getAsString())) {
                 return serializer.deserialize(conditionObject);
             }
@@ -100,11 +100,16 @@ public class KeyContextLoader {
         // TODO: Fire registry event
         CONTEXT_SERIALIZERS = contextSerializerBuilder.build();
 
-        ImmutableSet.Builder<IConditionSerializer> conditionSerializerBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<IConditionSerializer<?>> conditionSerializerBuilder = ImmutableSet.builder();
+        conditionSerializerBuilder.add(ConditionSerializers.TARGET_ENTITY_NBT_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.TARGET_HELD_NBT_SERIALIZER);
         conditionSerializerBuilder.add(ConditionSerializers.PLAYER_HELD_ITEM_SERIALIZER);
         conditionSerializerBuilder.add(ConditionSerializers.PLAYER_HELD_BLOCK_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.PLAYER_KEY_HELD_SERIALIZER);
         conditionSerializerBuilder.add(ConditionSerializers.VILLAGER_PROFESSION_SERIALIZER);
         conditionSerializerBuilder.add(ConditionSerializers.NOT_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.AND_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.OR_SERIALIZER);
 
         // TODO: Fire registry event
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();

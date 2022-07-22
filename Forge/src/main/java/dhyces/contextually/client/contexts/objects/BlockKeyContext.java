@@ -1,14 +1,12 @@
 package dhyces.contextually.client.contexts.objects;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import dhyces.contextually.client.contexts.conditions.Condition;
+import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.keys.Key;
-import dhyces.contextually.client.contexts.keys.serializers.IKeySerializer;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +19,7 @@ import java.util.*;
 
 public class BlockKeyContext extends AbstractKeyContext<BlockState> {
 
-    public BlockKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<Condition> conditions) {
+    public BlockKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
         super(id, keys, conditions);
     }
 
