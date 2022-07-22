@@ -25,7 +25,7 @@ public class ContextuallyClient {
         keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().textureManager);
         keyContexts = new KeyContextManager();
         event.registerReloadListener(keyTextures);
-//        event.registerReloadListener(keyContexts);
+        event.registerReloadListener(keyContexts);
     }
 
     private static void registerGuis(RegisterGuiOverlaysEvent event) {
