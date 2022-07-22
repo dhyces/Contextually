@@ -20,6 +20,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.*;
@@ -32,6 +33,10 @@ public class ContextGuiOverlay implements IGuiOverlay {
 
     @Override
     public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+        // If a screen is open, we don't want to render. Maybe there should be screen contexts?
+        if (gui.getMinecraft().screen != null) {
+            return;
+        }
         gui.setupOverlayRenderState(true, false, KeyMappingTextureManager.KEYS);
 
         var mc = gui.getMinecraft();
@@ -42,7 +47,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
         Set<ContextRenderHolder<?>> contextList = new LinkedHashSet<>();
 
         // Global contexts
-        contextList.add(new ContextRenderHolder<>(clientPlayer, ContextuallyClient.getContextManager().getGlobalContexts()));
+        if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
+            contextList.add(new ContextRenderHolder<>(clientPlayer, ContextuallyClient.getContextManager().getGlobalContexts()));
+        }
 
         // HitResult (entity and solid block) contexts
         var hitResult = mc.hitResult;
