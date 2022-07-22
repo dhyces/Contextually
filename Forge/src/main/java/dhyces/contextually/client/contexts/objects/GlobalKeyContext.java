@@ -21,7 +21,9 @@ public class GlobalKeyContext extends AbstractKeyContext<Player> {
     public static class Serializer implements IContextSerializer<Player, GlobalKeyContext> {
         @Override
         public Pair<Collection<Player>, GlobalKeyContext> deserialize(ResourceLocation id, JsonObject json) {
-            return null;
+            var keys = readKeys(json.getAsJsonArray("keys"));
+            var conditions = readConditions(json.getAsJsonArray("conditions"));
+            return Pair.of(null, new GlobalKeyContext(id, keys, conditions));
         }
 
         @Override

@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-public interface IContextSerializer<E, T extends IKeyContext<E>> {
+public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     Pair<Collection<E>, T> deserialize(@NotNull ResourceLocation id, @NotNull JsonObject json);
 
@@ -48,5 +48,12 @@ public interface IContextSerializer<E, T extends IKeyContext<E>> {
             }
         }
         return builder.build();
+    }
+
+    default boolean isDefault(JsonElement e) {
+        if (e.isJsonPrimitive()) {
+            return e.getAsString().equals("*");
+        }
+        return false;
     }
 }
