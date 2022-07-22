@@ -1,6 +1,8 @@
 {
   "loader": "contextually:global_context",
-  "keys": {
-    "mapping": "key.inventory"
-  }
+  "keys": [
+    {
+      "mapping": "key.inventory"
+    }
+  ]
 }

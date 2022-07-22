@@ -1,0 +1,9 @@
+{
+  "loader": "contextually:entity_context",
+  "target_entity": "*",
+  "keys": [
+    {
+      "mapping": "key.attack"
+    }
+  ]
+}

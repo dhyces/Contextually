@@ -1,0 +1,18 @@
+{
+  "loader": "contextually:entity_context",
+  "target_entity": "minecraft:villager",
+  "conditions": [
+    {
+      "condition": "contextually:not",
+      "not": {
+        "condition": "contextually:villager_profession",
+        "profession": "minecraft:none"
+      }
+    }
+  ],
+  "keys": [
+    {
+      "mapping": "key.use"
+    }
+  ]
+}
