@@ -1,8 +1,12 @@
 package dhyces.contextually.client.contexts.conditions;
 
+import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.textures.KeyConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -109,6 +113,20 @@ public abstract class Condition implements IConditionPredicate {
                 return player.getMainHandItem().getItem() instanceof BlockItem || player.getOffhandItem().getItem() instanceof BlockItem;
             }
             return player.getItemInHand(hand).getItem() instanceof BlockItem;
+        }
+    }
+
+    public static class PlayerKeyHeldCondition extends Condition {
+
+        final Key key;
+
+        public PlayerKeyHeldCondition(Key key) {
+            this.key = key;
+        }
+
+        @Override
+        public boolean test(Object target, ClientLevel level, AbstractClientPlayer player) {
+            return key.getMapping().get().isDown();
         }
     }
 
