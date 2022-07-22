@@ -169,16 +169,16 @@ public abstract class Condition implements IConditionPredicate {
 
     public static class VillagerProfessionCondition extends Condition {
 
-        final String profession;
+        final ResourceLocation profession;
 
-        public VillagerProfessionCondition(String profession) {
+        public VillagerProfessionCondition(ResourceLocation profession) {
             this.profession = profession;
         }
 
         @Override
         public boolean test(Object target, ClientLevel level, AbstractClientPlayer player) {
             if (target instanceof Villager villager) {
-                return profession.equals(villager.getVillagerData().getProfession().name());
+                return profession.equals(ResourceLocation.of(villager.getVillagerData().getProfession().name(), ':'));
             }
             return false;
         }

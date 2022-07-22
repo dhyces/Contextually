@@ -103,12 +103,18 @@ public class KeyContextLoader {
         ImmutableSet.Builder<IConditionSerializer> conditionSerializerBuilder = ImmutableSet.builder();
         conditionSerializerBuilder.add(ConditionSerializers.PLAYER_HELD_ITEM_SERIALIZER);
         conditionSerializerBuilder.add(ConditionSerializers.PLAYER_HELD_BLOCK_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.VILLAGER_PROFESSION_SERIALIZER);
+        conditionSerializerBuilder.add(ConditionSerializers.NOT_SERIALIZER);
+
+        // TODO: Fire registry event
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();
 
         ImmutableMap.Builder<String, IKeySerializer> keySerializerBuilder = ImmutableMap.builder();
         keySerializerBuilder.put("mapping", KeySerializers.MAPPING_KEY_SERIALIZER);
 //        keySerializerBuilder.put("key", KeySerializers.KEYCODE_KEY_SERIALIZER);
         keySerializerBuilder.put("texture", KeySerializers.TEXTURE_KEY_SERIALIZER);
+
+        // TODO: Fire registry event
         KEY_SERIALIZERS_MAP = keySerializerBuilder.build();
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import static dhyces.contextually.ContextuallyCommon.modloc;
 
+import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.Condition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -55,6 +56,42 @@ public class ConditionSerializers {
         @Override
         public ResourceLocation getId() {
             return modloc("player_held_block");
+        }
+    };
+
+    public static final IConditionSerializer VILLAGER_PROFESSION_SERIALIZER = new IConditionSerializer() {
+        @Override
+        public Condition deserialize(JsonObject json) {
+            var professionJson = json.get("profession");
+            return new Condition.VillagerProfessionCondition(ResourceLocation.of(professionJson.getAsString(), ':'));
+        }
+
+        @Override
+        public JsonObject serialize(Condition context) {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return modloc("villager_profession");
+        }
+    };
+
+    public static final IConditionSerializer NOT_SERIALIZER = new IConditionSerializer() {
+        @Override
+        public Condition deserialize(JsonObject json) {
+            var wrappedCondition = json.getAsJsonObject("not");
+            return new Condition.NotCondition(KeyContextLoader.deserializeCondition(wrappedCondition));
+        }
+
+        @Override
+        public JsonObject serialize(Condition context) {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return modloc("not");
         }
     };
 }
