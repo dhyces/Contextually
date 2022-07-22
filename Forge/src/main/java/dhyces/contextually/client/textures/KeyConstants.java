@@ -3,10 +3,8 @@ package dhyces.contextually.client.textures;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.InputConstants;
 import dhyces.contextually.ContextuallyCommon;
-import dhyces.contextually.client.contexts.objects.IKeyContext;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
@@ -14,13 +12,14 @@ import java.util.function.Function;
 
 public class KeyConstants {
 
+    static final Map<String, ResourceLocation> KEY_LOCATIONS_BY_STRING = Maps.newHashMap();
     static final Map<Integer, ResourceLocation> KEY_LOCATIONS = Maps.newHashMap();
-    static final Function<String, Integer> KEY_STRING_MAP = new Function<>() {
+    static final Function<String, KeyMapping> KEY_STRING_MAP = new Function<>() {
         static final Map<String, KeyMapping> MAP;
 
         @Override
-        public Integer apply(String s) {
-            return MAP.get(s).getKey().getValue();
+        public KeyMapping apply(String s) {
+            return MAP.get(s);
         }
 
         static {
@@ -32,7 +31,7 @@ public class KeyConstants {
         }
     };
 
-    public static final String UNKNOWN = "missingno";
+    public static final String UNKNOWN = "unknown";
     public static final String MOUSE_BUTTON_LEFT = "mouse_left_key";
     public static final String MOUSE_BUTTON_RIGHT = "mouse_right_key";
     public static final String MOUSE_BUTTON_MIDDLE = "mouse_middle_key";
@@ -144,16 +143,22 @@ public class KeyConstants {
     public static final String COMMAND_KEY = "command_key";
     public static final String ENTER_ALT_KEY = "enter_alt_key";
 
+    public static ResourceLocation get(String value) {
+        return KEY_LOCATIONS_BY_STRING.get(value);
+    }
+
     public static ResourceLocation get(int value) {
         return KEY_LOCATIONS.get(value);
     }
 
-    public static int get(String keyMappingName) {
+    public static KeyMapping getKeyMapping(String keyMappingName) {
         return KEY_STRING_MAP.apply(keyMappingName);
     }
 
     private static void add(int keyValue, String id) {
-        KEY_LOCATIONS.put(keyValue, ContextuallyCommon.modloc(id));
+        var rl = ContextuallyCommon.modloc(id);
+        KEY_LOCATIONS_BY_STRING.put(id, rl);
+        KEY_LOCATIONS.put(keyValue, rl);
     }
 
     static {
