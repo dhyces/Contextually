@@ -1,8 +1,10 @@
 package dhyces.contextually.client.contexts.icons;
 
 import dhyces.contextually.ContextuallyClient;
+import dhyces.contextually.ContextuallyCommon;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 
 public record KeyMappingIcon(KeyMapping mapping) implements ITextureIcon {
     @Override
@@ -11,7 +13,7 @@ public record KeyMappingIcon(KeyMapping mapping) implements ITextureIcon {
     }
 
     @Override
-    public String getId() {
-        return "mapping";
+    public ResourceLocation getId() {
+        return ContextuallyCommon.modloc("mapping");
     }
 }

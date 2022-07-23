@@ -1,10 +1,11 @@
 package dhyces.contextually.client.contexts.icons.serializers;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dhyces.contextually.client.contexts.icons.IIcon;
 
 public interface IIconSerializer<T extends IIcon> {
-    T deserialize(JsonElement json);
+    T deserialize(JsonObject json);
 
-    JsonElement serialize(T key);
+    JsonObject serialize(JsonObject jsonObject, T key);
 }

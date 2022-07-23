@@ -2,6 +2,7 @@ package dhyces.contextually.client.contexts.icons;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
@@ -16,7 +17,7 @@ public record ItemIcon(ResourceLocation itemLocation) implements IIcon {
     }
 
     @Override
-    public String getId() {
-        return "item";
+    public ResourceLocation getId() {
+        return ContextuallyCommon.modloc("item");
     }
 }
