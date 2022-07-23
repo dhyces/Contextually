@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
-import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -19,8 +19,8 @@ import java.util.*;
 
 public class BlockKeyContext extends AbstractKeyContext<BlockState> {
 
-    public BlockKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
-        super(id, keys, conditions);
+    public BlockKeyContext(@NotNull ResourceLocation id, @NotNull Set<IIcon> icons, @NotNull Set<IConditionPredicate> conditions) {
+        super(id, icons, conditions);
     }
 
     public static class Serializer implements IContextSerializer<BlockState, BlockKeyContext> {
@@ -55,7 +55,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                 throw new IllegalStateException("Key \"target_block\" not present.");
             }
 
-            var keys = readKeys(json.getAsJsonArray("keys"));
+            var keys = readIcons(json.getAsJsonArray("icons"));
             var conditions = readConditions(json.getAsJsonArray("conditions"));
             return Pair.of(builder.build(), new BlockKeyContext(id, keys, conditions));
         }

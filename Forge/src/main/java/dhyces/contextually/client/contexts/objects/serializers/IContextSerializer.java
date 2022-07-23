@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
-import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +37,12 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
         return builder.build();
     }
 
-    default Set<Key> readKeys(@NotNull JsonArray keyArray) {
+    default Set<IIcon> readIcons(@NotNull JsonArray keyArray) {
         Objects.requireNonNull(keyArray);
-        ImmutableSet.Builder<Key> builder = ImmutableSet.builder();
+        ImmutableSet.Builder<IIcon> builder = ImmutableSet.builder();
         for (JsonElement o : keyArray) {
             try {
-                builder.add(KeyContextLoader.deserializeKey(o.getAsJsonObject()));
+                builder.add(KeyContextLoader.deserializeIcon(o.getAsJsonObject()));
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }

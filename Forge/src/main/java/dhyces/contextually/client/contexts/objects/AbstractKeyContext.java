@@ -4,7 +4,8 @@ import com.google.common.base.Objects;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
-import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.contexts.icons.IIcon;
+import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,19 +17,19 @@ import java.util.Set;
 public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     final ResourceLocation id;
-    final Set<Key> keys;
+    final Set<IIcon> icons;
     final Set<IConditionPredicate> conditions;
     final Component text;
 
     private int widthCache = -1;
 
-    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys) {
-        this(id, keys, Set.of());
+    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<IIcon> icons) {
+        this(id, icons, Set.of());
     }
 
-    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
+    public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<IIcon> icons, @NotNull Set<IConditionPredicate> conditions) {
         this.id = id;
-        this.keys = keys;
+        this.icons = icons;
         this.conditions = conditions;
         this.text = Component.translatable("contextually.contexts." + id.getPath());
     }
@@ -45,13 +46,12 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
             pX -= pixelsToMove + PADDING;
         }
         renderKeys(gui, poseStack, partialTicks, pX, pY, width, height);
-        //renderText(gui, font, poseStack, partialTicks, pX, pY + 4, width, height);
     }
 
     @Override
     public int width(Font font) {
         if (widthCache == -1) {
-            var numKeys = keys.size();
+            var numKeys = icons.size();
             var numPlus = numKeys - 1;
             var keySize = numKeys * 16;
             var plusWidth = font.width(PLUS);
@@ -63,9 +63,9 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
 
     protected void renderKeys(ForgeGui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
-        var plusCount = keys.size() - 1;
-        for (Key key : keys) {
-            gui.blit(poseStack, pX, pY, gui.getBlitOffset(), 16, 16, ContextuallyClient.getTextureManager().get(key.resolveTextureLocation()));
+        var plusCount = icons.size() - 1;
+        for (IIcon key : icons) {
+            key.render(poseStack, partialTicks, gui.getBlitOffset(), pX, pY, width, height);
             pX += 16;
             if (plusCount > 0) {
                 pX += SMALL_PADDING;
@@ -85,7 +85,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
     }
 
     protected void renderText(ForgeGui gui, Font font, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
-        var plusCount = keys.size() - 1;
+        var plusCount = icons.size() - 1;
         pX += 16;
         while (plusCount > 0) {
             pX += SMALL_PADDING;
@@ -111,8 +111,8 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @NotNull
     @Override
-    public Set<Key> getKeys() {
-        return keys;
+    public Set<IIcon> getIcons() {
+        return icons;
     }
 
     @Override
@@ -125,11 +125,11 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractKeyContext<?> that = (AbstractKeyContext<?>) o;
-        return Objects.equal(keys, that.keys);
+        return Objects.equal(icons, that.icons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(keys);
+        return Objects.hashCode(icons);
     }
 }

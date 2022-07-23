@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
-import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -19,8 +19,8 @@ import java.util.Set;
 
 public class EntityKeyContext extends AbstractKeyContext<Entity> {
 
-    public EntityKeyContext(@NotNull ResourceLocation id, @NotNull Set<Key> keys, @NotNull Set<IConditionPredicate> conditions) {
-        super(id, keys, conditions);
+    public EntityKeyContext(@NotNull ResourceLocation id, @NotNull Set<IIcon> icons, @NotNull Set<IConditionPredicate> conditions) {
+        super(id, icons, conditions);
     }
 
     public static class Serializer implements IContextSerializer<EntityType<?>, EntityKeyContext> {
@@ -47,7 +47,7 @@ public class EntityKeyContext extends AbstractKeyContext<Entity> {
                 throw new IllegalStateException("Key \"target_entity\" not present.");
             }
 
-            var keys = readKeys(json.getAsJsonArray("keys"));
+            var keys = readIcons(json.getAsJsonArray("icons"));
             var conditions = readConditions(json.getAsJsonArray("conditions"));
             return Pair.of(builder.build(), new EntityKeyContext(id, keys, conditions));
         }
