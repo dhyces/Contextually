@@ -44,9 +44,11 @@
   ],
   "icons": [
     {
+      "type": "mapping",
       "mapping": "key.sneak"
     },
     {
+      "type": "mapping",
       "mapping": "key.use"
     }
   ]

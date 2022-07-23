@@ -3,9 +3,11 @@
   "target_entity": "minecraft:sheep",
   "icons": [
     {
+      "type": "mapping",
       "mapping": "key.use"
     },
     {
+      "type": "item",
       "item": "minecraft:shears"
     }
   ]

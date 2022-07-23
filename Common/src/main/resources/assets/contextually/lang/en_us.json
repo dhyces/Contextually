@@ -5,14 +5,18 @@
   "contextually.contexts.block.default_block_attack": "Mine block",
   "contextually.contexts.block.default_block_sneak_use": "Place block",
   "contextually.contexts.block.default_block_use": "Place block",
-  "contextually.contexts.entity.default_entity_attack": "Attack",
-  "contextually.contexts.entity.villager_use": "Trade",
   "contextually.contexts.block.lever_use_off": "Flick on",
   "contextually.contexts.block.lever_use_on": "Flick off",
-  "contextually.contexts.block.inventory_block_use": "Open inventory",
+  "contextually.contexts.block.inventory_block_use": "Open %s",
   "contextually.contexts.block.bucket_water": "Pick up water",
+  "contextually.contexts.block.bell_use": "Ring",
+  "contextually.contexts.block.noteblock_attack": "PLAY TUNES",
+  "contextually.contexts.block.noteblock_use": "CHANGE TUNES",
+  "contextually.contexts.block.lectern_use": "Read",
+  "contextually.contexts.block.lectern_use_book": "Place book",
+  "contextually.contexts.entity.default_entity_attack": "Attack",
+  "contextually.contexts.entity.villager_use": "Trade",
   "contextually.contexts.entity.cow_use": "Milk",
   "contextually.contexts.entity.pig_use_saddle": "Saddle up!",
-  "contextually.contexts.entity.sheep_use": "Shear",
-  "contextually.contexts.block.bell_use": "Ring"
+  "contextually.contexts.entity.sheep_use": "Shear"
 }

@@ -1,11 +1,9 @@
 {
   "loader": "contextually:block_context",
-  "target_block": "*",
-  "conditions": [
-    {
-      "condition": "contextually:player_held_block"
-    }
-  ],
+  "target_block": {
+    "id": "minecraft:lectern",
+    "has_book": true
+  },
   "icons": [
     {
       "type": "mapping",

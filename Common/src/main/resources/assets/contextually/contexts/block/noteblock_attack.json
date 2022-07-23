@@ -1,0 +1,25 @@
+{
+  "loader": "block_context",
+  "target_block": "minecraft:note_block",
+  "icons": [
+    {
+      "type": "contextually:animated",
+      "animated": [
+        {
+          "icon": {
+            "type": "contextually:mapping",
+            "mapping": "key.attack"
+          },
+          "ticks": 20
+        },
+        {
+          "icon": {
+            "type": "contextually:key_texture",
+            "key_texture": "mouse_simple_key"
+          },
+          "ticks": 20
+        }
+      ]
+    }
+  ]
+}

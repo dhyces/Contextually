@@ -12,6 +12,7 @@
   ],
   "icons": [
     {
+      "type": "mapping",
       "mapping": "key.use"
     }
   ]

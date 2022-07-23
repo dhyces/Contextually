@@ -1,6 +1,6 @@
 {
   "loader": "block_context",
-  "target_block": "minecraft:bell",
+  "target_block": "minecraft:note_block",
   "icons": [
     {
       "type": "mapping",

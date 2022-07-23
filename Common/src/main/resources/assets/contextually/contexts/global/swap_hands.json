@@ -2,6 +2,7 @@
   "loader": "contextually:global_context",
   "icons": [
     {
+      "type": "mapping",
       "mapping": "key.swapOffhand"
     }
   ]
