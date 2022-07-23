@@ -1,8 +1,8 @@
 {
   "loader": "contextually:global_context",
-  "keys": [
+  "icons": [
     {
-      "mapping": "key.inventory"
+      "mapping": "key.jump"
     }
   ]
 }

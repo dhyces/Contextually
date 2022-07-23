@@ -1,0 +1,12 @@
+{
+  "loader": "contextually:entity_context",
+  "target_entity": "minecraft:sheep",
+  "icons": [
+    {
+      "mapping": "key.use"
+    },
+    {
+      "item": "minecraft:shears"
+    }
+  ]
+}

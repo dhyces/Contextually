@@ -37,7 +37,15 @@
     "minecraft:dispenser",
     "minecraft:dropper"
   ],
-  "keys": [
+  "conditions": [
+    {
+      "condition": "contextually:player_held_block"
+    }
+  ],
+  "icons": [
+    {
+      "mapping": "key.sneak"
+    },
     {
       "mapping": "key.use"
     }

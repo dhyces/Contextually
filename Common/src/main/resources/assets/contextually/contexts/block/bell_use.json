@@ -1,0 +1,9 @@
+{
+  "loader": "block_context",
+  "target_block": "minecraft:bell",
+  "icons": [
+    {
+      "mapping": "key.use"
+    }
+  ]
+}

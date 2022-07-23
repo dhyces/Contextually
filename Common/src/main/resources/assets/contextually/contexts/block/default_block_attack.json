@@ -1,7 +1,7 @@
 {
   "loader": "contextually:block_context",
   "target_block": "*",
-  "keys": [
+  "icons": [
     {
       "mapping": "key.attack"
     }

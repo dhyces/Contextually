@@ -1,12 +1,12 @@
 {
   "loader": "contextually:block_context",
-  "target_block": [
+  "target_block": "*",
+  "conditions": [
     {
-      "id": "minecraft:lever",
-      "powered": "true"
+      "condition": "contextually:player_held_block"
     }
   ],
-  "keys": [
+  "icons": [
     {
       "mapping": "key.use"
     }

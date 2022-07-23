@@ -1,0 +1,8 @@
+{
+  "loader": "contextually:global_context",
+  "icons": [
+    {
+      "mapping": "key.swapOffhand"
+    }
+  ]
+}
