@@ -2,9 +2,7 @@ package dhyces.contextually.client.contexts;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
@@ -29,7 +27,7 @@ import java.util.*;
 
 public class KeyContextLoader {
 
-    private static final ImmutableMap<String, IIconSerializer<? extends IIcon>> ICON_SERIALIZERS_MAP;
+    private static final ImmutableMap<ResourceLocation, IIconSerializer<? extends IIcon>> ICON_SERIALIZERS_MAP;
     private static final ImmutableMap<ResourceLocation, IConditionSerializer<? extends INamedCondition>> CONDITION_SERIALIZERS;
     private static final ImmutableMap<ResourceLocation, IContextSerializer<?, ?>> CONTEXT_SERIALIZERS;
     private final ResourceManager resourceManager;
@@ -95,23 +93,32 @@ public class KeyContextLoader {
     @NotNull
     public static IIcon deserializeIcon(JsonObject keyObject) {
         Objects.requireNonNull(keyObject);
-        for (String e : keyObject.keySet()) {
-            if (ICON_SERIALIZERS_MAP.containsKey(e)) {
-                var serializer = ICON_SERIALIZERS_MAP.get(e);
-                return serializer.deserialize(keyObject.get(e));
-            }
+        var type = keyObject.get("type");
+
+        if (type == null)
+            throw new JsonParseException("key \"type\" is must be defined");
+
+        if (!(type instanceof JsonPrimitive primitive && primitive.isString()))
+            throw new JsonParseException("key \"type\" is expected to be a string.");
+
+        var key = ContextuallyCommon.modDefaultingloc(type.getAsString());
+        if (ICON_SERIALIZERS_MAP.containsKey(key)) {
+            var serializer = ICON_SERIALIZERS_MAP.get(key);
+            return serializer.deserialize(keyObject);
         }
-        throw new IllegalArgumentException("No serializer for icon: " + keyObject + " exists.");
+        throw new IllegalArgumentException("No serializer for icon: " + type + " exists.");
     }
 
     @NotNull
-    public static <T extends IIcon> JsonElement serializeIcon(T iconObject) {
+    public static <T extends IIcon> JsonObject serializeIcon(T iconObject) {
         Objects.requireNonNull(iconObject);
-        try {
-            return ICON_SERIALIZERS_MAP.get(iconObject.getId()).serialize(sillyCast(iconObject));
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("No serializer for icon: " + iconObject.getId() + " exists.");
+        var serializer = ICON_SERIALIZERS_MAP.get(iconObject.getId());
+        if (serializer != null) {
+            var jsonObject = new JsonObject();
+            jsonObject.add("type", new JsonPrimitive(iconObject.getId().toString()));
+            return serializer.serialize(jsonObject, sillyCast(iconObject));
         }
+        throw new IllegalArgumentException("No serializer for icon: " + iconObject.getId() + " exists.");
     }
 
     private static <X> X sillyCast(Object o) {
@@ -145,11 +152,12 @@ public class KeyContextLoader {
         // TODO: Fire registry event
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();
 
-        ImmutableMap.Builder<String, IIconSerializer<? extends IIcon>> iconSerializerBuilder = ImmutableMap.builder();
-        iconSerializerBuilder.put("mapping", IconSerializers.KEY_MAPPING_SERIALIZER);
-        iconSerializerBuilder.put("key", IconSerializers.KEYCODE_SERIALIZER);
-        iconSerializerBuilder.put("texture", IconSerializers.KEY_TEXTURE_SERIALIZER);
-        iconSerializerBuilder.put("item", IconSerializers.ITEM_SERIALIZER);
+        ImmutableMap.Builder<ResourceLocation, IIconSerializer<? extends IIcon>> iconSerializerBuilder = ImmutableMap.builder();
+        iconSerializerBuilder.put(ContextuallyCommon.modloc("mapping"), IconSerializers.KEY_MAPPING_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.modloc("key"), IconSerializers.KEYCODE_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.modloc("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.modloc("item"), IconSerializers.ITEM_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.modloc("animated"), IconSerializers.ANIMATED_SERIALIZER);
 
         // TODO: Fire registry event
         ICON_SERIALIZERS_MAP = iconSerializerBuilder.build();
