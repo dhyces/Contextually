@@ -1,5 +1,7 @@
 package dhyces.contextually.client.textures;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 import dhyces.contextually.ContextuallyCommon;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,10 +14,12 @@ import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class KeyMappingTextureManager extends TextureAtlasHolder {
     static final Int2ObjectMap<ResourceLocation> KEY_LOCATIONS;
+    static final Set<ResourceLocation> OTHERS;
 
     public static final ResourceLocation KEYS = ContextuallyCommon.modloc("textures/atlas/keys.png");
     public static final ResourceLocation UNKNOWN_LOCATION = ContextuallyCommon.modloc("unknown");
@@ -34,7 +38,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
 
     @Override
     protected Stream<ResourceLocation> getResourcesToLoad() {
-        return KEY_LOCATIONS.values().stream();
+        return Sets.union(Sets.newHashSet(KEY_LOCATIONS.values()), OTHERS).stream();
     }
 
     public static final String UNKNOWN = "unknown";
@@ -291,5 +295,9 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
 //        addKey(KEYSYM, "key.keyboard.f24", 313);
 //        addKey(KEYSYM, "key.keyboard.f25", 314);
         KEY_LOCATIONS = Int2ObjectMaps.unmodifiable(map);
+        ImmutableSet.Builder<ResourceLocation> set = ImmutableSet.builder();
+        set.add(ContextuallyCommon.modloc(MOUSE_BLANK));
+        set.add(UNKNOWN_LOCATION);
+        OTHERS = set.build();
     }
 }
