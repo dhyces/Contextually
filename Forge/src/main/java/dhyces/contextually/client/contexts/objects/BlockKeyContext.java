@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
@@ -78,6 +79,9 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                     continue;
                 }
                 propertyList.add(Pair.of(key, stateObject.get(key).getAsString()));
+            }
+            if (blockJson == null) {
+                throw new JsonParseException("Block id must not be null.");
             }
             return statesWithProperties(getBlock(blockJson), propertyList);
         }
