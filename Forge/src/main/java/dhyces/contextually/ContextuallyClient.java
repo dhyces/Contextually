@@ -9,9 +9,12 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class ContextuallyClient {
     static KeyMappingTextureManager keyTextures;
     static KeyContextManager keyContexts;
+    public static int funnyInt = 0;
 
     ContextuallyClient() {
     }
