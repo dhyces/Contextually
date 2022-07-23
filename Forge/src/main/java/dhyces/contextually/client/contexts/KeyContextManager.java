@@ -3,12 +3,14 @@ package dhyces.contextually.client.contexts;
 import com.google.common.collect.*;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.ContextuallyCommon;
-import dhyces.contextually.client.contexts.keys.Key;
+import dhyces.contextually.client.contexts.icons.IconUtils;
 import dhyces.contextually.client.contexts.objects.BlockKeyContext;
 import dhyces.contextually.client.contexts.objects.EntityKeyContext;
 import dhyces.contextually.client.contexts.objects.GlobalKeyContext;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.util.DefaultingMultiMapDelegate;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -19,15 +21,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Stream;
 
 public final class KeyContextManager implements PreparableReloadListener {
 
-    private DefaultingMultiMapDelegate<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createDelegate(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(Key.of("key.attack")), Set.of()));
-    private DefaultingMultiMapDelegate<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createDelegate(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(Key.of("key.attack")), Set.of()));
+    private DefaultingMultiMapDelegate<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createDelegate(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
+    private DefaultingMultiMapDelegate<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createDelegate(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
     private DefaultingMultiMapDelegate<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createDelegate();
     private ImmutableList<IKeyContext<Player>> GLOBAL_CONTEXTS = ImmutableList.of();
 
@@ -37,6 +41,10 @@ public final class KeyContextManager implements PreparableReloadListener {
 
     public boolean hasContextForEntity(Entity entity) {
         return ENTITY_CONTEXTS.containsKey(entity.getType());
+    }
+
+    public Collection<IKeyContext<Player>> getGlobalContexts() {
+        return GLOBAL_CONTEXTS;
     }
 
     public Collection<IKeyContext<BlockState>> getContextsForBlock(BlockState block) {
@@ -59,8 +67,20 @@ public final class KeyContextManager implements PreparableReloadListener {
         return ITEM_CONTEXTS.get(item);
     }
 
-    public Collection<IKeyContext<Player>> getGlobalContexts() {
-        return GLOBAL_CONTEXTS;
+    public Collection<IKeyContext<Player>> filterGlobalContexts(ClientLevel level, AbstractClientPlayer player) {
+        return getGlobalContexts().stream().filter(context -> context.getConditions().stream().allMatch(condition -> condition.test(level, null, level, player))).toList();
+    }
+
+    public Collection<IKeyContext<BlockState>> filterContextsForBlock(BlockState blockState, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
+        return getContextsForBlock(blockState).stream().filter(context -> context.getConditions().stream().allMatch(condition -> condition.test(blockState, hitResult, level, player))).toList();
+    }
+
+    public Collection<IKeyContext<BlockState>> filterContextsForFluid(FluidState fluidState, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
+        return getContextsForFluid(fluidState).stream().filter(context -> context.getConditions().stream().allMatch(condition -> condition.test(fluidState, hitResult, level, player))).toList();
+    }
+
+    public Collection<IKeyContext<Entity>> filterContextsForEntity(Entity entity, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
+        return getContextsForEntity(entity).stream().filter(context -> context.getConditions().stream().allMatch(condition -> condition.test(entity, hitResult, level, player))).toList();
     }
 
     private <K, V> DefaultingMultiMapDelegate<K, V> createDelegate(V... contexts) {
