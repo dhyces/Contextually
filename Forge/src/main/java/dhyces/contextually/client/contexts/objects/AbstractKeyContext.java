@@ -81,10 +81,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @Override
     public void renderText(T contextObject, ForgeGui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
-        renderText(gui, gui.getFont(), poseStack, partialTicks, pX, pY, width, height);
-    }
-
-    protected void renderText(ForgeGui gui, Font font, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
+        var font = gui.getFont();
         var plusCount = icons.size() - 1;
         pX += 16;
         while (plusCount > 0) {
