@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.BlockHitResult;
@@ -70,8 +71,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
         // Item contexts
 
         var heightPos = height - 16 - 32;
-        var half = contextSet.stream().flatMap(c -> c.contextCollection.stream()).count() / 2;
+        var half = contextSet.stream().mapToInt(c -> c.contextCollection.size()).sum() / 2;
         var count = 0;
+        // TODO: instead of doing this, we should maybe just collect the renderer as a Runnable and then
         // Render contexts
         for (ContextRenderHolder<?> holder : contextSet) {
             var context = holder.contextObject();
@@ -93,6 +95,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
                 count++;
             }
         }
+        ContextuallyClient.funnyInt = ContextuallyClient.funnyInt + 1 % 200;
     }
 
     // We should know that the type matches
