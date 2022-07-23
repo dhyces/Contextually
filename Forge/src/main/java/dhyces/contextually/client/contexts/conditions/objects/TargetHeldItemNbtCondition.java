@@ -1,22 +1,28 @@
 package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
+import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.Nullable;
 
-public record TargetHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionHand hand) implements IConditionPredicate {
+public record TargetHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionHand hand) implements INamedCondition {
+
+    static final ResourceLocation ID = ContextuallyCommon.modloc("target_held_nbt");
 
     @Override
-    public boolean test(Object target, ClientLevel level, AbstractClientPlayer player) {
+    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
         if (target instanceof LivingEntity livingEntity) {
             if (hand == null) {
                 return livingEntity.getMainHandItem().getTag().equals(tag) || livingEntity.getOffhandItem().getTag().equals(tag);
@@ -26,9 +32,12 @@ public record TargetHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionH
         return false;
     }
 
-    public static class Serializer implements IConditionSerializer<TargetHeldItemNbtCondition> {
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
 
-        final ResourceLocation id = ContextuallyCommon.modloc("target_held_nbt");
+    public static class Serializer implements IConditionSerializer<TargetHeldItemNbtCondition> {
 
         @Override
         public TargetHeldItemNbtCondition deserialize(JsonObject json) {
@@ -39,13 +48,16 @@ public record TargetHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionH
 
         @Override
         public JsonObject serialize(TargetHeldItemNbtCondition context) {
-            // TODO
-            return null;
+            var base = createBaseConditionJson();
+            base.add("nbt", new JsonPrimitive(context.tag.toString()));
+            var hand = context.hand == null ? null : new JsonPrimitive(context.hand.toString());
+            base.add("hand", hand);
+            return base;
         }
 
         @Override
         public ResourceLocation getId() {
-            return id;
+            return ID;
         }
     }
 }

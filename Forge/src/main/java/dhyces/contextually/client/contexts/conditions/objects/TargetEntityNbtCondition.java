@@ -1,17 +1,25 @@
 package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
-import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
-import dhyces.contextually.client.contexts.conditions.serializers.AbstractConditionSerializer;
+import com.google.gson.JsonPrimitive;
+import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.client.contexts.conditions.INamedCondition;
+import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
-public record TargetEntityNbtCondition(CompoundTag testTag) implements IConditionPredicate {
+public record TargetEntityNbtCondition(CompoundTag testTag) implements INamedCondition {
+
+    static final ResourceLocation ID = ContextuallyCommon.modloc("target_entity_nbt");
+
     @Override
-    public boolean test(Object target, ClientLevel level, AbstractClientPlayer player) {
+    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
         if (target instanceof Entity entity) {
             var entityTag = entity.serializeNBT();
             return compareTag(testTag, entityTag);
@@ -38,11 +46,12 @@ public record TargetEntityNbtCondition(CompoundTag testTag) implements IConditio
         return true;
     }
 
-    public static class Serializer extends AbstractConditionSerializer<TargetEntityNbtCondition> {
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
 
-        public Serializer() {
-            super("target_entity_nbt");
-        }
+    public static class Serializer implements IConditionSerializer<TargetEntityNbtCondition> {
 
         @Override
         public TargetEntityNbtCondition deserialize(JsonObject json) {
@@ -52,8 +61,14 @@ public record TargetEntityNbtCondition(CompoundTag testTag) implements IConditio
 
         @Override
         public JsonObject serialize(TargetEntityNbtCondition context) {
-            //TODO
-            return null;
+            var base = createBaseConditionJson();
+            base.add("nbt", new JsonPrimitive(context.testTag.toString()));
+            return base;
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return ID;
         }
     }
 }
