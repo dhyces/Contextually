@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.contexts.icons.IconUtils;
 import dhyces.contextually.client.contexts.objects.*;
-import dhyces.contextually.client.util.DefaultingMultiMapDelegate;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -26,9 +25,9 @@ import java.util.concurrent.Executor;
 
 public final class KeyContextManager implements PreparableReloadListener {
 
-    private DefaultingMultiMapDelegate<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createDelegate(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapDelegate<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createDelegate(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapDelegate<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createDelegate();
+    private DefaultingMultiMapDWrapper<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createDelegate(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
+    private DefaultingMultiMapDWrapper<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createDelegate(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
+    private DefaultingMultiMapDWrapper<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createDelegate();
     private ImmutableList<IKeyContext<Player>> GLOBAL_CONTEXTS = ImmutableList.of();
 
     public boolean hasContextForBlock(BlockState block) {
@@ -83,8 +82,8 @@ public final class KeyContextManager implements PreparableReloadListener {
         return getContextsForItem(item).stream().filter(context -> context.testConditions(item, null, level, player)).toList();
     }
 
-    private <K, V> DefaultingMultiMapDelegate<K, V> createDelegate(V... contexts) {
-        return DefaultingMultiMapDelegate.createArrayListMultiMap(Arrays.asList(contexts));
+    private <K, V> DefaultingMultiMapDWrapper<K, V> createDelegate(V... contexts) {
+        return DefaultingMultiMapDWrapper.createArrayListMultiMap(Arrays.asList(contexts));
     }
 
     @Override
@@ -127,9 +126,9 @@ public final class KeyContextManager implements PreparableReloadListener {
                             global.add(globalKeyContext);
                         }
                     }
-                    BLOCK_STATE_CONTEXTS = new DefaultingMultiMapDelegate<>(blockMap, blockDefault);
-                    ITEM_CONTEXTS = new DefaultingMultiMapDelegate<>(itemMap, itemDefault);
-                    ENTITY_CONTEXTS = new DefaultingMultiMapDelegate<>(entityMap, entityDefault);
+                    BLOCK_STATE_CONTEXTS = new DefaultingMultiMapDWrapper<>(blockMap, blockDefault);
+                    ITEM_CONTEXTS = new DefaultingMultiMapDWrapper<>(itemMap, itemDefault);
+                    ENTITY_CONTEXTS = new DefaultingMultiMapDWrapper<>(entityMap, entityDefault);
                     GLOBAL_CONTEXTS = global.build();
                 }, pGameExecutor);
     }
