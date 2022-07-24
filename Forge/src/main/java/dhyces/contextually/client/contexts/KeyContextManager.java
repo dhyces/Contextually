@@ -7,13 +7,11 @@ import dhyces.contextually.client.contexts.icons.IconUtils;
 import dhyces.contextually.client.contexts.objects.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,12 +24,10 @@ import java.util.concurrent.Executor;
 
 public final class KeyContextManager implements PreparableReloadListener {
 
-    private Map<ResourceLocation, DefaultingMultiMapWrapper>
-
-    private DefaultingMultiMapWrapper<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createDelegate(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapWrapper<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createDelegate(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapWrapper<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createDelegate();
-    private ImmutableList<IKeyContext<Player>> GLOBAL_CONTEXTS = ImmutableList.of();
+    private DefaultingMultiMapWrapper<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createMap(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
+    private DefaultingMultiMapWrapper<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createMap(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
+    private DefaultingMultiMapWrapper<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createMap();
+    private ImmutableList<IKeyContext<Void>> GLOBAL_CONTEXTS = ImmutableList.of();
 
     public boolean hasContextForBlock(BlockState block) {
         return BLOCK_STATE_CONTEXTS.containsKey(block);
@@ -41,7 +37,7 @@ public final class KeyContextManager implements PreparableReloadListener {
         return ENTITY_CONTEXTS.containsKey(entity.getType());
     }
 
-    public Collection<IKeyContext<Player>> getGlobalContexts() {
+    public Collection<IKeyContext<Void>> getGlobalContexts() {
         return GLOBAL_CONTEXTS;
     }
 
@@ -65,7 +61,7 @@ public final class KeyContextManager implements PreparableReloadListener {
         return ITEM_CONTEXTS.get(item);
     }
 
-    public Collection<IKeyContext<Player>> filterGlobalContexts(ClientLevel level, AbstractClientPlayer player) {
+    public Collection<IKeyContext<Void>> filterGlobalContexts(ClientLevel level, AbstractClientPlayer player) {
         return getGlobalContexts().stream().filter(context -> context.testConditions(null, null, level, player)).toList();
     }
 
@@ -85,7 +81,7 @@ public final class KeyContextManager implements PreparableReloadListener {
         return getContextsForItem(item).stream().filter(context -> context.testConditions(item, null, level, player)).toList();
     }
 
-    private <K, V> DefaultingMultiMapWrapper<K, V> createDelegate(V... contexts) {
+    private <K, V> DefaultingMultiMapWrapper<K, V> createMap(V... contexts) {
         return DefaultingMultiMapWrapper.createArrayListMultiMap(Arrays.asList(contexts));
     }
 
@@ -100,7 +96,7 @@ public final class KeyContextManager implements PreparableReloadListener {
                     Collection<IKeyContext<Entity>> entityDefault = Lists.newArrayList();
                     Multimap<Item, IKeyContext<ItemStack>> itemMap = ArrayListMultimap.create();
                     Collection<IKeyContext<ItemStack>> itemDefault = Lists.newArrayList();
-                    ImmutableList.Builder<IKeyContext<Player>> global = ImmutableList.builder();
+                    ImmutableList.Builder<IKeyContext<Void>> global = ImmutableList.builder();
                     for (Pair<? extends Collection<?>, ? extends IKeyContext<?>> pair : loader.load()) {
                         var collection = pair.getFirst();
                         var context = pair.getSecond();

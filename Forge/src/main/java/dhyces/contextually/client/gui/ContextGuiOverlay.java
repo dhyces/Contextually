@@ -35,7 +35,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
 
         // Global contexts
         if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
-            contextSet.add(new ContextRenderHolder<>(clientPlayer, ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer)));
+            contextSet.add(new ContextRenderHolder<>(null, ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer)));
         }
 
         // HitResult (entity and solid block) contexts
