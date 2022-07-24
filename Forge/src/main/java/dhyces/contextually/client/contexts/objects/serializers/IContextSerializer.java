@@ -23,7 +23,9 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     JsonObject serialize(@NotNull ResourceLocation id, @NotNull Pair<Collection<E>, T> context);
 
-    default Set<IConditionPredicate> readConditions(@Nullable JsonArray conditionArray) {
+    default Set<IConditionPredicate> readConditions(@NotNull JsonObject contextJson) {
+        Objects.requireNonNull(contextJson);
+        var conditionArray = contextJson.getAsJsonArray("conditions");
         ImmutableSet.Builder<IConditionPredicate> builder = ImmutableSet.builder();
         if (conditionArray != null) {
             for (JsonElement o : conditionArray) {
@@ -37,8 +39,9 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
         return builder.build();
     }
 
-    default Set<IIcon> readIcons(@NotNull JsonArray keyArray) {
-        Objects.requireNonNull(keyArray);
+    default Set<IIcon> readIcons(@NotNull JsonObject contextJson) {
+        Objects.requireNonNull(contextJson);
+        var keyArray = contextJson.getAsJsonArray("icons");
         ImmutableSet.Builder<IIcon> builder = ImmutableSet.builder();
         for (JsonElement o : keyArray) {
             try {
