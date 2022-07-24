@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -18,6 +19,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
 
     @Override
     public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+        Minecraft.getInstance().getProfiler().popPush("context_renderer");
         // If a screen is open, we don't want to render. Maybe there should be screen contexts?
         if (gui.getMinecraft().screen != null) {
             return;
@@ -101,6 +103,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
             }
         }
         ContextuallyClient.funnyInt = ContextuallyClient.funnyInt + 1 % 200;
+        Minecraft.getInstance().getProfiler().pop();
     }
 
     // We should know that the type matches
