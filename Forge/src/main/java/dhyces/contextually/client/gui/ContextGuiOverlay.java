@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -17,9 +15,6 @@ import java.util.*;
 
 
 public class ContextGuiOverlay implements IGuiOverlay {
-
-    public ContextGuiOverlay() {
-    }
 
     @Override
     public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
@@ -69,6 +64,16 @@ public class ContextGuiOverlay implements IGuiOverlay {
         }
 
         // Item contexts
+        var mainhand = clientPlayer.getMainHandItem();
+        var offhand = clientPlayer.getOffhandItem();
+        var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), clientLevel, clientPlayer);
+        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), clientLevel, clientPlayer);
+        if (!mainContexts.isEmpty()) {
+            contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
+        }
+        if (!offContexts.isEmpty()) {
+            contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
+        }
 
         var heightPos = height - 16 - 32;
         var half = contextSet.stream().mapToInt(c -> c.contextCollection.size()).sum() / 2;
