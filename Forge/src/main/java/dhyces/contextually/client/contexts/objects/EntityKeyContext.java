@@ -47,8 +47,8 @@ public class EntityKeyContext extends AbstractKeyContext<Entity> {
                 throw new IllegalStateException("Key \"target_entity\" not present.");
             }
 
-            var keys = readIcons(json.getAsJsonArray("icons"));
-            var conditions = readConditions(json.getAsJsonArray("conditions"));
+            var keys = readIcons(json);
+            var conditions = readConditions(json);
             return Pair.of(builder.build(), new EntityKeyContext(id, keys, conditions));
         }
 

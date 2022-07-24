@@ -7,10 +7,14 @@ import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -92,6 +96,11 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
         }
         pX += SMALL_PADDING;
         font.drawShadow(poseStack, text, pX, pY, 0xFFFFFFFF);
+    }
+
+    @Override
+    public boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @NotNull ClientLevel level, @NotNull AbstractClientPlayer player) {
+        return conditions.isEmpty() || conditions.stream().anyMatch(c -> c.test(contextObject, hitResult, level, player));
     }
 
     @NotNull

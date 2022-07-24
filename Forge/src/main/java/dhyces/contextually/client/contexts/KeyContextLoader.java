@@ -12,10 +12,7 @@ import dhyces.contextually.client.contexts.conditions.serializers.IConditionSeri
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.icons.serializers.IIconSerializer;
 import dhyces.contextually.client.contexts.icons.serializers.IconSerializers;
-import dhyces.contextually.client.contexts.objects.BlockKeyContext;
-import dhyces.contextually.client.contexts.objects.EntityKeyContext;
-import dhyces.contextually.client.contexts.objects.GlobalKeyContext;
-import dhyces.contextually.client.contexts.objects.IKeyContext;
+import dhyces.contextually.client.contexts.objects.*;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -132,6 +129,7 @@ public class KeyContextLoader {
     static {
         ImmutableMap.Builder<ResourceLocation, IContextSerializer<?, ?>> contextSerializerBuilder = ImmutableMap.builder();
         contextSerializerBuilder.put(ContextuallyCommon.modloc("block_context"), new BlockKeyContext.Serializer());
+        contextSerializerBuilder.put(ContextuallyCommon.modloc("item_context"), new ItemKeyContext.Serializer());
         contextSerializerBuilder.put(ContextuallyCommon.modloc("entity_context"), new EntityKeyContext.Serializer());
         contextSerializerBuilder.put(ContextuallyCommon.modloc("global_context"), new GlobalKeyContext.Serializer());
 

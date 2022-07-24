@@ -56,8 +56,8 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                 throw new IllegalStateException("Key \"target_block\" not present.");
             }
 
-            var keys = readIcons(json.getAsJsonArray("icons"));
-            var conditions = readConditions(json.getAsJsonArray("conditions"));
+            var keys = readIcons(json);
+            var conditions = readConditions(json);
             return Pair.of(builder.build(), new BlockKeyContext(id, keys, conditions));
         }
 
