@@ -14,6 +14,7 @@
   "contextually.contexts.block.noteblock_use": "CHANGE TUNES",
   "contextually.contexts.block.lectern_use": "Read",
   "contextually.contexts.block.lectern_use_book": "Place book",
+  "contextually.contexts.item.bow_use": "Draw bow",
   "contextually.contexts.entity.default_entity_attack": "Attack",
   "contextually.contexts.entity.villager_use": "Trade",
   "contextually.contexts.entity.cow_use": "Milk",
