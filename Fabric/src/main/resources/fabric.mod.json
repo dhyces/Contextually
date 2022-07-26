@@ -9,7 +9,7 @@
       "Dhyces"
     ],
     "contact": {
-      "homepage": "https://fabricmc.net/",
+      "homepage": "",
       "sources": ""
     },
 
@@ -19,7 +19,7 @@
     "environment": "*",
     "entrypoints": {
       "client": [
-        "dhyces.contextually.ContextuallyClient"
+        "dhyces.contextually.FabricContextuallyClient"
       ]
     },
     "mixins": [
