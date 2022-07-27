@@ -23,7 +23,8 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
     final Set<IConditionPredicate> conditions;
     final Component text;
 
-    private int widthCache = -1;
+    private int widthCache = 0;
+    private boolean invalid = true;
 
     public AbstractKeyContext(@NotNull ResourceLocation id, @NotNull Set<IIcon> icons) {
         this(id, icons, Set.of());
@@ -52,13 +53,14 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @Override
     public int width(Font font) {
-        if (widthCache == -1) {
+        if (invalid && widthCache == 0) {
             var numKeys = icons.size();
             var numPlus = numKeys - 1;
             var keySize = numKeys * 16;
             var plusWidth = font.width(PLUS);
             var plusSize = numPlus * plusWidth;
             widthCache = keySize + plusSize + (SMALL_PADDING * (numPlus * 2)) + SMALL_PADDING + font.width(this.text);
+            this.invalid = false;
         }
         return widthCache;
     }
@@ -67,7 +69,7 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
     protected void renderIcons(Gui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height) {
         var plusCount = icons.size() - 1;
         for (IIcon key : icons) {
-            key.render(poseStack, partialTicks, gui.getBlitOffset(), pX, pY, width, height);
+            key.render(gui, poseStack, partialTicks, gui.getBlitOffset(), pX, pY, width, height);
             pX += 16;
             if (plusCount > 0) {
                 pX += SMALL_PADDING;
@@ -121,7 +123,8 @@ public abstract class AbstractKeyContext<T> implements IKeyContext<T> {
 
     @Override
     public void invalidateCache() {
-        this.widthCache = -1;
+        this.invalid = true;
+        this.widthCache = 0;
     }
 
     @Override

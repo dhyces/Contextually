@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 public class ContextuallyClient {
     static KeyMappingTextureManager keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().getTextureManager());
     static KeyContextManager keyContexts = new KeyContextManager();
-    public static int funnyInt = 0;
 
     ContextuallyClient() {
     }
