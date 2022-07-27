@@ -5,8 +5,8 @@ import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
 
 public class ContextuallyClient {
-    static KeyMappingTextureManager keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().getTextureManager());
-    static KeyContextManager keyContexts = new KeyContextManager();
+    static final KeyMappingTextureManager keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().getTextureManager());
+    static final KeyContextManager keyContexts = new KeyContextManager();
 
     ContextuallyClient() {
     }
