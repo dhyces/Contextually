@@ -20,6 +20,6 @@ public class ForgeContextuallyClient {
     }
 
     private static void registerGuis(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(new ResourceLocation("item_name"), "key_contexts", new ContextGuiOverlay());
+        event.registerAbove(new ResourceLocation("item_name"), "key_contexts", ContextGuiOverlay.INSTANCE);
     }
 }

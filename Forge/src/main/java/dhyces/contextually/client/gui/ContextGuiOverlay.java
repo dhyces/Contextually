@@ -1,27 +1,52 @@
 package dhyces.contextually.client.gui;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
-import dhyces.contextually.ContextuallyClient;
+import dhyces.contextually.client.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 
 public class ContextGuiOverlay implements IGuiOverlay {
 
+    static int TICKS = 0;
+
+    public static final ContextGuiOverlay INSTANCE = new ContextGuiOverlay();
+
+    enum RenderedSide {
+        LEFT((window, context) -> IKeyContext.PADDING),
+        RIGHT((window, context) -> window - context - IKeyContext.PADDING);
+
+        private BiIntFunction calculator;
+
+        private RenderedSide(BiIntFunction function) {
+            this.calculator = function;
+        }
+
+        public int calculateXPosition(int windowWidth, int contextWidth) {
+            return calculator.apply(windowWidth, contextWidth);
+        }
+    }
+
+    ContextGuiOverlay() {}
+
     @Override
     public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
         Minecraft.getInstance().getProfiler().popPush("context_renderer");
         // If a screen is open, we don't want to render. Maybe there should be screen contexts?
-        if (gui.getMinecraft().screen != null) {
+        if (gui.getMinecraft().screen != null || gui.getMinecraft().gameMode.getPlayerMode().equals(GameType.SPECTATOR)) {
             return;
         }
         gui.setupOverlayRenderState(true, false, KeyMappingTextureManager.KEYS);
@@ -33,12 +58,12 @@ public class ContextGuiOverlay implements IGuiOverlay {
         // Gather contexts
         Set<ContextRenderHolder<?>> contextSet = new LinkedHashSet<>();
 
-        // Global contexts
+        //  -Global contexts
         if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
             contextSet.add(new ContextRenderHolder<>(null, ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer)));
         }
 
-        // HitResult (entity and solid block) contexts
+        //  -HitResult (entity and solid block) contexts
         var hitResult = mc.hitResult;
         if (!hitResult.getType().equals(HitResult.Type.MISS)) {
             if (hitResult instanceof EntityHitResult entityHitResult) {
@@ -54,7 +79,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
             }
         }
 
-        // Fluid HitResult contexts
+        //  -Fluid HitResult contexts
         var fluidHitResult = fluidPass(clientPlayer, partialTick);
         if (!fluidHitResult.getType().equals(HitResult.Type.MISS) && fluidHitResult instanceof BlockHitResult fluidResult) {
             var fluid = clientLevel.getFluidState(fluidResult.getBlockPos());
@@ -65,14 +90,14 @@ public class ContextGuiOverlay implements IGuiOverlay {
             }
         }
 
-        // Item contexts
+        //  -Item contexts
         var mainhand = clientPlayer.getMainHandItem();
-        var offhand = clientPlayer.getOffhandItem();
         var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), clientLevel, clientPlayer);
-        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), clientLevel, clientPlayer);
         if (!mainContexts.isEmpty()) {
             contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
         }
+        var offhand = clientPlayer.getOffhandItem();
+        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), clientLevel, clientPlayer);
         if (!offContexts.isEmpty()) {
             contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
         }
@@ -85,9 +110,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
         for (ContextRenderHolder<?> holder : contextSet) {
             var context = holder.contextObject();
             for (IKeyContext<?> keyContext : holder.contextCollection()) {
-                var xPos = count < half ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
+                var xPos = count < half || mc.options.showSubtitles().get() ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
                 keyContext.renderIcons(cast(context), gui, poseStack, partialTick, xPos, heightPos, width, height);
-                heightPos = count != half-1 ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
+                heightPos = count != half-1 || mc.options.showSubtitles().get() ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
                 count++;
             }
         }
@@ -96,13 +121,13 @@ public class ContextGuiOverlay implements IGuiOverlay {
         for (ContextRenderHolder<?> holder : contextSet) {
             var context = holder.contextObject();
             for (IKeyContext<?> keyContext : holder.contextCollection()) {
-                var xPos = count < half ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
+                var xPos = count < half || mc.options.showSubtitles().get() ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
                 keyContext.renderText(cast(context), gui, poseStack, partialTick, xPos, heightPos + 4, width, height);
-                heightPos = count != half-1 ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
+                heightPos = count != half-1 || mc.options.showSubtitles().get() ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
                 count++;
             }
         }
-        ContextuallyClient.funnyInt = ContextuallyClient.funnyInt + 1 % 200;
+        ++TICKS;
         Minecraft.getInstance().getProfiler().pop();
     }
 
@@ -112,9 +137,22 @@ public class ContextGuiOverlay implements IGuiOverlay {
         return (X)o;
     }
 
+    public static int getTicks() {
+        return TICKS;
+    }
+
     private HitResult fluidPass(AbstractClientPlayer pPlayer, float partialTick) {
         return pPlayer.pick(pPlayer.getReachDistance(), partialTick, true);
     }
 
     record ContextRenderHolder<T>(T contextObject, Collection<IKeyContext<T>> contextCollection) {}
+
+    interface BiIntFunction {
+        int apply(int value1, int value2);
+
+        default BiIntFunction andThen(@NotNull Int2IntFunction function) {
+            Preconditions.checkNotNull(function);
+            return (v1, v2) -> function.apply(apply(v1, v2));
+        }
+    }
 }

@@ -2,6 +2,7 @@ package dhyces.contextually.client.contexts.icons;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.services.Services;
 import dhyces.contextually.util.IntPair;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public class AnimatedIcon implements IIcon {
 
     @Override
     public void render(Gui gui, PoseStack poseStack, float partialTicks, int blitOffset, int x, int y, int width, int height) {
-        tick(gui);
+        tick();
         var animatedObject = icons.get(index);
         animatedObject.object().render(gui, poseStack, partialTicks, blitOffset, x, y, width, height);
         // increment tickPos
@@ -35,8 +36,8 @@ public class AnimatedIcon implements IIcon {
 
     }
 
-    public void tick(Gui gui) {
-        if (gui.getGuiTicks() % icons.get(index).value() == 0) {
+    private void tick() {
+        if (Services.PLATFORM.getContextRendererTicks() % icons.get(index).value() == 0) {
             index = (index+1) % icons.size();
         }
     }

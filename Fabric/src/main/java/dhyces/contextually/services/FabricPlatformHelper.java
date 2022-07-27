@@ -9,4 +9,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     public InputConstants.Key getKey(KeyMapping keyMapping) {
         return ((IKeyMappingMixin)keyMapping).getKey();
     }
+
+    @Override
+    public int getContextRendererTicks() {
+        //TODO:
+        return 0;
+    }
 }
