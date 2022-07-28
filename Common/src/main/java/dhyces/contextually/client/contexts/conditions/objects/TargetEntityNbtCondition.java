@@ -15,7 +15,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record TargetEntityNbtCondition(CompoundTag testTag) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("target_entity_nbt");
+    static final ResourceLocation ID = ContextuallyCommon.id("target_entity_nbt");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

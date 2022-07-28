@@ -18,7 +18,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record PlayerKeyHeldCondition(IKey key) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("player_key_held");
+    static final ResourceLocation ID = ContextuallyCommon.id("player_key_held");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

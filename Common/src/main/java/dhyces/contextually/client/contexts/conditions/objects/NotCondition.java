@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record NotCondition(IConditionPredicate condition) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("not");
+    static final ResourceLocation ID = ContextuallyCommon.id("not");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

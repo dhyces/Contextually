@@ -21,8 +21,8 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     static final Int2ObjectMap<ResourceLocation> KEY_LOCATIONS;
     static final Set<ResourceLocation> OTHERS;
 
-    public static final ResourceLocation KEYS = ContextuallyCommon.modloc("textures/atlas/keys.png");
-    public static final ResourceLocation UNKNOWN_LOCATION = ContextuallyCommon.modloc("unknown");
+    public static final ResourceLocation KEYS = ContextuallyCommon.id("textures/atlas/keys.png");
+    public static final ResourceLocation UNKNOWN_LOCATION = ContextuallyCommon.id("unknown");
 
     public KeyMappingTextureManager(TextureManager textureManager) {
         super(textureManager, KEYS, "key");
@@ -158,7 +158,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     }
 
     private static void add(Int2ObjectMap<ResourceLocation> map, int keyValue, String id) {
-        var rl = ContextuallyCommon.modloc(id);
+        var rl = ContextuallyCommon.id(id);
         map.put(keyValue, rl);
     }
 
@@ -296,7 +296,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
 //        addKey(KEYSYM, "key.keyboard.f25", 314);
         KEY_LOCATIONS = Int2ObjectMaps.unmodifiable(map);
         ImmutableSet.Builder<ResourceLocation> set = ImmutableSet.builder();
-        set.add(ContextuallyCommon.modloc(MOUSE_BLANK));
+        set.add(ContextuallyCommon.id(MOUSE_BLANK));
         set.add(UNKNOWN_LOCATION);
         OTHERS = set.build();
     }

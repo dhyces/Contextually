@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public record PlayerHeldItemCondition(Item item, @Nullable InteractionHand hand) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("player_held_item");
+    static final ResourceLocation ID = ContextuallyCommon.id("player_held_item");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

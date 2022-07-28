@@ -9,11 +9,11 @@ public class ContextuallyCommon {
 
     public static final Logger LOGGER = LogManager.getLogger(ContextuallyCommon.class);
 
-    public static ResourceLocation modloc(String path) {
+    public static ResourceLocation id(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
 
     public static ResourceLocation modDefaultingloc(String path) {
-        return path.contains(":") ? ResourceLocation.of(path, ':') : modloc(path);
+        return path.contains(":") ? ResourceLocation.of(path, ':') : id(path);
     }
 }

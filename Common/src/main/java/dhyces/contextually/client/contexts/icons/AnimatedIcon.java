@@ -44,6 +44,6 @@ public class AnimatedIcon implements IIcon {
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.modloc("animated");
+        return ContextuallyCommon.id("animated");
     }
 }

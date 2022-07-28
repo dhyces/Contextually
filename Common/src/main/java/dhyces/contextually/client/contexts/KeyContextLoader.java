@@ -40,10 +40,13 @@ public class KeyContextLoader {
         for (Map.Entry<ResourceLocation, Resource> entry : resourceManager.listResources("contexts", resourceLocation -> resourceLocation.getPath().endsWith(".json")).entrySet()) {
             try(var reader = entry.getValue().openAsReader()) {
                 var jsonElement = JsonParser.parseReader(reader);
+                // get the object of the file
+                // iterate through context serializer entries to find matching targets
+                // TODO: redo this whole process
+                var obj = jsonElement.getAsJsonObject();
                 try {
-                    var obj = jsonElement.getAsJsonObject();
                     var loader = obj.get("loader").getAsString();
-                    var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : ContextuallyCommon.modloc(loader);
+                    var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : ContextuallyCommon.id(loader);
                     var serializer = CONTEXT_SERIALIZERS.get(loaderKey);
                     try {
                         Objects.requireNonNull(serializer, "Loader \"" + loaderKey + "\" does not exist.");
@@ -128,10 +131,10 @@ public class KeyContextLoader {
 
     static {
         ImmutableMap.Builder<ResourceLocation, IContextSerializer<?, ?>> contextSerializerBuilder = ImmutableMap.builder();
-        contextSerializerBuilder.put(ContextuallyCommon.modloc("block_context"), new BlockKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.modloc("item_context"), new ItemKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.modloc("entity_context"), new EntityKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.modloc("global_context"), new GlobalKeyContext.Serializer());
+        contextSerializerBuilder.put(ContextuallyCommon.id("block_context"), new BlockKeyContext.Serializer());
+        contextSerializerBuilder.put(ContextuallyCommon.id("item_context"), new ItemKeyContext.Serializer());
+        contextSerializerBuilder.put(ContextuallyCommon.id("entity_context"), new EntityKeyContext.Serializer());
+        contextSerializerBuilder.put(ContextuallyCommon.id("global_context"), new GlobalKeyContext.Serializer());
 
         // TODO: Fire registry event
         CONTEXT_SERIALIZERS = contextSerializerBuilder.build();
@@ -151,13 +154,17 @@ public class KeyContextLoader {
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();
 
         ImmutableMap.Builder<ResourceLocation, IIconSerializer<? extends IIcon>> iconSerializerBuilder = ImmutableMap.builder();
-        iconSerializerBuilder.put(ContextuallyCommon.modloc("mapping"), IconSerializers.KEY_MAPPING_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.modloc("key"), IconSerializers.KEYCODE_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.modloc("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.modloc("item"), IconSerializers.ITEM_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.modloc("animated"), IconSerializers.ANIMATED_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("mapping"), IconSerializers.KEY_MAPPING_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("key"), IconSerializers.KEYCODE_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("item"), IconSerializers.ITEM_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("animated"), IconSerializers.ANIMATED_SERIALIZER);
 
         // TODO: Fire registry event
         ICON_SERIALIZERS_MAP = iconSerializerBuilder.build();
+    }
+
+    public static record Result(ResourceLocation registryKey, Collection<?> targets, IKeyContext<?> context) {
+
     }
 }

@@ -13,6 +13,6 @@ public record KeyTextureIcon(ResourceLocation texture) implements ITextureIcon {
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.modloc("key_texture");
+        return ContextuallyCommon.id("key_texture");
     }
 }

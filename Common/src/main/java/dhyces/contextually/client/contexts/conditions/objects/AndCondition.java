@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record AndCondition(IConditionPredicate condition1, IConditionPredicate condition2) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("and");
+    static final ResourceLocation ID = ContextuallyCommon.id("and");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

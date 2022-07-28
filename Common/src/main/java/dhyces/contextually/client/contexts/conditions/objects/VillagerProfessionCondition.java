@@ -16,7 +16,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record VillagerProfessionCondition(VillagerProfession profession) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("villager_profession");
+    static final ResourceLocation ID = ContextuallyCommon.id("villager_profession");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

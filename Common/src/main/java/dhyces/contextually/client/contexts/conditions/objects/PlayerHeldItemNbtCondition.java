@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public record PlayerHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionHand hand) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.modloc("player_held_nbt");
+    static final ResourceLocation ID = ContextuallyCommon.id("player_held_nbt");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

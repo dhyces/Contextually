@@ -20,7 +20,7 @@ public class FabricContextuallyClient implements ClientModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return ContextuallyCommon.modloc("key_textures");
+                return ContextuallyCommon.id("key_textures");
             }
 
             @Override
@@ -32,7 +32,7 @@ public class FabricContextuallyClient implements ClientModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return ContextuallyCommon.modloc("contexts");
+                return ContextuallyCommon.id("contexts");
             }
 
             @Override

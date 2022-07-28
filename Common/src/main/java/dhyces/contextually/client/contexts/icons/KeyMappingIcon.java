@@ -15,6 +15,6 @@ public record KeyMappingIcon(KeyMapping mapping) implements ITextureIcon {
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.modloc("mapping");
+        return ContextuallyCommon.id("mapping");
     }
 }

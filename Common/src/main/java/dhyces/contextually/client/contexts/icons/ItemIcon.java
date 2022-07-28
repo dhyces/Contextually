@@ -19,6 +19,6 @@ public record ItemIcon(ResourceLocation itemLocation) implements IIcon {
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.modloc("item");
+        return ContextuallyCommon.id("item");
     }
 }
