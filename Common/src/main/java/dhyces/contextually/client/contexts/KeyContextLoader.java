@@ -154,8 +154,7 @@ public class KeyContextLoader {
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();
 
         ImmutableMap.Builder<ResourceLocation, IIconSerializer<? extends IIcon>> iconSerializerBuilder = ImmutableMap.builder();
-        iconSerializerBuilder.put(ContextuallyCommon.id("mapping"), IconSerializers.KEY_MAPPING_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.id("key"), IconSerializers.KEYCODE_SERIALIZER);
+        iconSerializerBuilder.put(ContextuallyCommon.id("key"), IconSerializers.KEY_SERIALIZER);
         iconSerializerBuilder.put(ContextuallyCommon.id("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
         iconSerializerBuilder.put(ContextuallyCommon.id("item"), IconSerializers.ITEM_SERIALIZER);
         iconSerializerBuilder.put(ContextuallyCommon.id("animated"), IconSerializers.ANIMATED_SERIALIZER);

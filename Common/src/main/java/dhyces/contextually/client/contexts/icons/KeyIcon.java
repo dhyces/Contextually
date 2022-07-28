@@ -2,13 +2,14 @@ package dhyces.contextually.client.contexts.icons;
 
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.ContextuallyClient;
+import dhyces.contextually.client.keys.IKey;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-public record KeyCodeIcon(int value) implements ITextureIcon {
+public record KeyIcon(IKey key) implements ITextureIcon {
     @Override
     public TextureAtlasSprite retrieveTexture() {
-        return ContextuallyClient.getTextureManager().get(value);
+        return ContextuallyClient.getTextureManager().get(key.getValue());
     }
 
     @Override

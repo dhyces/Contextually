@@ -7,33 +7,26 @@ import com.google.gson.JsonPrimitive;
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.icons.*;
+import dhyces.contextually.client.keys.CodeKey;
+import dhyces.contextually.client.keys.MappingKey;
 import dhyces.contextually.util.IntPair;
 import net.minecraft.resources.ResourceLocation;
 
 public class IconSerializers {
 
-    public static final IIconSerializer<KeyMappingIcon> KEY_MAPPING_SERIALIZER = new IIconSerializer<>() {
+    public static final IIconSerializer<KeyIcon> KEY_SERIALIZER = new IIconSerializer<>() {
         @Override
-        public KeyMappingIcon deserialize(JsonObject json) {
-            return IconUtils.of(json.get("mapping").getAsString());
-        }
-
-        @Override
-        public JsonObject serialize(JsonObject jsonObject, KeyMappingIcon icon) {
-            jsonObject.add("mapping", new JsonPrimitive(icon.mapping().saveString()));
-            return jsonObject;
-        }
-    };
-
-    public static final IIconSerializer<KeyCodeIcon> KEYCODE_SERIALIZER = new IIconSerializer<>() {
-        @Override
-        public KeyCodeIcon deserialize(JsonObject json) {
+        public KeyIcon deserialize(JsonObject json) {
             return IconUtils.of(json.get("key").getAsInt());
         }
 
         @Override
-        public JsonObject serialize(JsonObject jsonObject, KeyCodeIcon icon) {
-            jsonObject.add("key", new JsonPrimitive(icon.value()));
+        public JsonObject serialize(JsonObject jsonObject, KeyIcon icon) {
+            if (icon.key() instanceof CodeKey codeKey) {
+                jsonObject.add("key", new JsonPrimitive(codeKey.keyCode()));
+            } else if (icon.key() instanceof MappingKey mappingKey) {
+                jsonObject.add("key", new JsonPrimitive(mappingKey.mapping().getName()));
+            }
             return jsonObject;
         }
     };
