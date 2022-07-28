@@ -24,7 +24,7 @@ public interface IConditionSerializer<T extends INamedCondition> {
     default InteractionHand getHand(JsonElement handJson) {
         if (handJson == null) return null;
         return switch (handJson.getAsString()) {
-            case "main" -> InteractionHand.MAIN_HAND;
+            case "mainhand" -> InteractionHand.MAIN_HAND;
             case "offhand" -> InteractionHand.OFF_HAND;
             default -> throw new IllegalArgumentException("Hand specified is invalid.");
         };
