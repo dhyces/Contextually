@@ -24,9 +24,10 @@ import java.util.concurrent.Executor;
 
 public final class KeyContextManager implements PreparableReloadListener {
 
-    private DefaultingMultiMapWrapper<BlockState, IKeyContext<BlockState>> BLOCK_STATE_CONTEXTS = createMap(new BlockKeyContext(ContextuallyCommon.modloc("default_block_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapWrapper<EntityType<?>, IKeyContext<Entity>> ENTITY_CONTEXTS = createMap(new EntityKeyContext(ContextuallyCommon.modloc("default_entity_attack"), Set.of(IconUtils.of("key.attack")), Set.of()));
-    private DefaultingMultiMapWrapper<Item, IKeyContext<ItemStack>> ITEM_CONTEXTS = createMap();
+
+    private final FreezingDefaultingMapContextRegistry<BlockState, BlockState> BLOCK_STATE_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("blockstate_contexts"));
+    private final FreezingDefaultingMapContextRegistry<Item, ItemStack> ITEM_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("item_contexts"));
+    private final FreezingDefaultingMapContextRegistry<EntityType<?>, Entity> ENTITY_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("entitytype_contexts"));
     private ImmutableList<IKeyContext<Void>> GLOBAL_CONTEXTS = ImmutableList.of();
 
     public boolean hasContextForBlock(BlockState block) {
@@ -77,12 +78,8 @@ public final class KeyContextManager implements PreparableReloadListener {
         return getContextsForEntity(entity).stream().filter(context -> context.testConditions(entity, hitResult, level, player)).toList();
     }
 
-    public Collection<IKeyContext<ItemStack>> filterContextsForItem(Item item, ClientLevel level, AbstractClientPlayer player) {
-        return getContextsForItem(item).stream().filter(context -> context.testConditions(item, null, level, player)).toList();
-    }
-
-    private <K, V> DefaultingMultiMapWrapper<K, V> createMap(V... contexts) {
-        return DefaultingMultiMapWrapper.createArrayListMultiMap(Arrays.asList(contexts));
+    public Collection<IKeyContext<ItemStack>> filterContextsForItem(Item item, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
+        return getContextsForItem(item).stream().filter(context -> context.testConditions(item, hitResult, level, player)).toList();
     }
 
     @Override
@@ -90,44 +87,41 @@ public final class KeyContextManager implements PreparableReloadListener {
         return CompletableFuture.supplyAsync(() -> new KeyContextLoader(pResourceManager))
                 .thenCompose(pPreparationBarrier::wait)
                 .thenAcceptAsync(loader -> {
-                    Multimap<BlockState, IKeyContext<BlockState>> blockMap = ArrayListMultimap.create();
-                    Collection<IKeyContext<BlockState>> blockDefault = Lists.newArrayList();
-                    Multimap<EntityType<?>, IKeyContext<Entity>> entityMap = ArrayListMultimap.create();
-                    Collection<IKeyContext<Entity>> entityDefault = Lists.newArrayList();
-                    Multimap<Item, IKeyContext<ItemStack>> itemMap = ArrayListMultimap.create();
-                    Collection<IKeyContext<ItemStack>> itemDefault = Lists.newArrayList();
+                    BLOCK_STATE_CONTEXTS.unfreezeReset();
+                    ITEM_CONTEXTS.unfreezeReset();
+                    ENTITY_CONTEXTS.unfreezeReset();
                     ImmutableList.Builder<IKeyContext<Void>> global = ImmutableList.builder();
                     for (Pair<? extends Collection<?>, ? extends IKeyContext<?>> pair : loader.load()) {
                         var collection = pair.getFirst();
                         var context = pair.getSecond();
                         if (context instanceof BlockKeyContext blockKeyContext) {
                             if (collection.isEmpty()) {
-                                blockDefault.add(blockKeyContext);
+                                BLOCK_STATE_CONTEXTS.addDefault(blockKeyContext);
                             }
                             for (Object state : collection) {
-                                blockMap.put((BlockState)state, blockKeyContext);
+                                BLOCK_STATE_CONTEXTS.put((BlockState)state, blockKeyContext);
                             }
                         } else if (context instanceof ItemKeyContext itemKeyContext) {
                             if (collection.isEmpty()) {
-                                itemDefault.add(itemKeyContext);
+                                ITEM_CONTEXTS.addDefault(itemKeyContext);
                             }
                             for (Object item : collection) {
-                                itemMap.put((Item) item, itemKeyContext);
+                                ITEM_CONTEXTS.put((Item) item, itemKeyContext);
                             }
                         } else if (context instanceof EntityKeyContext entityKeyContext) {
                             if (collection.isEmpty()) {
-                                entityDefault.add(entityKeyContext);
+                                ENTITY_CONTEXTS.addDefault(entityKeyContext);
                             }
                             for (Object entity : collection) {
-                                entityMap.put((EntityType<?>)entity, entityKeyContext);
+                                ENTITY_CONTEXTS.put((EntityType<?>)entity, entityKeyContext);
                             }
                         } else if (context instanceof GlobalKeyContext globalKeyContext) {
                             global.add(globalKeyContext);
                         }
                     }
-                    BLOCK_STATE_CONTEXTS = new DefaultingMultiMapWrapper<>(blockMap, blockDefault);
-                    ITEM_CONTEXTS = new DefaultingMultiMapWrapper<>(itemMap, itemDefault);
-                    ENTITY_CONTEXTS = new DefaultingMultiMapWrapper<>(entityMap, entityDefault);
+                    BLOCK_STATE_CONTEXTS.setFrozen(true);
+                    ITEM_CONTEXTS.setFrozen(true);
+                    ENTITY_CONTEXTS.setFrozen(true);
                     GLOBAL_CONTEXTS = global.build();
                 }, pGameExecutor);
     }

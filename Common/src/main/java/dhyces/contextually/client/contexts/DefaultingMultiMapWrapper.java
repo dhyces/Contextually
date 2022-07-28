@@ -33,11 +33,20 @@ public class DefaultingMultiMapWrapper<K, V> {
     }
 
     public boolean put(K key, V value) {
-        throw new UnsupportedOperationException();
+        return map.put(key, value);
+    }
+
+    public boolean addDefault(V value) {
+        return this.defaultValue.add(value);
     }
 
     public void clear() {
         map.clear();
+    }
+
+    public void reset() {
+        map.clear();
+        defaultValue.clear();
     }
 
     public Collection<V> get(K key) {

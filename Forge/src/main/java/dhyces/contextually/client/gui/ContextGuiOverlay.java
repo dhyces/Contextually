@@ -60,7 +60,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
 
         //  -Global contexts
         if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
-            contextSet.add(new ContextRenderHolder<>(null, ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer)));
+            var contexts = ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer);
+            // TODO: add an event
+            contextSet.add(new ContextRenderHolder<>(null, contexts));
         }
 
         //  -HitResult (entity and solid block) contexts
@@ -91,13 +93,14 @@ public class ContextGuiOverlay implements IGuiOverlay {
         }
 
         //  -Item contexts
+        var offhand = clientPlayer.getOffhandItem();
         var mainhand = clientPlayer.getMainHandItem();
-        var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), clientLevel, clientPlayer);
+        var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), hitResult, clientLevel, clientPlayer);
+        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), hitResult, clientLevel, clientPlayer);
+        // TODO: add an event
         if (!mainContexts.isEmpty()) {
             contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
         }
-        var offhand = clientPlayer.getOffhandItem();
-        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), clientLevel, clientPlayer);
         if (!offContexts.isEmpty()) {
             contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
         }
