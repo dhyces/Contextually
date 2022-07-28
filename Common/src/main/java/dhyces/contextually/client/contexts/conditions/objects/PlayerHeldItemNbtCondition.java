@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public record PlayerHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionHand hand) implements INamedCondition {
 
     static final ResourceLocation ID = ContextuallyCommon.id("player_held_nbt");
