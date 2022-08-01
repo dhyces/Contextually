@@ -7,8 +7,8 @@
       "animated": [
         {
           "icon": {
-            "type": "contextually:mapping",
-            "mapping": "key.attack"
+            "type": "contextually:key",
+            "key": "key.attack"
           },
           "ticks": 20
         },

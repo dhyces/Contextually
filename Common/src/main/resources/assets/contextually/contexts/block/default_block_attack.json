@@ -3,8 +3,8 @@
   "target_block": "*",
   "icons": [
     {
-      "type": "mapping",
-      "mapping": "key.attack"
+      "type": "contextually:key",
+      "key": "key.attack"
     }
   ]
 }

@@ -3,8 +3,8 @@
   "target_block": "minecraft:note_block",
   "icons": [
     {
-      "type": "mapping",
-      "mapping": "key.use"
+      "type": "contextually:key",
+      "key": "key.use"
     }
   ]
 }

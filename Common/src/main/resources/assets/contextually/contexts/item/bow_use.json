@@ -14,8 +14,8 @@
         },
         {
           "icon": {
-            "type": "contextually:mapping",
-            "mapping": "key.use"
+            "type": "contextually:key",
+            "key": "key.use"
           },
           "ticks": 160
         }

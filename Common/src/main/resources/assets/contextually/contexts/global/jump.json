@@ -2,8 +2,8 @@
   "loader": "contextually:global_context",
   "icons": [
     {
-      "type": "mapping",
-      "mapping": "key.jump"
+      "type": "contextually:key",
+      "key": "key.jump"
     }
   ]
 }

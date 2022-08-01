@@ -44,12 +44,12 @@
   ],
   "icons": [
     {
-      "type": "mapping",
-      "mapping": "key.sneak"
+      "type": "contextually:key",
+      "key": "key.sneak"
     },
     {
-      "type": "mapping",
-      "mapping": "key.use"
+      "type": "contextually:key",
+      "key": "key.use"
     }
   ]
 }

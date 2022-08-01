@@ -12,8 +12,8 @@
   ],
   "icons": [
     {
-      "type": "mapping",
-      "mapping": "key.use"
+      "type": "contextually:key",
+      "key": "key.use"
     }
   ]
 }
