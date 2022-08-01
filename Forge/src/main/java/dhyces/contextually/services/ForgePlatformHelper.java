@@ -10,9 +10,4 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public InputConstants.Key getKey(KeyMapping keyMapping) {
         return keyMapping.getKey();
     }
-
-    @Override
-    public int getContextRendererTicks() {
-        return ContextGuiOverlay.getTicks();
-    }
 }

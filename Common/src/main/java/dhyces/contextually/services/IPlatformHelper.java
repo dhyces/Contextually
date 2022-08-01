@@ -6,6 +6,4 @@ import net.minecraft.client.KeyMapping;
 public interface IPlatformHelper {
 
     InputConstants.Key getKey(KeyMapping keyMapping);
-
-    int getContextRendererTicks();
 }

@@ -8,6 +8,7 @@ import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -21,8 +22,6 @@ import java.util.*;
 
 public class ContextGuiOverlay implements IGuiOverlay {
 
-    static int TICKS = 0;
-
     public static final ContextGuiOverlay INSTANCE = new ContextGuiOverlay();
 
     enum RenderedSide {
@@ -31,7 +30,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
 
         private BiIntFunction calculator;
 
-        private RenderedSide(BiIntFunction function) {
+        RenderedSide(BiIntFunction function) {
             this.calculator = function;
         }
 
@@ -130,18 +129,12 @@ public class ContextGuiOverlay implements IGuiOverlay {
                 count++;
             }
         }
-        ++TICKS;
-        Minecraft.getInstance().getProfiler().pop();
     }
 
     // We should know that the type matches
     @SuppressWarnings("unchecked")
     private <X> X cast(Object o) {
         return (X)o;
-    }
-
-    public static int getTicks() {
-        return TICKS;
     }
 
     private HitResult fluidPass(AbstractClientPlayer pPlayer, float partialTick) {
