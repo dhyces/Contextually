@@ -297,6 +297,12 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
         KEY_LOCATIONS = Int2ObjectMaps.unmodifiable(map);
         ImmutableSet.Builder<ResourceLocation> set = ImmutableSet.builder();
         set.add(ContextuallyCommon.id(MOUSE_BLANK));
+        set.add(ContextuallyCommon.id(TEN_KEY));
+        set.add(ContextuallyCommon.id(ELEVEN_KEY));
+        set.add(ContextuallyCommon.id(TWELVE_KEY));
+        set.add(ContextuallyCommon.id(BACKSPACE_ALT_KEY));
+        set.add(ContextuallyCommon.id(ENTER_ALT_KEY));
+        set.add(ContextuallyCommon.id(!Minecraft.ON_OSX ? COMMAND_KEY : WIN_KEY));
         set.add(UNKNOWN_LOCATION);
         OTHERS = set.build();
     }
