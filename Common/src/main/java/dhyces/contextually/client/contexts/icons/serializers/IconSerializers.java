@@ -42,7 +42,7 @@ public class IconSerializers {
     public static final IIconSerializer<KeyTextureIcon> KEY_TEXTURE_SERIALIZER = new IIconSerializer<>() {
         @Override
         public KeyTextureIcon deserialize(JsonObject json) {
-            return IconUtils.of(ContextuallyCommon.modDefaultingloc(json.get("key_texture").getAsString()));
+            return IconUtils.of(ContextuallyCommon.defaultingId(json.get("key_texture").getAsString()));
         }
 
         @Override

@@ -13,7 +13,7 @@ public class ContextuallyCommon {
         return new ResourceLocation(MOD_ID, path);
     }
 
-    public static ResourceLocation modDefaultingloc(String path) {
+    public static ResourceLocation defaultingId(String path) {
         return path.contains(":") ? ResourceLocation.of(path, ':') : id(path);
     }
 }
