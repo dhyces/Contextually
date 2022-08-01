@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import dhyces.contextually.ContextuallyCommon;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.icons.*;
@@ -17,7 +18,14 @@ public class IconSerializers {
     public static final IIconSerializer<KeyIcon> KEY_SERIALIZER = new IIconSerializer<>() {
         @Override
         public KeyIcon deserialize(JsonObject json) {
-            return IconUtils.of(json.get("key").getAsInt());
+            if (json.get("key") instanceof JsonPrimitive primitive) {
+                if (primitive.isString()) {
+                    return IconUtils.of(primitive.getAsString());
+                } else {
+                    return IconUtils.of(primitive.getAsInt());
+                }
+            }
+            throw new JsonSyntaxException("Expected key \"key\" to be either a string or an integer");
         }
 
         @Override
