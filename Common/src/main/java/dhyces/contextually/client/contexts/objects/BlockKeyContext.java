@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
+import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
@@ -13,7 +13,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -32,7 +31,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
             ImmutableSet.Builder<BlockState> builder = null;
             if (targetJson.isJsonPrimitive()) {
                 builder = ImmutableSet.builder();
-                if (!targetJson.getAsString().equals("*")) {
+                if (!isDefault(targetJson)) {
                     var block = getBlock(targetJson);
                     builder.add(block.defaultBlockState());
                 }
@@ -43,7 +42,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                 builder = ImmutableSet.builder();
 
                 for (JsonElement e : targetJson.getAsJsonArray()) {
-                    Objects.requireNonNull(e, "Element null in array. Likely unterminated array.");
+                    KeyContextLoader.checkParse(e != null, "Element null in array. Likely unterminated array.");
                     if (e instanceof JsonObject o) {
                         builder.addAll(getBlockStates(o));
                     } else {
@@ -52,9 +51,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                 }
             }
 
-            if (builder == null) {
-                throw new IllegalStateException("Key \"target_block\" not present.");
-            }
+            KeyContextLoader.checkParse(builder != null, "Key \"target_block\" not present.");
 
             var keys = readIcons(json);
             var conditions = readConditions(json);
@@ -64,9 +61,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
         private Block getBlock(JsonElement idElement) {
             var key = ResourceLocation.of(idElement.getAsString(), ':');
             var block = Registry.BLOCK.get(key);
-            if (!Registry.BLOCK.getKey(block).equals(key)) {
-                throw new NullPointerException("Block for given key: " + key + " not found.");
-            }
+            KeyContextLoader.checkParse(Registry.BLOCK.getKey(block).equals(key), "Block for given key: " + key + " not found.");
             return block;
         }
 
@@ -80,9 +75,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
                 }
                 propertyList.add(Pair.of(key, stateObject.get(key).getAsString()));
             }
-            if (blockJson == null) {
-                throw new JsonParseException("Block id must not be null.");
-            }
+            KeyContextLoader.checkParse(blockJson != null, "Block id must not be null.");
             return statesWithProperties(getBlock(blockJson), propertyList);
         }
 
@@ -91,13 +84,9 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
             var otherStates = Lists.newArrayList(stateDefinition.getPossibleStates());
             var propertyStates = properties.stream().map(strProperty -> {
                 var property = stateDefinition.getProperty(strProperty.getFirst());
-                if (property == null) {
-                    throw new IllegalStateException("Block property \"" + strProperty.getFirst() + "\" does not exist on block: " + block);
-                }
+                KeyContextLoader.checkParse(property != null, "Block property \"" + strProperty.getFirst() + "\" does not exist on block: " + block);
                 var propertyValue = property.getValue(strProperty.getSecond());
-                if (propertyValue.isEmpty()) {
-                    throw new IllegalStateException("Block property value \"" + strProperty.getSecond() + "\" does not exist on property: " + property);
-                }
+                KeyContextLoader.checkParse(propertyValue.isPresent(), "Block property value \"" + strProperty.getSecond() + "\" does not exist on property: " + property);
                 return Pair.of(property, propertyValue.get());
             }).toList();
             return otherStates.stream().filter(c -> propertyStates.stream().anyMatch(p -> c.getValue(p.getFirst()).compareTo(cast(p.getSecond())) == 0)).toList();
@@ -105,10 +94,6 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
 
         private <X> X cast(Object o) {
             return (X)o;
-        }
-
-        private <T extends Comparable<T>> BlockState withValue(BlockState state, Property<T> property, Object value) {
-            return state.setValue(property, (T)value);
         }
 
         @Override

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
@@ -38,14 +39,12 @@ public class EntityKeyContext extends AbstractKeyContext<Entity> {
             } else if (targetJson.isJsonArray()) {
                 builder = ImmutableSet.builder();
                 for (JsonElement e : targetJson.getAsJsonArray()) {
-                    Objects.requireNonNull(e, "Element null in array. Likely unterminated array.");
+                    KeyContextLoader.checkParse(e != null, "Element null in array. Likely unterminated array.");
                     builder.add(getEntityType(e));
                 }
             }
 
-            if (builder == null) {
-                throw new IllegalStateException("Key \"target_entity\" not present.");
-            }
+            KeyContextLoader.checkParse(builder != null, "Key \"target_entity\" not present.");
 
             var keys = readIcons(json);
             var conditions = readConditions(json);
@@ -55,9 +54,7 @@ public class EntityKeyContext extends AbstractKeyContext<Entity> {
         private EntityType<?> getEntityType(JsonElement element) {
             var key = ResourceLocation.of(element.getAsString(), ':');
             var type = Registry.ENTITY_TYPE.get(key);
-            if (!Registry.ENTITY_TYPE.getKey(type).equals(key)) {
-                throw new NullPointerException("EntityType for given key: " + key + " not found.");
-            }
+            KeyContextLoader.checkParse(Registry.ENTITY_TYPE.getKey(type).equals(key), "EntityType for given key: " + key + " not found.");
             return type;
         }
 
