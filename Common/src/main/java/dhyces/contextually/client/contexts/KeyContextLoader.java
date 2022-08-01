@@ -46,7 +46,7 @@ public class KeyContextLoader {
                 var obj = jsonElement.getAsJsonObject();
                 var loaderJson = obj.get("loader");
                 checkParse(loaderJson != null, "Key \"loader\" must not be null. Must be a valid loader id.");
-                checkParse(!loaderJson.isJsonPrimitive() || !loaderJson.getAsJsonPrimitive().isString(), "Value of key \"loader\" must be a valid string.");
+                checkParse(loaderJson.isJsonPrimitive() && loaderJson.getAsJsonPrimitive().isString(), "Value of key \"loader\" must be a valid string.");
                 var loader = loaderJson.getAsString();
                 var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : ContextuallyCommon.id(loader);
                 var serializer = CONTEXT_SERIALIZERS.get(loaderKey);
@@ -73,7 +73,7 @@ public class KeyContextLoader {
         checkParse(conditionObject != null, "Object in \"conditions\" array is null.");
         var conditionJson = conditionObject.get("condition");
         checkParse(conditionJson != null, "Key \"condition\" must not be null. Must be a valid condition id.");
-        checkParse(!conditionJson.isJsonPrimitive() || !conditionJson.getAsJsonPrimitive().isString(), "Value of key \"condition\" must be a valid string.");
+        checkParse(conditionJson.isJsonPrimitive() && conditionJson.getAsJsonPrimitive().isString(), "Value of key \"condition\" must be a valid string.");
         var conditionId = conditionJson.getAsString();
         var serializer = CONDITION_SERIALIZERS.get(ContextuallyCommon.defaultingId(conditionId));
         checkParse(serializer != null, "Condition serializer \"" + conditionId + "\" does not exist.");
@@ -96,7 +96,7 @@ public class KeyContextLoader {
         var type = iconObject.get("type");
 
         checkParse(type != null, "Key \"type\" is must be defined.");
-        checkParse(!type.isJsonPrimitive() || !type.getAsJsonPrimitive().isString(), "Value of key \"type\" must be a valid string.");
+        checkParse(type.isJsonPrimitive() && type.getAsJsonPrimitive().isString(), "Value of key \"type\" must be a valid string.");
 
         var icon = ContextuallyCommon.defaultingId(type.getAsString());
         var serializer = ICON_SERIALIZERS_MAP.get(icon);
