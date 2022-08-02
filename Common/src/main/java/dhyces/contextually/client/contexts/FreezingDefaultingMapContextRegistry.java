@@ -61,7 +61,7 @@ public class FreezingDefaultingMapContextRegistry<K, V> {
         return delegate.isDefault(collection);
     }
 
-    public void clear() {
+    void clear() {
         checkFrozen();
         delegate.reset();
     }
