@@ -1,7 +1,7 @@
 package dhyces.contextually.client.contexts.icons;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.util.IntPair;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +31,6 @@ public record AnimatedIcon(List<IntPair<IIcon>> icons, int maxTicks) implements 
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.id("animated");
+        return Contextually.id("animated");
     }
 }

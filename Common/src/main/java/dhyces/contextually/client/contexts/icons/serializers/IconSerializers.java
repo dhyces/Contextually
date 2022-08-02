@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.icons.*;
 import dhyces.contextually.client.keys.CodeKey;
@@ -42,7 +42,7 @@ public class IconSerializers {
     public static final IIconSerializer<KeyTextureIcon> KEY_TEXTURE_SERIALIZER = new IIconSerializer<>() {
         @Override
         public KeyTextureIcon deserialize(JsonObject json) {
-            return IconUtils.of(ContextuallyCommon.defaultingId(json.get("key_texture").getAsString()));
+            return IconUtils.of(Contextually.defaultingId(json.get("key_texture").getAsString()));
         }
 
         @Override
@@ -88,7 +88,7 @@ public class IconSerializers {
 
         @Override
         public JsonObject serialize(JsonObject jsonObject, AnimatedIcon icon) {
-            for (IntPair<IIcon> pair : icon.getIcons()) {
+            for (IntPair<IIcon> pair : icon.icons()) {
                 jsonObject.add("icon", KeyContextLoader.serializeIcon(pair.object()));
                 jsonObject.add("ticks", new JsonPrimitive(pair.value()));
             }

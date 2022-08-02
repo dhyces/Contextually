@@ -1,7 +1,7 @@
 package dhyces.contextually.client.contexts.icons;
 
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.ContextuallyClient;
-import dhyces.contextually.ContextuallyCommon;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,6 +13,6 @@ public record KeyTextureIcon(ResourceLocation texture) implements ITextureIcon {
 
     @Override
     public ResourceLocation getId() {
-        return ContextuallyCommon.id("key_texture");
+        return Contextually.id("key_texture");
     }
 }

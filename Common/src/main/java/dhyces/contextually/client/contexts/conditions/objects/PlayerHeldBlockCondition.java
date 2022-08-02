@@ -2,7 +2,7 @@ package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 @Deprecated(forRemoval = true)
 public record PlayerHeldBlockCondition(@Nullable InteractionHand hand) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("player_held_block");
+    static final ResourceLocation ID = Contextually.id("player_held_block");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

@@ -1,7 +1,7 @@
 package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record AndCondition(IConditionPredicate condition1, IConditionPredicate condition2) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("and");
+    static final ResourceLocation ID = Contextually.id("and");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

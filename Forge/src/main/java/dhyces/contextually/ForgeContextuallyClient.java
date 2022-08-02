@@ -6,12 +6,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ForgeContextuallyClient {
 
     static void init(IEventBus bus) {
+        bus.addListener(ForgeContextuallyClient::clientSetup);
         bus.addListener(ForgeContextuallyClient::registerReloadables);
         bus.addListener(ForgeContextuallyClient::registerGuis);
+    }
+
+    private static void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> ContextuallyClient.init());
     }
 
     private static void registerReloadables(RegisterClientReloadListenersEvent event) {

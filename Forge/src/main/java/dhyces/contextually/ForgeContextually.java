@@ -5,7 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-@Mod(ContextuallyCommon.MOD_ID)
+@Mod(Contextually.MOD_ID)
 public class ForgeContextually {
 
     public ForgeContextually() {

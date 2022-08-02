@@ -3,7 +3,7 @@ package dhyces.contextually.client.textures;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -21,8 +21,8 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     static final Int2ObjectMap<ResourceLocation> KEY_LOCATIONS;
     static final Set<ResourceLocation> OTHERS;
 
-    public static final ResourceLocation KEYS = ContextuallyCommon.id("textures/atlas/keys.png");
-    public static final ResourceLocation UNKNOWN_LOCATION = ContextuallyCommon.id("unknown");
+    public static final ResourceLocation KEYS = Contextually.id("textures/atlas/keys.png");
+    public static final ResourceLocation UNKNOWN_LOCATION = Contextually.id("unknown");
 
     public KeyMappingTextureManager(TextureManager textureManager) {
         super(textureManager, KEYS, "key");
@@ -158,7 +158,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     }
 
     private static void add(Int2ObjectMap<ResourceLocation> map, int keyValue, String id) {
-        var rl = ContextuallyCommon.id(id);
+        var rl = Contextually.id(id);
         map.put(keyValue, rl);
     }
 
@@ -296,13 +296,13 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
 //        addKey(KEYSYM, "key.keyboard.f25", 314);
         KEY_LOCATIONS = Int2ObjectMaps.unmodifiable(map);
         ImmutableSet.Builder<ResourceLocation> set = ImmutableSet.builder();
-        set.add(ContextuallyCommon.id(MOUSE_BLANK));
-        set.add(ContextuallyCommon.id(TEN_KEY));
-        set.add(ContextuallyCommon.id(ELEVEN_KEY));
-        set.add(ContextuallyCommon.id(TWELVE_KEY));
-        set.add(ContextuallyCommon.id(BACKSPACE_ALT_KEY));
-        set.add(ContextuallyCommon.id(ENTER_ALT_KEY));
-        set.add(ContextuallyCommon.id(!Minecraft.ON_OSX ? COMMAND_KEY : WIN_KEY));
+        set.add(Contextually.id(MOUSE_BLANK));
+        set.add(Contextually.id(TEN_KEY));
+        set.add(Contextually.id(ELEVEN_KEY));
+        set.add(Contextually.id(TWELVE_KEY));
+        set.add(Contextually.id(BACKSPACE_ALT_KEY));
+        set.add(Contextually.id(ENTER_ALT_KEY));
+        set.add(Contextually.id(!Minecraft.ON_OSX ? COMMAND_KEY : WIN_KEY));
         set.add(UNKNOWN_LOCATION);
         OTHERS = set.build();
     }

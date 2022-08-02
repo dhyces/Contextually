@@ -16,11 +16,12 @@ public class FabricContextuallyClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ContextuallyClient.init();
         //TODO: setup fabric platform. We will be using ClientTickEvents.END_TICK for rendering
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return ContextuallyCommon.id("key_textures");
+                return Contextually.id("key_textures");
             }
 
             @Override
@@ -32,7 +33,7 @@ public class FabricContextuallyClient implements ClientModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return ContextuallyCommon.id("contexts");
+                return Contextually.id("contexts");
             }
 
             @Override

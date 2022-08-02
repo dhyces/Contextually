@@ -2,7 +2,7 @@ package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import dhyces.contextually.util.JsonHelper;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 @Deprecated(forRemoval = true)
 public record PlayerHeldItemNbtCondition(CompoundTag tag, @Nullable InteractionHand hand) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("player_held_nbt");
+    static final ResourceLocation ID = Contextually.id("player_held_nbt");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.ConditionSerializers;
@@ -48,7 +48,7 @@ public class KeyContextLoader {
                 checkParse(loaderJson != null, "Key \"loader\" must not be null. Must be a valid loader id.");
                 checkParse(loaderJson.isJsonPrimitive() && loaderJson.getAsJsonPrimitive().isString(), "Value of key \"loader\" must be a valid string.");
                 var loader = loaderJson.getAsString();
-                var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : ContextuallyCommon.id(loader);
+                var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : Contextually.id(loader);
                 var serializer = CONTEXT_SERIALIZERS.get(loaderKey);
                 checkParse(serializer != null,"Loader \"" + loaderKey + "\" does not exist.");
                 var path = entry.getKey();
@@ -57,7 +57,7 @@ public class KeyContextLoader {
                 Objects.requireNonNull(context, "Deserializer \"" + loaderKey + "\" returned null context. Check " + serializer);
                 read.add(context);
             } catch (IOException | JsonParseException e) {
-                ContextuallyCommon.LOGGER.error("Failed to parse context: " + entry.getKey() + ". " + e.getMessage());
+                Contextually.LOGGER.error("Failed to parse context: " + entry.getKey() + ". " + e.getMessage());
             }
         }
         return read;
@@ -75,7 +75,7 @@ public class KeyContextLoader {
         checkParse(conditionJson != null, "Key \"condition\" must not be null. Must be a valid condition id.");
         checkParse(conditionJson.isJsonPrimitive() && conditionJson.getAsJsonPrimitive().isString(), "Value of key \"condition\" must be a valid string.");
         var conditionId = conditionJson.getAsString();
-        var serializer = CONDITION_SERIALIZERS.get(ContextuallyCommon.defaultingId(conditionId));
+        var serializer = CONDITION_SERIALIZERS.get(Contextually.defaultingId(conditionId));
         checkParse(serializer != null, "Condition serializer \"" + conditionId + "\" does not exist.");
         return serializer.deserialize(conditionObject);
     }
@@ -98,7 +98,7 @@ public class KeyContextLoader {
         checkParse(type != null, "Key \"type\" is must be defined.");
         checkParse(type.isJsonPrimitive() && type.getAsJsonPrimitive().isString(), "Value of key \"type\" must be a valid string.");
 
-        var icon = ContextuallyCommon.defaultingId(type.getAsString());
+        var icon = Contextually.defaultingId(type.getAsString());
         var serializer = ICON_SERIALIZERS_MAP.get(icon);
         checkParse(serializer != null, "Icon serializer \"" + icon + "\" does not exist.");
         return serializer.deserialize(iconObject);
@@ -126,10 +126,10 @@ public class KeyContextLoader {
 
     static {
         ImmutableMap.Builder<ResourceLocation, IContextSerializer<?, ?>> contextSerializerBuilder = ImmutableMap.builder();
-        contextSerializerBuilder.put(ContextuallyCommon.id("block_context"), new BlockKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.id("item_context"), new ItemKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.id("entity_context"), new EntityKeyContext.Serializer());
-        contextSerializerBuilder.put(ContextuallyCommon.id("global_context"), new GlobalKeyContext.Serializer());
+        contextSerializerBuilder.put(Contextually.id("block_context"), new BlockKeyContext.Serializer());
+        contextSerializerBuilder.put(Contextually.id("item_context"), new ItemKeyContext.Serializer());
+        contextSerializerBuilder.put(Contextually.id("entity_context"), new EntityKeyContext.Serializer());
+        contextSerializerBuilder.put(Contextually.id("global_context"), new GlobalKeyContext.Serializer());
 
         // TODO: Fire registry event
         CONTEXT_SERIALIZERS = contextSerializerBuilder.build();
@@ -149,10 +149,10 @@ public class KeyContextLoader {
         CONDITION_SERIALIZERS = conditionSerializerBuilder.build();
 
         ImmutableMap.Builder<ResourceLocation, IIconSerializer<? extends IIcon>> iconSerializerBuilder = ImmutableMap.builder();
-        iconSerializerBuilder.put(ContextuallyCommon.id("key"), IconSerializers.KEY_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.id("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.id("item"), IconSerializers.ITEM_SERIALIZER);
-        iconSerializerBuilder.put(ContextuallyCommon.id("animated"), IconSerializers.ANIMATED_SERIALIZER);
+        iconSerializerBuilder.put(Contextually.id("key"), IconSerializers.KEY_SERIALIZER);
+        iconSerializerBuilder.put(Contextually.id("key_texture"), IconSerializers.KEY_TEXTURE_SERIALIZER);
+        iconSerializerBuilder.put(Contextually.id("item"), IconSerializers.ITEM_SERIALIZER);
+        iconSerializerBuilder.put(Contextually.id("animated"), IconSerializers.ANIMATED_SERIALIZER);
 
         // TODO: Fire registry event
         ICON_SERIALIZERS_MAP = iconSerializerBuilder.build();

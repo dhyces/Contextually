@@ -3,7 +3,7 @@ package dhyces.contextually.client.contexts.conditions.objects;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.blaze3d.platform.InputConstants;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import dhyces.contextually.client.keys.CodeKey;
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record PlayerKeyHeldCondition(IKey key) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("player_key_held");
+    static final ResourceLocation ID = Contextually.id("player_key_held");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

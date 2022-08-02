@@ -2,7 +2,7 @@ package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import dhyces.contextually.util.JsonHelper;
@@ -15,7 +15,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record TargetEntityNbtCondition(CompoundTag testTag) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("target_entity_nbt");
+    static final ResourceLocation ID = Contextually.id("target_entity_nbt");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

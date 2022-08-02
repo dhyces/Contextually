@@ -2,7 +2,7 @@ package dhyces.contextually.client.contexts.conditions.objects;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dhyces.contextually.ContextuallyCommon;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.conditions.INamedCondition;
 import dhyces.contextually.client.contexts.conditions.serializers.IConditionSerializer;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,7 +16,7 @@ import net.minecraft.world.phys.HitResult;
 
 public record VillagerProfessionCondition(VillagerProfession profession) implements INamedCondition {
 
-    static final ResourceLocation ID = ContextuallyCommon.id("villager_profession");
+    static final ResourceLocation ID = Contextually.id("villager_profession");
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
