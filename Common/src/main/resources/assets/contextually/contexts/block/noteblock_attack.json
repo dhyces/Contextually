@@ -10,14 +10,14 @@
             "type": "contextually:key",
             "key": "key.attack"
           },
-          "ticks": 20
+          "ticks": 5
         },
         {
           "icon": {
             "type": "contextually:key_texture",
             "key_texture": "mouse_simple_key"
           },
-          "ticks": 20
+          "ticks": 15
         }
       ]
     }

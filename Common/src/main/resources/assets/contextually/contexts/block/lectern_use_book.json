@@ -14,14 +14,14 @@
             "type": "contextually:item",
             "item": "minecraft:written_book"
           },
-          "ticks": 40
+          "ticks": 20
         },
         {
           "icon": {
             "type": "contextually:item",
             "item": "minecraft:writable_book"
           },
-          "ticks": 40
+          "ticks": 20
         }
       ]
     }
