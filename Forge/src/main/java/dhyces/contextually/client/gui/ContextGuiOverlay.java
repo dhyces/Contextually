@@ -4,11 +4,11 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.client.ContextuallyClient;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
+import dhyces.contextually.client.gui.screens.ContextScreen;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -45,7 +45,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
     public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
         Minecraft.getInstance().getProfiler().popPush("context_renderer");
         // If a screen is open, we don't want to render. Maybe there should be screen contexts?
-        if (gui.getMinecraft().screen != null || gui.getMinecraft().gameMode.getPlayerMode().equals(GameType.SPECTATOR)) {
+        if ((gui.getMinecraft().screen != null && !(gui.getMinecraft().screen instanceof ContextScreen)) || gui.getMinecraft().gameMode.getPlayerMode().equals(GameType.SPECTATOR)) {
             return;
         }
         gui.setupOverlayRenderState(true, false, KeyMappingTextureManager.KEYS);
