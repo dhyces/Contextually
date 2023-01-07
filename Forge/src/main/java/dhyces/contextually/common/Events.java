@@ -1,6 +1,7 @@
-package dhyces.contextually;
+package dhyces.contextually.common;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.gui.screens.ContextScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;

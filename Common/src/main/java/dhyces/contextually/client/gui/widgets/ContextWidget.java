@@ -3,7 +3,7 @@ package dhyces.contextually.client.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
@@ -48,7 +48,7 @@ public class ContextWidget extends DoubleWidget {
         return NarrationPriority.HOVERED;
     }
 
-    static class VisibilityWidget extends GuiComponent implements Widget, GuiEventListener {
+    static class VisibilityWidget extends GuiComponent implements Renderable, GuiEventListener {
 
         private static final ResourceLocation CHECKBOX_LOCATION = new ResourceLocation("textures/gui/checkbox.png");
 

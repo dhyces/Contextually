@@ -1,5 +1,6 @@
 package dhyces.contextually;
 
+import dhyces.contextually.client.ForgeContextuallyClient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

@@ -1,4 +1,4 @@
-package dhyces.contextually.data;
+package dhyces.contextually.common.data;
 
 import com.google.gson.JsonElement;
 

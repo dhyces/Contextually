@@ -10,6 +10,7 @@ import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,8 +61,8 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState> {
 
         private Block getBlock(JsonElement idElement) {
             var key = ResourceLocation.of(idElement.getAsString(), ':');
-            var block = Registry.BLOCK.get(key);
-            KeyContextLoader.checkParse(Registry.BLOCK.getKey(block).equals(key), "Block for given key: " + key + " not found.");
+            var block = BuiltInRegistries.BLOCK.get(key);
+            KeyContextLoader.checkParse(BuiltInRegistries.BLOCK.getKey(block).equals(key), "Block for given key: " + key + " not found.");
             return block;
         }
 

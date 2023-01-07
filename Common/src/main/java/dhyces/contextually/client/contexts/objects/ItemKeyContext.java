@@ -11,6 +11,7 @@ import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,8 +56,8 @@ public class ItemKeyContext extends AbstractKeyContext<ItemStack> {
 
         private Item getItem(JsonElement idElement) {
             var key = ResourceLocation.of(idElement.getAsString(), ':');
-            var item = Registry.ITEM.get(key);
-            KeyContextLoader.checkParse(Registry.ITEM.getKey(item).equals(key), "Item for given key: " + key + " not found.");
+            var item = BuiltInRegistries.ITEM.get(key);
+            KeyContextLoader.checkParse(BuiltInRegistries.ITEM.getKey(item).equals(key), "Item for given key: " + key + " not found.");
             return item;
         }
 

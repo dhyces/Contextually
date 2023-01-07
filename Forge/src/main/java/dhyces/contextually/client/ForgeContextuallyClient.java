@@ -1,6 +1,5 @@
-package dhyces.contextually;
+package dhyces.contextually.client;
 
-import dhyces.contextually.client.ContextuallyClient;
 import dhyces.contextually.client.gui.ContextGuiOverlay;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -10,7 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ForgeContextuallyClient {
 
-    static void init(IEventBus bus) {
+    public static void init(IEventBus bus) {
         bus.addListener(ForgeContextuallyClient::clientSetup);
         bus.addListener(ForgeContextuallyClient::registerReloadables);
         bus.addListener(ForgeContextuallyClient::registerGuis);

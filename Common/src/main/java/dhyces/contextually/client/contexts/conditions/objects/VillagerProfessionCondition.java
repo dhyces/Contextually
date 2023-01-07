@@ -8,6 +8,7 @@ import dhyces.contextually.client.contexts.conditions.serializers.IConditionSeri
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -36,8 +37,8 @@ public record VillagerProfessionCondition(VillagerProfession profession) impleme
         public VillagerProfessionCondition deserialize(JsonObject json) {
             var professionJson = json.get("profession");
             var professionKey = ResourceLocation.of(professionJson.getAsString(), ':');
-            var profession = Registry.VILLAGER_PROFESSION.get(professionKey);
-            if (!Registry.VILLAGER_PROFESSION.getKey(profession).equals(professionKey)) {
+            var profession = BuiltInRegistries.VILLAGER_PROFESSION.get(professionKey);
+            if (!BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession).equals(professionKey)) {
                 throw new IllegalStateException("Profession not found for: " + professionKey);
             }
             return new VillagerProfessionCondition(profession);
@@ -46,7 +47,7 @@ public record VillagerProfessionCondition(VillagerProfession profession) impleme
         @Override
         public JsonObject serialize(VillagerProfessionCondition context) {
             var base = createBaseConditionJson();
-            base.add("profession", new JsonPrimitive(Registry.VILLAGER_PROFESSION.getKey(context.profession).toString()));
+            base.add("profession", new JsonPrimitive(BuiltInRegistries.VILLAGER_PROFESSION.getKey(context.profession).toString()));
             return base;
         }
 

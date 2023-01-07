@@ -10,6 +10,7 @@ import dhyces.contextually.util.JsonHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -70,7 +71,7 @@ public record TargetHeldItemCondition(Item item, CompoundTag tag, @Nullable Inte
         @Override
         public JsonObject serialize(TargetHeldItemCondition context) {
             var base = createBaseConditionJson();
-            var item = context.item != null ? new JsonPrimitive(Registry.ITEM.getKey(context.item).toString()) : null;
+            var item = context.item != null ? new JsonPrimitive(BuiltInRegistries.ITEM.getKey(context.item).toString()) : null;
             base.add("item", item);
             var hand = context.hand != null ? new JsonPrimitive(context.hand.toString()) : null;
             base.add("hand", hand);

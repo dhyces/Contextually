@@ -25,7 +25,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     public static final ResourceLocation UNKNOWN_LOCATION = Contextually.id("unknown");
 
     public KeyMappingTextureManager(TextureManager textureManager) {
-        super(textureManager, KEYS, "key");
+        super(textureManager, KEYS, Contextually.id("keys"));
     }
 
     public TextureAtlasSprite get(@NotNull ResourceLocation location) {
@@ -33,12 +33,8 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     }
 
     public TextureAtlasSprite get(int keyValue) {
-        return getSprite(KEY_LOCATIONS.get(keyValue));
-    }
-
-    @Override
-    protected Stream<ResourceLocation> getResourcesToLoad() {
-        return Sets.union(Sets.newHashSet(KEY_LOCATIONS.values()), OTHERS).stream();
+        ResourceLocation location = KEY_LOCATIONS.get(keyValue);
+        return getSprite(new ResourceLocation(location.getNamespace(), "key/" + location.getPath()));
     }
 
     public static final String UNKNOWN = "unknown";

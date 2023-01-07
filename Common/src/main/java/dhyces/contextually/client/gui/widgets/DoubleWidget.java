@@ -1,10 +1,10 @@
 package dhyces.contextually.client.gui.widgets;
 
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarratableEntry;
 
-public abstract class DoubleWidget extends GuiComponent implements Widget, IGuiListener, NarratableEntry {
+public abstract class DoubleWidget extends GuiComponent implements Renderable, IGuiListener, NarratableEntry {
 
     double x;
     double y;
