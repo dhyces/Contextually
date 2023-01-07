@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
+import dhyces.contextually.Constants;
+import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.serializers.IContextSerializer;
@@ -28,7 +30,7 @@ public class ItemKeyContext extends AbstractKeyContext<ItemStack> {
 
         @Override
         public Pair<Collection<Item>, ItemKeyContext> deserialize(@NotNull ResourceLocation id, @NotNull JsonObject json) {
-            var targetJson = json.get("target_item");
+            var targetJson = json.get(Constants.ITEM_TARGET);
             ImmutableSet.Builder<Item> builder = null;
             if (targetJson.isJsonPrimitive()) {
                 builder = ImmutableSet.builder();
@@ -39,14 +41,12 @@ public class ItemKeyContext extends AbstractKeyContext<ItemStack> {
             } else if (targetJson.isJsonArray()) {
                 builder = ImmutableSet.builder();
                 for (JsonElement e : targetJson.getAsJsonArray()) {
-                    Objects.requireNonNull(e, "Element null in array. Likely unterminated array.");
+                    KeyContextLoader.checkParse(e != null, "Element null in array. Likely unterminated array.");
                     builder.add(getItem(e));
                 }
             }
 
-            if (builder == null) {
-                throw new JsonParseException("Key \"target_item\" not present.");
-            }
+            KeyContextLoader.checkParse(builder != null, "Key \"target_item\" not present.");
 
             var icons = readIcons(json);
             var conditions = readConditions(json);
@@ -56,9 +56,7 @@ public class ItemKeyContext extends AbstractKeyContext<ItemStack> {
         private Item getItem(JsonElement idElement) {
             var key = ResourceLocation.of(idElement.getAsString(), ':');
             var item = Registry.ITEM.get(key);
-            if (!Registry.ITEM.getKey(item).equals(key)) {
-                throw new NullPointerException("Item for given key: " + key + " not found.");
-            }
+            KeyContextLoader.checkParse(Registry.ITEM.getKey(item).equals(key), "Item for given key: " + key + " not found.");
             return item;
         }
 

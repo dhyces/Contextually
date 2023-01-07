@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import dhyces.contextually.Constants;
 import dhyces.contextually.client.contexts.KeyContextLoader;
 import dhyces.contextually.client.contexts.conditions.IConditionPredicate;
 import dhyces.contextually.client.contexts.icons.IIcon;
 import dhyces.contextually.client.contexts.objects.IKeyContext;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -21,9 +23,9 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     JsonObject serialize(@NotNull ResourceLocation id, @NotNull Pair<Collection<E>, T> context);
 
-    default Set<IConditionPredicate> readConditions(@NotNull JsonObject contextJson) {
+    default Set<IConditionPredicate> readConditions(@Nullable JsonObject contextJson) {
         Objects.requireNonNull(contextJson);
-        var conditionArray = contextJson.getAsJsonArray("conditions");
+        var conditionArray = contextJson.getAsJsonArray(Constants.CONDITIONS);
         ImmutableSet.Builder<IConditionPredicate> builder = ImmutableSet.builder();
         if (conditionArray != null) {
             for (JsonElement o : conditionArray) {
@@ -39,7 +41,7 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     default Set<IIcon> readIcons(@NotNull JsonObject contextJson) {
         Objects.requireNonNull(contextJson);
-        var keyArray = contextJson.getAsJsonArray("icons");
+        var keyArray = contextJson.getAsJsonArray(Constants.ICONS);
         ImmutableSet.Builder<IIcon> builder = ImmutableSet.builder();
         for (JsonElement o : keyArray) {
             try {
@@ -53,7 +55,7 @@ public interface IContextSerializer<E, T extends IKeyContext<?>> {
 
     default boolean isDefault(JsonElement e) {
         if (e.isJsonPrimitive()) {
-            return e.getAsString().equals("*");
+            return e.getAsString().equals(Constants.ANY_IDENTIFIER);
         }
         return false;
     }

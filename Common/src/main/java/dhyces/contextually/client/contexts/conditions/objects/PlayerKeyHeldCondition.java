@@ -35,7 +35,7 @@ public record PlayerKeyHeldCondition(IKey key) implements INamedCondition {
         @Override
         public PlayerKeyHeldCondition deserialize(JsonObject json) {
             var key = json.get("key").getAsJsonPrimitive();
-            if (key.isString()) {
+            if (key.isString()) { //TODO: throw an error if the key is invalid
                 return new PlayerKeyHeldCondition(new MappingKey(KeyUtils.get(key.getAsString())));
             }
             return new PlayerKeyHeldCondition(new CodeKey(key.getAsInt()));

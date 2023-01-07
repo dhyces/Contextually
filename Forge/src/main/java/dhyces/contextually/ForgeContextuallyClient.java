@@ -17,7 +17,7 @@ public class ForgeContextuallyClient {
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> ContextuallyClient.init());
+        event.enqueueWork(ContextuallyClient::init);
     }
 
     private static void registerReloadables(RegisterClientReloadListenersEvent event) {

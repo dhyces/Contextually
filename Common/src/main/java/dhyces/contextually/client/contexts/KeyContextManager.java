@@ -2,8 +2,7 @@ package dhyces.contextually.client.contexts;
 
 import com.google.common.collect.*;
 import com.mojang.datafixers.util.Pair;
-import dhyces.contextually.ContextuallyCommon;
-import dhyces.contextually.client.contexts.icons.IconUtils;
+import dhyces.contextually.Contextually;
 import dhyces.contextually.client.contexts.objects.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -25,18 +24,10 @@ import java.util.concurrent.Executor;
 public final class KeyContextManager implements PreparableReloadListener {
 
 
-    private final FreezingDefaultingMapContextRegistry<BlockState, BlockState> BLOCK_STATE_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("blockstate_contexts"));
-    private final FreezingDefaultingMapContextRegistry<Item, ItemStack> ITEM_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("item_contexts"));
-    private final FreezingDefaultingMapContextRegistry<EntityType<?>, Entity> ENTITY_CONTEXTS = FreezingDefaultingMapContextRegistry.create(ContextuallyCommon.id("entitytype_contexts"));
+    public static final FreezingDefaultingMapContextRegistry<BlockState, BlockState> BLOCK_STATE_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("blockstate_contexts"));
+    private final FreezingDefaultingMapContextRegistry<Item, ItemStack> ITEM_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("item_contexts"));
+    private final FreezingDefaultingMapContextRegistry<EntityType<?>, Entity> ENTITY_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("entitytype_contexts"));
     private ImmutableList<IKeyContext<Void>> GLOBAL_CONTEXTS = ImmutableList.of();
-
-    public boolean hasContextForBlock(BlockState block) {
-        return BLOCK_STATE_CONTEXTS.containsKey(block);
-    }
-
-    public boolean hasContextForEntity(Entity entity) {
-        return ENTITY_CONTEXTS.containsKey(entity.getType());
-    }
 
     public Collection<IKeyContext<Void>> getGlobalContexts() {
         return GLOBAL_CONTEXTS;

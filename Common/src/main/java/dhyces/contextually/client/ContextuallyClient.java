@@ -1,16 +1,12 @@
 package dhyces.contextually.client;
 
-import com.google.common.collect.Lists;
 import dhyces.contextually.client.contexts.KeyContextManager;
-import dhyces.contextually.client.gui.RenderRect;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
 
-import java.util.List;
-
 public class ContextuallyClient {
-    static final KeyMappingTextureManager keyTextures = new KeyMappingTextureManager(Minecraft.getInstance().getTextureManager());
-    static final KeyContextManager keyContexts = new KeyContextManager();
+    static final KeyMappingTextureManager KEY_TEXTURES = new KeyMappingTextureManager(Minecraft.getInstance().getTextureManager());
+    static final KeyContextManager KEY_CONTEXTS = new KeyContextManager();
     //TODO: create decent screen to move contexts around
 //    public static final List<RenderRect> RENDER_RECTS = Lists.newArrayList();
 
@@ -19,10 +15,10 @@ public class ContextuallyClient {
     }
 
     public static KeyMappingTextureManager getTextureManager() {
-        return keyTextures;
+        return KEY_TEXTURES;
     }
 
     public static KeyContextManager getContextManager() {
-        return keyContexts;
+        return KEY_CONTEXTS;
     }
 }
