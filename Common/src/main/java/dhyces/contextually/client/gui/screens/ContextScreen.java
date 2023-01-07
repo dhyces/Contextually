@@ -5,8 +5,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dhyces.contextually.client.ContextuallyClient;
-import dhyces.contextually.client.gui.RenderRect;
 import dhyces.contextually.client.gui.widgets.ContextWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -23,9 +21,10 @@ public class ContextScreen extends Screen {
 
     @Override
     protected void init() {
-        for (RenderRect rect : ContextuallyClient.RENDER_RECTS) {
-            addRenderableWidget(new ContextWidget(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight()));
-        }
+        //TODO: create a screen
+//        for (RenderRect rect : ContextuallyClient.RENDER_RECTS) {
+//            addRenderableWidget(new ContextWidget(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight()));
+//        }
         addRenderableWidget(this.uh);
     }
 

@@ -25,17 +25,24 @@ public class ContextGuiOverlay implements IGuiOverlay {
     public static final ContextGuiOverlay INSTANCE = new ContextGuiOverlay();
 
     enum RenderedSide {
-        LEFT((window, context) -> IKeyContext.PADDING),
-        RIGHT((window, context) -> window - context - IKeyContext.PADDING);
+        LEFT((window, context) -> IKeyContext.PADDING,
+                (window, context) -> 2),
+        RIGHT((window, context) -> window - context - IKeyContext.PADDING, (value1, value2) -> 3);
 
-        private BiIntFunction calculator;
+        private BiIntFunction xCalculator;
+        private BiIntFunction yCalculator;
 
-        RenderedSide(BiIntFunction function) {
-            this.calculator = function;
+        RenderedSide(BiIntFunction xFunction, BiIntFunction yFunction) {
+            this.xCalculator = xFunction;
+            this.yCalculator = yFunction;
         }
 
         public int calculateXPosition(int windowWidth, int contextWidth) {
-            return calculator.apply(windowWidth, contextWidth);
+            return xCalculator.apply(windowWidth, contextWidth);
+        }
+
+        public int calculateYPosition(int windowHeight, int contextHeight) {
+            return yCalculator.apply(windowHeight, contextHeight);
         }
     }
 
