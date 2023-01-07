@@ -5,13 +5,17 @@ pluginManagement {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        maven {
-            name = 'Sponge Snapshots'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
 		maven {
 			url = 'https://maven.minecraftforge.net/'
 		}
+		maven {
+			name = 'Quilt'
+			url = 'https://maven.quiltmc.org/repository/release'
+		}
+		maven {
+            name = 'Sponge Snapshots'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
         maven {
 			url = 'https://maven.parchmentmc.org'
 		}
@@ -19,4 +23,4 @@ pluginManagement {
 }
 
 rootProject.name = 'Contextually'
-include("Common", "Fabric", "Forge")
+include("Common", "Fabric", "Forge", "Quilt")
