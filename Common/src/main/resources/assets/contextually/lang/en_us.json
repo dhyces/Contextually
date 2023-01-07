@@ -19,5 +19,7 @@
   "contextually.contexts.entity.villager_use": "Trade",
   "contextually.contexts.entity.cow_use": "Milk",
   "contextually.contexts.entity.pig_use_saddle": "Saddle up!",
-  "contextually.contexts.entity.sheep_use": "Shear"
+  "contextually.contexts.entity.sheep_use": "Shear",
+  "contextually.contexts.entity.chest_boat_use": "Sit",
+  "contextually.contexts.entity.chest_boat_shift_use": "Open Inventory"
 }

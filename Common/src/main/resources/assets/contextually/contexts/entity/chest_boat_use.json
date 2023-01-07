@@ -1,0 +1,12 @@
+{
+  "loader": "contextually:entity_context",
+  "target_entity": [
+    "minecraft:chest_boat"
+  ],
+  "icons": [
+    {
+      "type": "contextually:key",
+      "key": "key.use"
+    }
+  ]
+}

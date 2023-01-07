@@ -1,0 +1,19 @@
+{
+  "loader": "contextually:inventory_item_context",
+  "hovered_item": "minecraft:stick",
+  "conditions": [
+    {
+      "condition": "contextually:not",
+      "not": {
+        "condition": "contextually:item",
+        "item": "minecraft:debug_stick"
+      }
+    }
+  ],
+  "icons": [
+    {
+      "type": "mapping",
+      "mapping": "key.use"
+    }
+  ]
+}
