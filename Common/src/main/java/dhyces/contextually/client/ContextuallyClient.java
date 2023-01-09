@@ -1,6 +1,6 @@
 package dhyces.contextually.client;
 
-import dhyces.contextually.client.contexts.KeyContextManager;
+import dhyces.contextually.client.core.KeyContextManager;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
 

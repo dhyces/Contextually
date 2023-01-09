@@ -3,7 +3,7 @@ package dhyces.contextually.client.gui;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.client.ContextuallyClient;
-import dhyces.contextually.client.contexts.objects.IKeyContext;
+import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.gui.screens.ContextScreen;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -17,7 +17,9 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 public class ContextGuiOverlay implements IGuiOverlay {
@@ -62,7 +64,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var clientLevel = mc.level;
 
         // Gather contexts
-        Set<ContextRenderHolder<?>> contextSet = new LinkedHashSet<>();
+        Set<ContextRenderHolder<?, ?>> contextSet = new LinkedHashSet<>();
 
         //  -Global contexts
         if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
@@ -116,9 +118,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var count = 0;
         // TODO: instead of doing this, we should maybe just collect the renderer as a Runnable and then
         // Render contexts
-        for (ContextRenderHolder<?> holder : contextSet) {
+        for (ContextRenderHolder<?, ?> holder : contextSet) {
             var context = holder.contextObject();
-            for (IKeyContext<?> keyContext : holder.contextCollection()) {
+            for (IKeyContext<?, ?> keyContext : holder.contextCollection()) {
                 var xPos = count < half || mc.options.showSubtitles().get() ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
                 keyContext.renderIcons(cast(context), gui, poseStack, partialTick, xPos, heightPos, width, height);
                 heightPos = count != half-1 || mc.options.showSubtitles().get() ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
@@ -127,9 +129,9 @@ public class ContextGuiOverlay implements IGuiOverlay {
         }
         heightPos = height - 16 - 32;
         count = 0;
-        for (ContextRenderHolder<?> holder : contextSet) {
+        for (ContextRenderHolder<?, ?> holder : contextSet) {
             var context = holder.contextObject();
-            for (IKeyContext<?> keyContext : holder.contextCollection()) {
+            for (IKeyContext<?, ?> keyContext : holder.contextCollection()) {
                 var xPos = count < half || mc.options.showSubtitles().get() ? IKeyContext.PADDING : width - keyContext.width(gui.getFont()) - IKeyContext.PADDING;
                 keyContext.renderText(cast(context), gui, poseStack, partialTick, xPos, heightPos + 4, width, height);
                 heightPos = count != half-1 || mc.options.showSubtitles().get() ? heightPos - (16 + IKeyContext.SMALL_PADDING) : height - 16 - 32;
@@ -148,7 +150,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
         return pPlayer.pick(pPlayer.getReachDistance(), partialTick, true);
     }
 
-    record ContextRenderHolder<T>(T contextObject, Collection<IKeyContext<T>> contextCollection) {}
+    record ContextRenderHolder<K, T>(T contextObject, Collection<IKeyContext<K, T>> contextCollection) {}
 
     interface BiIntFunction {
         int apply(int value1, int value2);

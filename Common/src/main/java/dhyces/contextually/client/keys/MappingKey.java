@@ -1,11 +1,13 @@
 package dhyces.contextually.client.keys;
 
+import com.mojang.serialization.Codec;
 import dhyces.contextually.services.Services;
-import net.minecraft.client.KeyMapping;
 
-public record MappingKey(KeyMapping mapping) implements IKey {
+public record MappingKey(String mapping) implements IKey {
+    public static final Codec<MappingKey> CODEC = Codec.STRING.xmap(MappingKey::new, MappingKey::mapping);
+
     @Override
     public int getValue() {
-        return Services.PLATFORM.getKey(mapping).getValue();
+        return Services.PLATFORM.getKey(KeyUtils.get(mapping)).getValue();
     }
 }

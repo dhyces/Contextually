@@ -1,7 +1,6 @@
 package dhyces.contextually.client.textures;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 import dhyces.contextually.Contextually;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -15,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
 public class KeyMappingTextureManager extends TextureAtlasHolder {
     static final Int2ObjectMap<ResourceLocation> KEY_LOCATIONS;

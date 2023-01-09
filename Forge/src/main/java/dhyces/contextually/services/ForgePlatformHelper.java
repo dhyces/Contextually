@@ -1,7 +1,6 @@
 package dhyces.contextually.services;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import dhyces.contextually.client.gui.ContextGuiOverlay;
 import net.minecraft.client.KeyMapping;
 
 public class ForgePlatformHelper implements IPlatformHelper {

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class KeyUtils {
-    static final Map<String, KeyMapping> KEYMAPPING_BY_STRING = Maps.uniqueIndex(Arrays.asList(Minecraft.getInstance().options.keyMappings), c -> c.getName());
+    static final Map<String, KeyMapping> KEYMAPPING_BY_STRING = Maps.uniqueIndex(Arrays.asList(Minecraft.getInstance().options.keyMappings), KeyMapping::getName);
 
     public static KeyMapping get(String mappingName) {
         return KEYMAPPING_BY_STRING.get(mappingName);
