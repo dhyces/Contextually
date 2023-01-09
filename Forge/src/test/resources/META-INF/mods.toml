@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[44,)"
+license="CC0-1.0"
+[[mods]]
+modId="testmod"
+version="${file.jarVersion}"
+displayName="TestMod"
+logoFile=""
+credits=""
+authors="Dhyces"
+description='''
+Welcome to a new knowledgable world
+'''
+[[dependencies.testmod]]
+    modId="forge"
+    mandatory=true
+    versionRange="[44,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.testmod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19,1.20)"
+    ordering="NONE"
+    side="BOTH"
