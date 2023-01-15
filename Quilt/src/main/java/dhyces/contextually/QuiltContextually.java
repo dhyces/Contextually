@@ -27,8 +27,8 @@ public class QuiltContextually implements ClientModInitializer {
     @Override
     public void onInitializeClient(ModContainer mod) {
         ClientResourceLoaderEvents.START_RESOURCE_PACK_RELOAD.register(this::clientInit);
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader("key_textures", ContextuallyClient::getTextureManager));
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader("contexts", ContextuallyClient::getContextManager));
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader(Contextually.id("key_textures"), ContextuallyClient::getTextureManager));
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader(Contextually.id("contexts"), ContextuallyClient::getContextManager));
         ClientTickEvents.START.register(this::guiRenderTick);
     }
 
@@ -43,16 +43,7 @@ public class QuiltContextually implements ClientModInitializer {
         contextHud.tick(client.isPaused());
     }
 
-    class WrappedReloader implements IdentifiableResourceReloader {
-
-        final ResourceLocation id;
-        final Supplier<PreparableReloadListener> listener;
-
-        WrappedReloader(String id, Supplier<PreparableReloadListener> listener) {
-            this.id = Contextually.id(id);
-            this.listener = listener;
-        }
-
+    record WrappedReloader(ResourceLocation id, Supplier<PreparableReloadListener> listenerSupplier) implements IdentifiableResourceReloader {
         @Override
         public @NotNull ResourceLocation getQuiltId() {
             return id;
@@ -60,7 +51,7 @@ public class QuiltContextually implements ClientModInitializer {
 
         @Override
         public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-            return listener.get().reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+            return listenerSupplier.get().reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
         }
     }
 }

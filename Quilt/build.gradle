@@ -57,6 +57,12 @@ processResources {
 	}
 }
 
+idea {
+	module {
+		inheritOutputDirs = false
+	}
+}
+
 tasks.withType(JavaCompile) {
 	source(project(":Common").sourceSets.main.allSource)
 }
