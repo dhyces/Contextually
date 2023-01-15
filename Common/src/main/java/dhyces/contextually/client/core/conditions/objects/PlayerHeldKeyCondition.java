@@ -5,8 +5,6 @@ import com.mojang.serialization.Codec;
 import dhyces.contextually.client.core.conditions.IConditionType;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.keys.IKey;
-import dhyces.contextually.mixins.client.InputConstantsTypeAccessor;
-import dhyces.contextually.services.Services;
 import dhyces.contextually.util.KeyUtils;
 import dhyces.contextually.util.MoreCodecs;
 import net.minecraft.client.Minecraft;

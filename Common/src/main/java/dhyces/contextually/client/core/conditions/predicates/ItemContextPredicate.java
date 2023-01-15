@@ -15,7 +15,10 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public record ItemContextPredicate(Optional<TagKey<Item>> tag, Set<Item> items, MinMaxBounds.Ints count,
