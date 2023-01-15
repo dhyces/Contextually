@@ -1,6 +1,9 @@
 package dhyces.contextually.client;
 
 import dhyces.contextually.client.core.KeyContextManager;
+import dhyces.contextually.client.core.conditions.IConditionType;
+import dhyces.contextually.client.core.contexts.IKeyContextType;
+import dhyces.contextually.client.core.icons.IIconType;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import net.minecraft.client.Minecraft;
 
@@ -11,6 +14,9 @@ public class ContextuallyClient {
 //    public static final List<RenderRect> RENDER_RECTS = Lists.newArrayList();
 
     public static void init() {
+        IKeyContextType.BLOCK.getCodec();
+        IIconType.ANIMATED.getCodec();
+        IConditionType.AND.getCodec();
 //        RENDER_RECTS.add(RenderRect.builder(100, 100, 60, 30).build());
     }
 
