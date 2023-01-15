@@ -1,0 +1,11 @@
+{
+  "conditions": [
+    {
+      "condition_type": "contextually:held_key",
+      "key": 49
+    }
+  ],
+  "context_type": "contextually:item_context",
+  "icons": [],
+  "targets": []
+}

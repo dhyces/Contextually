@@ -11,12 +11,14 @@ import dhyces.contextually.client.core.conditions.objects.*;
 import dhyces.contextually.client.core.conditions.predicates.ItemContextPredicate;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.core.icons.IIcon;
-import dhyces.contextually.client.core.icons.IconUtils;
+import dhyces.contextually.util.IconUtils;
 import dhyces.contextually.client.core.icons.objects.AnimatedIcon;
 import dhyces.contextually.client.core.icons.objects.ItemIcon;
 import dhyces.contextually.client.core.icons.objects.KeyIcon;
 import dhyces.contextually.client.core.icons.objects.KeyTextureIcon;
+import dhyces.contextually.client.keys.CodeKey;
 import dhyces.contextually.client.keys.IKey;
+import dhyces.contextually.client.keys.MappingKey;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -98,6 +100,11 @@ public abstract class ContextProvider implements DataProvider {
 
         public ContextBuilder<K, V, T> addTarget(K target) {
             targetSet.add(target);
+            return this;
+        }
+
+        public ContextBuilder<K, V, T> addTargets(List<K> targets) {
+            targetSet.addAll(targets);
             return this;
         }
 
@@ -202,6 +209,14 @@ public abstract class ContextProvider implements DataProvider {
 
         public static PlayerHeldKeyCondition heldKey(IKey key) {
             return new PlayerHeldKeyCondition(key);
+        }
+
+        public static PlayerHeldKeyCondition heldKey(int key) {
+            return new PlayerHeldKeyCondition(new CodeKey(key));
+        }
+
+        public static PlayerHeldKeyCondition heldKey(String key) {
+            return new PlayerHeldKeyCondition(new MappingKey(key));
         }
 
         public static TargetHeldItemCondition targetHeldItem(ItemContextPredicate predicate, @Nullable InteractionHand hand) {

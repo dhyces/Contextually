@@ -1,0 +1,9 @@
+{
+  "context_type": "contextually:global_hud_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": 34
+    }
+  ]
+}

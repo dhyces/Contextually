@@ -1,0 +1,10 @@
+{
+  "context_type": "contextually:item_context",
+  "icons": [
+    {
+      "icon_type": "contextually:item",
+      "item": "minecraft:granite"
+    }
+  ],
+  "targets": []
+}
