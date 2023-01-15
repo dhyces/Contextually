@@ -101,16 +101,20 @@ public class ContextGuiOverlay implements IGuiOverlay {
         }
 
         //  -Item contexts
+        // TODO: add an event
         var offhand = clientPlayer.getOffhandItem();
         var mainhand = clientPlayer.getMainHandItem();
-        var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), hitResult, clientLevel, clientPlayer);
-        var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), hitResult, clientLevel, clientPlayer);
-        // TODO: add an event
-        if (!mainContexts.isEmpty()) {
-            contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
+        if (!mainhand.isEmpty()) {
+            var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), hitResult, clientLevel, clientPlayer);
+            if (!mainContexts.isEmpty()) {
+                contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
+            }
         }
-        if (!offContexts.isEmpty()) {
-            contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
+        if (!offhand.isEmpty()) {
+            var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), hitResult, clientLevel, clientPlayer);
+            if (!offContexts.isEmpty()) {
+                contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
+            }
         }
 
         var heightPos = height - 16 - 32;
