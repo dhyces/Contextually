@@ -30,15 +30,32 @@ loom {
             runDir("run")
         }
     }
-}
 
+    mixin {
+        defaultRefmapName = "${mod_id}.refmap.json"
+    }
+}
 
 processResources {
     from project(":Common").sourceSets.main.resources
     inputs.property "version", project.version
+    inputs.property "mod_id", "${mod_id}"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand inputs.properties
+    }
+}
+
+def processClientRun = tasks.register('processClientRun', Copy) {
+    dependsOn(processResources)
+
+    from(file("build/resources/main/fabric.mod.json"))
+    into(file("out/production/resources"))
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
     }
 }
 
