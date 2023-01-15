@@ -16,19 +16,31 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public record ItemContextPredicate(Optional<TagKey<Item>> tag, Set<Item> items, MinMaxBounds.Ints count,
                                    MinMaxBounds.Ints durability, Set<EnchantmentContextPredicate> enchantments,
                                    Optional<Potion> potion, Optional<NbtContextPredicate> nbt) {
     public static final Codec<ItemContextPredicate> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Codec.optionalField("tag", TagKey.codec(Registries.ITEM)).forGetter(ItemContextPredicate::tag),
-                    Codec.optionalField("items", BuiltInRegistries.ITEM.byNameCodec().listOf().xmap(Set::copyOf, List::copyOf)).orElse(Optional.of(Set.of())).xmap(Optional::get, Optional::of).forGetter(ItemContextPredicate::items),
-                    Codec.optionalField("count", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC).orElse(Optional.of(MinMaxBounds.Ints.ANY)).xmap(Optional::get, Optional::of).forGetter(ItemContextPredicate::count),
-                    Codec.optionalField("durability", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC).orElse(Optional.of(MinMaxBounds.Ints.ANY)).xmap(Optional::get, Optional::of).forGetter(ItemContextPredicate::durability),
-                    Codec.optionalField("enchantment_predicates", EnchantmentContextPredicate.CODEC.listOf().xmap(Set::copyOf, List::copyOf)).orElse(Optional.of(Set.of())).xmap(Optional::get, Optional::of).forGetter(ItemContextPredicate::enchantments),
-                    Codec.optionalField("potion", BuiltInRegistries.POTION.byNameCodec()).forGetter(ItemContextPredicate::potion),
-                    Codec.optionalField("nbt_predicate", NbtContextPredicate.CODEC).forGetter(ItemContextPredicate::nbt)
+                    Codec.optionalField("tag", TagKey.codec(Registries.ITEM))
+                            .forGetter(ItemContextPredicate::tag),
+                    Codec.optionalField("items", BuiltInRegistries.ITEM.byNameCodec().listOf())
+                            .xmap(MoreCodecs::mapOptionalListToSet, MoreCodecs::mapSetToOptionalList)
+                            .forGetter(ItemContextPredicate::items),
+                    Codec.optionalField("count", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC)
+                            .xmap(MoreCodecs::mapOptionalIntsToInts, MoreCodecs::mapIntsToOptionalInts)
+                            .forGetter(ItemContextPredicate::count),
+                    Codec.optionalField("durability", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC)
+                            .xmap(MoreCodecs::mapOptionalIntsToInts, MoreCodecs::mapIntsToOptionalInts)
+                            .forGetter(ItemContextPredicate::durability),
+                    Codec.optionalField("enchantment_predicates", EnchantmentContextPredicate.CODEC.listOf())
+                            .xmap(MoreCodecs::mapOptionalListToSet, MoreCodecs::mapSetToOptionalList)
+                            .forGetter(ItemContextPredicate::enchantments),
+                    Codec.optionalField("potion", BuiltInRegistries.POTION.byNameCodec())
+                            .forGetter(ItemContextPredicate::potion),
+                    Codec.optionalField("nbt_predicate", NbtContextPredicate.CODEC)
+                            .forGetter(ItemContextPredicate::nbt)
             ).apply(instance, ItemContextPredicate::new)
     );
 
@@ -164,6 +176,13 @@ public record ItemContextPredicate(Optional<TagKey<Item>> tag, Set<Item> items, 
         }
 
         public Builder nbt(CompoundTag nbt) {
+            this.nbt = new NbtContextPredicate(Optional.of(nbt));
+            return this;
+        }
+
+        public Builder nbt(Consumer<CompoundTag> nbtConsumer) {
+            CompoundTag nbt = new CompoundTag();
+            nbtConsumer.accept(nbt);
             this.nbt = new NbtContextPredicate(Optional.of(nbt));
             return this;
         }

@@ -23,7 +23,7 @@ public interface IConditionType<T extends IContextCondition> extends INamed {
     }
 
     static <T extends IContextCondition> IConditionType<T> create(ResourceLocation location, Codec<T> codec) {
-        return new IConditionType<T>() {
+        return new IConditionType<>() {
             @Override
             public Codec<T> getCodec() {
                 return codec;

@@ -20,7 +20,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
     static final Set<ResourceLocation> OTHERS;
 
     public static final ResourceLocation KEYS = Contextually.id("textures/atlas/keys.png");
-    public static final ResourceLocation UNKNOWN_LOCATION = Contextually.id("unknown");
+    public static final ResourceLocation UNKNOWN_LOCATION = Contextually.id("key/unknown");
 
     public KeyMappingTextureManager(TextureManager textureManager) {
         super(textureManager, KEYS, Contextually.id("keys"));
@@ -32,6 +32,9 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
 
     public TextureAtlasSprite get(int keyValue) {
         ResourceLocation location = KEY_LOCATIONS.get(keyValue);
+        if (location == null) {
+            return getSprite(UNKNOWN_LOCATION);
+        }
         return getSprite(new ResourceLocation(location.getNamespace(), "key/" + location.getPath()));
     }
 

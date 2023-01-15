@@ -2,7 +2,7 @@ package dhyces.contextually.client.core;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.gson.JsonParseException;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -37,7 +38,7 @@ public class KeyContextLoader {
 
     private final ResourceManager resourceManager;
 
-    final String fileExtension = ".json";
+    static final String FILE_EXTENSION = ".json";
 
     public KeyContextLoader(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
@@ -45,36 +46,25 @@ public class KeyContextLoader {
 
     public List<Pair<? extends Collection<?>, ? extends IKeyContext<?, ?>>> load() {
         List<Pair<? extends Collection<?>, ? extends IKeyContext<?, ?>>> read = new LinkedList<>();
-        for (Map.Entry<ResourceLocation, Resource> entry : resourceManager.listResources("contexts", resourceLocation -> resourceLocation.getPath().endsWith(fileExtension)).entrySet()) {
-            try(var reader = entry.getValue().openAsReader()) {
-                IKeyContext<?, ?> context = IKeyContext.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).getOrThrow(false, Contextually.LOGGER::error);
-                context.setIdIfNull(entry.getKey());
-                // get the object of the file
-                // iterate through context serializer entries to find matching targets
-                // TODO: redo this whole process
-//                var obj = jsonElement.getAsJsonObject();
-//                var loaderJson = obj.get("loader");
-//                checkParse(loaderJson != null, "Key \"loader\" must not be null. Must be a valid loader id.");
-//                checkParse(loaderJson.isJsonPrimitive() && loaderJson.getAsJsonPrimitive().isString(), "Value of key \"loader\" must be a valid string.");
-//                var loader = loaderJson.getAsString();
-//                var loaderKey = loader.contains(":") ? ResourceLocation.of(loader, ':') : Contextually.id(loader);
-//                var serializer = CONTEXT_TYPE_MAP.get(loaderKey);
-//                checkParse(serializer != null,"Loader \"" + loaderKey + "\" does not exist.");
-//                var path = entry.getKey();
-//                var id = new ResourceLocation(path.getNamespace(), path.getPath().substring(0, path.getPath().indexOf(fileExtension)));
-//                var context = serializer.deserialize(id, obj);
-//                Objects.requireNonNull(context, "Deserializer \"" + loaderKey + "\" returned null context. Check " + serializer);
+        int count = 0;
+        for (Map.Entry<ResourceLocation, Resource> entry : resourceManager.listResources("contexts", resourceLocation -> resourceLocation.getPath().endsWith(FILE_EXTENSION)).entrySet()) {
+            try(BufferedReader reader = entry.getValue().openAsReader()) {
+                JsonElement element = JsonParser.parseReader(reader);
+                IKeyContext<?, ?> context = IKeyContext.CODEC.parse(JsonOps.INSTANCE, element).getOrThrow(false, Contextually.LOGGER::error);
+                context.setIdIfNull(createId(entry.getKey()));
                 read.add(Pair.of(context.getTargets(), context));
+                count++; // TODO: for some reason I don't remember, this was counting the number of targets before
             } catch (RuntimeException | IOException e) {
                 Contextually.LOGGER.error("Failed to parse context: " + entry.getKey() + ". " + e.getMessage());
             }
         }
+        Contextually.LOGGER.info("Loaded " + count + " contexts");
         return read;
     }
 
-    public static void checkParse(boolean expression, String message) {
-        if (!expression)
-            throw new JsonParseException(message);
+    private static ResourceLocation createId(ResourceLocation fileRL) {
+        String path = fileRL.getPath();
+        return new ResourceLocation(fileRL.getNamespace(), path.substring(0, path.indexOf(FILE_EXTENSION)));
     }
 
     public static <T extends IIcon> IIconType<T> registerIconType(ResourceLocation id, Codec<T> codec) {

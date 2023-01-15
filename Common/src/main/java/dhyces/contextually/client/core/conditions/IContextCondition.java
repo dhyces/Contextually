@@ -7,7 +7,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.HitResult;
 
 public interface IContextCondition {
-    public static final Codec<IContextCondition> CODEC = KeyContextLoader.CONDITION_MAP_CODEC.dispatch("condition_type", IContextCondition::getType, IConditionType::getCodec);
+    Codec<IContextCondition> CODEC = KeyContextLoader.CONDITION_MAP_CODEC.dispatch("condition_type", IContextCondition::getType, IConditionType::getCodec);
 
     boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player);
 

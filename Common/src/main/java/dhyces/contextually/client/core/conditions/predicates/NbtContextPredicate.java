@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public record NbtContextPredicate(Optional<CompoundTag> nbt) {
     public static final Codec<NbtContextPredicate> CODEC = CompoundTag.CODEC.xmap(compoundTag ->
-            new NbtContextPredicate(Optional.of(compoundTag)),
-            predicate -> predicate.nbt.orElse(new CompoundTag())
+            new NbtContextPredicate(Optional.ofNullable(compoundTag)),
+            predicate -> predicate.nbt.orElse(null)
     );
 
     public static final NbtContextPredicate ANY = new NbtContextPredicate(Optional.empty());

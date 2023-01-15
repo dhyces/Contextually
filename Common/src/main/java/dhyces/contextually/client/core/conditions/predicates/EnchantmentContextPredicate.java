@@ -13,7 +13,11 @@ import java.util.Optional;
 public record EnchantmentContextPredicate(Optional<Enchantment> enchant, MinMaxBounds.Ints levelRange) {
     public static final Codec<EnchantmentContextPredicate> CODEC = Codec.pair(
             Codec.optionalField("enchantment", BuiltInRegistries.ENCHANTMENT.byNameCodec()).codec(),
-            MoreCodecs.optionalFieldElse("level_range", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC, MinMaxBounds.Ints.ANY).xmap(Optional::get, Optional::of).codec()
+            Codec.optionalField("level_range", MoreCodecs.INT_MIN_MAX_BOUNDS_CODEC)
+                    .xmap(
+                            optional -> optional.orElse(MinMaxBounds.Ints.ANY),
+                            ints -> Optional.ofNullable(ints.isAny() ? null : ints)
+                    ).codec()
     ).xmap(
             pair -> new EnchantmentContextPredicate(pair.getFirst(), pair.getSecond()),
             predicate -> Pair.of(predicate.enchant, predicate.levelRange)
