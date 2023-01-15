@@ -1,9 +1,0 @@
-{
-  "loader": "contextually:global_context",
-  "icons": [
-    {
-      "type": "contextually:key",
-      "key": "key.swapOffhand"
-    }
-  ]
-}
