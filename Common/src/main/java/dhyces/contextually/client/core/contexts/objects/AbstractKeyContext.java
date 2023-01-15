@@ -23,36 +23,38 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
-    public static final <T extends AbstractKeyContext<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Set<IIcon>, Set<IContextCondition>> fillBaseParts(RecordCodecBuilder.Instance<T> instance) {
+    public static <T extends AbstractKeyContext<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Set<IIcon>, Set<IContextCondition>> fillBaseParts(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(
                 IIcon.CODEC.listOf().fieldOf("icons").xmap(Set::copyOf, List::copyOf).forGetter(AbstractKeyContext::getIcons),
-                Codec.optionalField("conditions", IContextCondition.CODEC.listOf().xmap(Set::copyOf, List::copyOf)).xmap(
-                        optional -> optional.orElse(Set.of()),
-                        conditions -> Optional.ofNullable(conditions.isEmpty() ? null : conditions)
-                ).forGetter(AbstractKeyContext::getConditions)
+                Codec.optionalField("conditions", IContextCondition.CODEC.listOf())
+                        .xmap(
+                                optional -> optional.map(Set::copyOf).orElse(Set.of()),
+                                set -> Optional.ofNullable(set.isEmpty() ? null : List.copyOf(set))
+                        )
+                        .forGetter(AbstractKeyContext::getConditions)
         );
     }
 
     @Nullable
-    ResourceLocation id;
-    final Set<IIcon> icons;
-    final Set<IContextCondition> conditions;
-    final Set<K> targets;
-    protected final Component text;
+    private ResourceLocation id;
+    private final Set<IIcon> icons;
+    private final Set<IContextCondition> conditions;
+    private final Set<K> targets;
+    protected Component text;
 
     private int widthCache = 0;
-    private boolean invalid = true;
+    private boolean widthCacheInvalid = true;
 
     public AbstractKeyContext(@NotNull Set<IIcon> icons) {
         this(icons, Set.of());
     }
 
     public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions) {
-        this(icons, Set.of(), Set.of(), null);
+        this(icons, Set.of(), conditions, null);
     }
 
     public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<K> targets, @NotNull Set<IContextCondition> conditions) {
-        this(icons, targets, Set.of(), null);
+        this(icons, targets, conditions, null);
     }
 
     public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<K> targets, @NotNull Set<IContextCondition> conditions, @Nullable ResourceLocation id) {
@@ -60,7 +62,11 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
         this.icons = icons;
         this.conditions = conditions;
         this.targets = targets;
-        this.text = id == null ? Component.empty() : Component.translatable(id.getNamespace() + "." + id.getPath().replace('/', '.'));
+        this.text = createTranslatable();
+    }
+
+    private Component createTranslatable() {
+        return id == null ? Component.empty() : Component.translatable(id.getNamespace() + "." + id.getPath().replace('/', '.'));
     }
 
     @Override
@@ -77,14 +83,14 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
 
     @Override
     public int width(Font font) {
-        if (invalid && widthCache == 0) {
+        if (widthCacheInvalid && widthCache == 0) {
             var numKeys = icons.size();
             var numPlus = numKeys - 1;
             var keySize = numKeys * 16;
             var plusWidth = font.width(PLUS);
             var plusSize = numPlus * plusWidth;
             widthCache = keySize + plusSize + (SMALL_PADDING * (numPlus * 2)) + SMALL_PADDING + font.width(this.text);
-            this.invalid = false;
+            this.widthCacheInvalid = false;
         }
         return widthCache;
     }
@@ -131,6 +137,7 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
     public void setIdIfNull(@NotNull ResourceLocation resourceLocation) {
         if (this.id == null) {
             this.id = resourceLocation;
+            text = createTranslatable();
         } else {
             throw new IllegalStateException("Context %s already has id".formatted(this.id));
         }

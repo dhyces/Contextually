@@ -16,13 +16,13 @@ import java.util.Set;
 public class ItemKeyContext extends AbstractKeyContext<Item, ItemStack> {
     public static final Codec<ItemKeyContext> CODEC = RecordCodecBuilder.create(instance ->
             fillBaseParts(instance).and(
-                    BuiltInRegistries.ITEM.byNameCodec().listOf().xmap(Set::copyOf, List::copyOf).fieldOf("targets").forGetter(ItemKeyContext::getTargets)
+                    BuiltInRegistries.ITEM.byNameCodec().listOf().fieldOf("targets").xmap(Set::copyOf, List::copyOf).forGetter(ItemKeyContext::getTargets)
             ).apply(instance, ItemKeyContext::new)
     );
 
 
     public ItemKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<Item> targetedItems) {
-        super(icons, conditions);
+        super(icons, targetedItems, conditions);
     }
 
     @Override

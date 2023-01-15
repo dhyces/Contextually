@@ -10,7 +10,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 
 public record OrCondition(List<IContextCondition> conditions) implements IContextCondition {
-    public static final Codec<OrCondition> CODEC = IContextCondition.CODEC.listOf().fieldOf("values").codec().xmap(OrCondition::new, OrCondition::conditions);
+    public static final Codec<OrCondition> CODEC = IContextCondition.CODEC.listOf().fieldOf("values").xmap(OrCondition::new, OrCondition::conditions).codec();
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

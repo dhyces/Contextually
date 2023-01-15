@@ -16,12 +16,12 @@ import java.util.Set;
 public class EntityKeyContext extends AbstractKeyContext<EntityType<?>, Entity> {
     public static final Codec<EntityKeyContext> CODEC = RecordCodecBuilder.create(instance ->
             fillBaseParts(instance).and(
-                    BuiltInRegistries.ENTITY_TYPE.byNameCodec().listOf().xmap(Set::copyOf, List::copyOf).fieldOf("targets").forGetter(EntityKeyContext::getTargets)
+                    BuiltInRegistries.ENTITY_TYPE.byNameCodec().listOf().fieldOf("targets").xmap(Set::copyOf, List::copyOf).forGetter(EntityKeyContext::getTargets)
             ).apply(instance, EntityKeyContext::new)
     );
 
     public EntityKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<EntityType<?>> targetedTypes) {
-        super(icons, conditions);
+        super(icons, targetedTypes, conditions);
     }
 
     @Override

@@ -10,7 +10,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 
 public record AndCondition(List<IContextCondition> conditions) implements IContextCondition {
-    public static final Codec<AndCondition> CODEC = IContextCondition.CODEC.listOf().fieldOf("values").codec().xmap(AndCondition::new, AndCondition::conditions);
+    public static final Codec<AndCondition> CODEC = IContextCondition.CODEC.listOf().fieldOf("values").xmap(AndCondition::new, AndCondition::conditions).codec();
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {

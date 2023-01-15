@@ -8,7 +8,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.HitResult;
 
 public record NotCondition(IContextCondition condition) implements IContextCondition {
-    public static final Codec<NotCondition> CODEC = IContextCondition.CODEC.fieldOf("value").codec().xmap(NotCondition::new, NotCondition::condition);
+    public static final Codec<NotCondition> CODEC = IContextCondition.CODEC.fieldOf("value").xmap(NotCondition::new, NotCondition::condition).codec();
 
     @Override
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
