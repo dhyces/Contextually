@@ -1,4 +1,4 @@
-package dhyces.contextually.client.core.icons;
+package dhyces.contextually.util;
 
 import dhyces.contextually.client.core.icons.objects.KeyIcon;
 import dhyces.contextually.client.core.icons.objects.KeyTextureIcon;
@@ -36,10 +36,10 @@ public class IconUtils {
     }
 
     public static KeyIcon of(MappingKey mappingKey) {
-        var ret = KEYS_BY_MAPPING_STRING.get(mappingKey.mapping());
+        var ret = KEYS_BY_MAPPING_STRING.get(mappingKey.mappingStr());
         if (ret == null) {
             ret = new KeyIcon(mappingKey);
-            KEYS_BY_MAPPING_STRING.put(mappingKey.mapping(), ret);
+            KEYS_BY_MAPPING_STRING.put(mappingKey.mappingStr(), ret);
         }
         return ret;
     }
