@@ -25,17 +25,17 @@ public record PlayerHeldItemCondition(ItemContextPredicate predicate, Optional<I
     public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
         if (hand.isEmpty() || hand.get().equals(InteractionHand.MAIN_HAND)) {
             var handItem = player.getMainHandItem();
-            if (!predicate.matches(handItem)) {
-                return false;
+            if (predicate.matches(handItem)) {
+                return true;
             }
         }
         if (hand.isEmpty() || hand.get().equals(InteractionHand.OFF_HAND)) {
             var handItem = player.getOffhandItem();
-            if (!predicate.matches(handItem)) {
-                return false;
+            if (predicate.matches(handItem)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override
