@@ -30,6 +30,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

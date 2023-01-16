@@ -17,6 +17,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
