@@ -16,6 +16,7 @@ import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
 import org.quiltmc.qsl.resource.loader.api.client.ClientResourceLoaderEvents;
 import org.quiltmc.qsl.resource.loader.api.reloader.IdentifiableResourceReloader;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -45,7 +46,7 @@ public class QuiltContextually implements ClientModInitializer {
 
     record WrappedReloader(ResourceLocation id, Supplier<PreparableReloadListener> listenerSupplier) implements IdentifiableResourceReloader {
         @Override
-        public @NotNull ResourceLocation getQuiltId() {
+        public @Nonnull ResourceLocation getQuiltId() {
             return id;
         }
 

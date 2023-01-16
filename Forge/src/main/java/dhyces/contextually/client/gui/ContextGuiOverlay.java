@@ -159,7 +159,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
     interface BiIntFunction {
         int apply(int value1, int value2);
 
-        default BiIntFunction andThen(@NotNull Int2IntFunction function) {
+        default BiIntFunction andThen(@Nonnull Int2IntFunction function) {
             Preconditions.checkNotNull(function);
             return (v1, v2) -> function.apply(apply(v1, v2));
         }

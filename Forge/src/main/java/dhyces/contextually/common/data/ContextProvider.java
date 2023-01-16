@@ -43,7 +43,7 @@ public abstract class ContextProvider implements DataProvider {
     final String contextPath = "contexts";
     final Map<ResourceLocation, IKeyContext<?, ?>> data = Maps.newHashMap();
 
-    public ContextProvider(@NotNull PackOutput output, @NotNull ExistingFileHelper fileHelper, @NotNull String modid) {
+    public ContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
         Preconditions.checkNotNull(output);
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, contextPath);
         Preconditions.checkNotNull(fileHelper);
@@ -70,7 +70,7 @@ public abstract class ContextProvider implements DataProvider {
     }
 
     @Override
-    public @NotNull String getName() {
+    public @Nonnull String getName() {
         return "Contextually: Context Provider for " + modid;
     }
 
@@ -114,7 +114,7 @@ public abstract class ContextProvider implements DataProvider {
         }
 
         public interface ContextFactory<K, V, T extends IKeyContext<K, V>> {
-            T create(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<K> targetedStates);
+            T create(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions, @Nonnull Set<K> targetedStates);
         }
     }
 

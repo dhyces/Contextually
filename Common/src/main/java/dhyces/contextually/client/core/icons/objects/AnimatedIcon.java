@@ -8,6 +8,7 @@ import dhyces.contextually.client.core.icons.IIconType;
 import net.minecraft.client.gui.Gui;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public record AnimatedIcon(List<Pair<IIcon, Integer>> icons, int maxTicks) imple
             Codec.INT.fieldOf("ticks").codec()
     ).listOf().fieldOf("animation").xmap(AnimatedIcon::new, AnimatedIcon::icons).codec();
 
-    public AnimatedIcon(@NotNull List<Pair<IIcon, Integer>> icons) {
+    public AnimatedIcon(@Nonnull List<Pair<IIcon, Integer>> icons) {
         this(icons.stream().sorted(Comparator.comparingInt(Pair::getSecond)).toList(), icons.stream().mapToInt(Pair::getSecond).sum());
     }
 

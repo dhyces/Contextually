@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 
 public class TestContextProvider extends ContextProvider {
 
-    public TestContextProvider(@NotNull PackOutput output, @NotNull ExistingFileHelper fileHelper, @NotNull String modid) {
+    public TestContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
         super(output, fileHelper, modid);
     }
 

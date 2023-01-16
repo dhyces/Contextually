@@ -15,9 +15,9 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,19 +45,19 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
     private int widthCache = 0;
     private boolean widthCacheInvalid = true;
 
-    public AbstractKeyContext(@NotNull Set<IIcon> icons) {
+    public AbstractKeyContext(@Nonnull Set<IIcon> icons) {
         this(icons, Set.of());
     }
 
-    public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions) {
+    public AbstractKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions) {
         this(icons, Set.of(), conditions, null);
     }
 
-    public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<K> targets, @NotNull Set<IContextCondition> conditions) {
+    public AbstractKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<K> targets, @Nonnull Set<IContextCondition> conditions) {
         this(icons, targets, conditions, null);
     }
 
-    public AbstractKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<K> targets, @NotNull Set<IContextCondition> conditions, @Nullable ResourceLocation id) {
+    public AbstractKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<K> targets, @Nonnull Set<IContextCondition> conditions, @Nullable ResourceLocation id) {
         this.id = id;
         this.icons = icons;
         this.conditions = conditions;
@@ -65,7 +65,7 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
         this.text = createTranslatable();
     }
 
-    private Component createTranslatable() {
+    protected final Component createTranslatable() {
         return id == null ? Component.empty() : Component.translatable(id.getNamespace() + "." + id.getPath().replace('/', '.'));
     }
 
@@ -129,12 +129,12 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
     }
 
     @Override
-    public boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @NotNull ClientLevel level, @NotNull AbstractClientPlayer player) {
+    public boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @Nonnull ClientLevel level, @Nonnull AbstractClientPlayer player) {
         return conditions.isEmpty() || conditions.stream().anyMatch(c -> c.test(contextObject, hitResult, level, player));
     }
 
     @Override
-    public void setIdIfNull(@NotNull ResourceLocation resourceLocation) {
+    public void setIdIfNull(@Nonnull ResourceLocation resourceLocation) {
         if (this.id == null) {
             this.id = resourceLocation;
             text = createTranslatable();
@@ -149,19 +149,19 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
         return id;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Set<IContextCondition> getConditions() {
         return conditions;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Set<IIcon> getIcons() {
         return icons;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Set<K> getTargets() {
         return targets;

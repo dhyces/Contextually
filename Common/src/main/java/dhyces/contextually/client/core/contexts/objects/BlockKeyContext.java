@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +28,12 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState, BlockState> 
             ).apply(instance, BlockKeyContext::new)
     );
 
-    public BlockKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<BlockState> targetedStates) {
+    public BlockKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions, @Nonnull Set<BlockState> targetedStates) {
         super(icons, targetedStates, conditions);
     }
 
     @Override
-    public @NotNull IKeyContextType<?> getType() {
+    public @Nonnull IKeyContextType<?> getType() {
         return IKeyContextType.BLOCK;
     }
 }

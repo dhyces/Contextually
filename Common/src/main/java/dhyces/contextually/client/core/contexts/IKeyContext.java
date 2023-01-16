@@ -15,6 +15,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 public interface IKeyContext<K, T> {
@@ -27,12 +28,12 @@ public interface IKeyContext<K, T> {
     void renderIcons(T contextObject, Gui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     void renderText(T contextObject, Gui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     int width(Font font);
-    boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @NotNull ClientLevel level, @NotNull AbstractClientPlayer player);
+    boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @Nonnull ClientLevel level, @Nonnull AbstractClientPlayer player);
 
-    void setIdIfNull(@NotNull ResourceLocation resourceLocation);
+    void setIdIfNull(@Nonnull ResourceLocation resourceLocation);
     @Nullable ResourceLocation getID();
-    @NotNull Set<IIcon> getIcons();
-    @NotNull Set<IContextCondition> getConditions();
-    @NotNull Set<K> getTargets();
-    @NotNull IKeyContextType<?> getType();
+    @Nonnull Set<IIcon> getIcons();
+    @Nonnull Set<IContextCondition> getConditions();
+    @Nonnull Set<K> getTargets();
+    @Nonnull IKeyContextType<?> getType();
 }

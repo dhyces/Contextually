@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -21,12 +22,12 @@ public class ItemKeyContext extends AbstractKeyContext<Item, ItemStack> {
     );
 
 
-    public ItemKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<Item> targetedItems) {
+    public ItemKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions, @Nonnull Set<Item> targetedItems) {
         super(icons, targetedItems, conditions);
     }
 
     @Override
-    public @NotNull IKeyContextType<?> getType() {
+    public @Nonnull IKeyContextType<?> getType() {
         return IKeyContextType.ITEM;
     }
 }

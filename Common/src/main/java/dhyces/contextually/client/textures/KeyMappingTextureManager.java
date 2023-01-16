@@ -13,6 +13,7 @@ import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 public class KeyMappingTextureManager extends TextureAtlasHolder {
@@ -26,7 +27,7 @@ public class KeyMappingTextureManager extends TextureAtlasHolder {
         super(textureManager, KEYS, Contextually.id("keys"));
     }
 
-    public TextureAtlasSprite get(@NotNull ResourceLocation location) {
+    public TextureAtlasSprite get(@Nonnull ResourceLocation location) {
         return getSprite(location);
     }
 

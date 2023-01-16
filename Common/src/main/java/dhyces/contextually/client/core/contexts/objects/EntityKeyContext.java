@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -20,12 +21,12 @@ public class EntityKeyContext extends AbstractKeyContext<EntityType<?>, Entity> 
             ).apply(instance, EntityKeyContext::new)
     );
 
-    public EntityKeyContext(@NotNull Set<IIcon> icons, @NotNull Set<IContextCondition> conditions, @NotNull Set<EntityType<?>> targetedTypes) {
+    public EntityKeyContext(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions, @Nonnull Set<EntityType<?>> targetedTypes) {
         super(icons, targetedTypes, conditions);
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public IKeyContextType<?> getType() {
         return IKeyContextType.ENTITY;
     }
