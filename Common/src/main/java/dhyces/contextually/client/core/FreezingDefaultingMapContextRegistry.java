@@ -1,6 +1,7 @@
 package dhyces.contextually.client.core;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import dhyces.contextually.client.core.contexts.IKeyContext;
@@ -25,7 +26,7 @@ public class FreezingDefaultingMapContextRegistry<K, V> {
     }
 
     public static <K, V> FreezingDefaultingMapContextRegistry<K, V> create(ResourceLocation registryKey) {
-        return new FreezingDefaultingMapContextRegistry<>(registryKey, ArrayListMultimap.create(), Lists.newArrayList());
+        return new FreezingDefaultingMapContextRegistry<>(registryKey, HashMultimap.create(), Lists.newArrayList());
     }
 
     void unfreezeClearRefreeze(Runnable action) {
