@@ -1,6 +1,7 @@
 package dhyces.contextually.client.core.conditions.objects;
 
 import com.mojang.serialization.Codec;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IConditionType;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -11,8 +12,8 @@ public record NotCondition(IContextCondition condition) implements IContextCondi
     public static final Codec<NotCondition> CODEC = IContextCondition.CODEC.fieldOf("value").xmap(NotCondition::new, NotCondition::condition).codec();
 
     @Override
-    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
-        return !condition.test(target, pos, level, player);
+    public boolean test(ContextSource contextSource) {
+        return !condition.test(contextSource);
     }
 
     @Override

@@ -9,7 +9,7 @@ import net.minecraft.world.phys.HitResult;
 public interface IContextCondition {
     Codec<IContextCondition> CODEC = KeyContextLoader.CONDITION_MAP_CODEC.dispatch("condition_type", IContextCondition::getType, IConditionType::getCodec);
 
-    boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player);
+    boolean test(ContextSource contextSource);
 
     IConditionType<?> getType();
 }

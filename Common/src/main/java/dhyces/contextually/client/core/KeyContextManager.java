@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.Contextually;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.core.contexts.objects.BlockKeyContext;
 import dhyces.contextually.client.core.contexts.objects.EntityKeyContext;
@@ -14,6 +15,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -59,24 +61,24 @@ public final class KeyContextManager implements PreparableReloadListener {
         return ITEM_CONTEXTS.get(item);
     }
 
-    public Collection<IKeyContext<Object, Object>> filterGlobalContexts(ClientLevel level, AbstractClientPlayer player) {
-        return getGlobalContexts().stream().filter(context -> context.testConditions(null, null, level, player)).toList();
+    public Collection<IKeyContext<Object, Object>> filterGlobalContexts(ContextSource contextSource) {
+        return getGlobalContexts().stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
-    public Collection<IKeyContext<BlockState, BlockState>> filterContextsForBlock(BlockState blockState, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
-        return getContextsForBlock(blockState).stream().filter(context -> context.testConditions(blockState, hitResult, level, player)).toList();
+    public Collection<IKeyContext<BlockState, BlockState>> filterContextsForBlock(ContextSource contextSource) {
+        return getContextsForBlock(contextSource.getHitResultSolidBlock().get()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
-    public Collection<IKeyContext<BlockState, BlockState>> filterContextsForFluid(FluidState fluidState, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
-        return getContextsForFluid(fluidState).stream().filter(context -> context.testConditions(fluidState, hitResult, level, player)).toList();
+    public Collection<IKeyContext<BlockState, BlockState>> filterContextsForFluid(ContextSource contextSource) {
+        return getContextsForFluid(contextSource.getHitResultFluidBlock().get().getFluidState()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
-    public Collection<IKeyContext<EntityType<?>, Entity>> filterContextsForEntity(Entity entity, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
-        return getContextsForEntity(entity).stream().filter(context -> context.testConditions(entity, hitResult, level, player)).toList();
+    public Collection<IKeyContext<EntityType<?>, Entity>> filterContextsForEntity(ContextSource contextSource) {
+        return getContextsForEntity(contextSource.getHitResultEntity().get()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
-    public Collection<IKeyContext<Item, ItemStack>> filterContextsForItem(Item item, HitResult hitResult, ClientLevel level, AbstractClientPlayer player) {
-        return getContextsForItem(item).stream().filter(context -> context.testConditions(item, hitResult, level, player)).toList();
+    public Collection<IKeyContext<Item, ItemStack>> filterContextsForItem(ContextSource contextSource, InteractionHand hand) {
+        return getContextsForItem(contextSource.getHandStack(hand).get().getItem()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
     @Override

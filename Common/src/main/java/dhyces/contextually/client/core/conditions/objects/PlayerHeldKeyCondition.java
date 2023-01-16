@@ -2,6 +2,7 @@ package dhyces.contextually.client.core.conditions.objects;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.serialization.Codec;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IConditionType;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.keys.IKey;
@@ -20,7 +21,7 @@ public record PlayerHeldKeyCondition(IKey key) implements IContextCondition {
     ).codec();
 
     @Override
-    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
+    public boolean test(ContextSource contextSource) {
         InputConstants.Key key = KeyUtils.getKey(key().getValue());
         if (key.getType().equals(InputConstants.Type.MOUSE)) {
             return GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), key.getValue()) == 1;

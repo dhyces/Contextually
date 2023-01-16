@@ -1,6 +1,7 @@
 package dhyces.contextually.client.core.conditions.objects;
 
 import com.mojang.serialization.Codec;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IConditionType;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -13,8 +14,8 @@ public record OrCondition(List<IContextCondition> conditions) implements IContex
     public static final Codec<OrCondition> CODEC = IContextCondition.CODEC.listOf().fieldOf("values").xmap(OrCondition::new, OrCondition::conditions).codec();
 
     @Override
-    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
-        return conditions.stream().anyMatch(iContextCondition -> iContextCondition.test(target, pos, level, player));
+    public boolean test(ContextSource contextSource) {
+        return conditions.stream().anyMatch(condition -> condition.test(contextSource));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.core.icons.IIcon;
@@ -129,8 +130,8 @@ public abstract class AbstractKeyContext<K, T> implements IKeyContext<K, T> {
     }
 
     @Override
-    public boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @Nonnull ClientLevel level, @Nonnull AbstractClientPlayer player) {
-        return conditions.isEmpty() || conditions.stream().anyMatch(c -> c.test(contextObject, hitResult, level, player));
+    public boolean testConditions(ContextSource contextSource) {
+        return conditions.isEmpty() || conditions.stream().anyMatch(c -> c.test(contextSource));
     }
 
     @Override

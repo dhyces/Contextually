@@ -3,6 +3,7 @@ package dhyces.contextually.client.core.contexts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import dhyces.contextually.client.core.KeyContextLoader;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.core.icons.IIcon;
 import net.minecraft.client.gui.Font;
@@ -28,7 +29,7 @@ public interface IKeyContext<K, T> {
     void renderIcons(T contextObject, Gui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     void renderText(T contextObject, Gui gui, PoseStack poseStack, float partialTicks, int pX, int pY, int width, int height);
     int width(Font font);
-    boolean testConditions(@Nullable Object contextObject, @Nullable HitResult hitResult, @Nonnull ClientLevel level, @Nonnull AbstractClientPlayer player);
+    boolean testConditions(ContextSource contextSource);
 
     void setIdIfNull(@Nonnull ResourceLocation resourceLocation);
     @Nullable ResourceLocation getID();

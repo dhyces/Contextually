@@ -2,6 +2,7 @@ package dhyces.contextually.client.core.conditions.objects;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.conditions.IConditionType;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.core.conditions.predicates.ItemContextPredicate;
@@ -9,6 +10,7 @@ import dhyces.contextually.util.MoreCodecs;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.HitResult;
 
@@ -23,21 +25,21 @@ public record TargetHeldItemCondition(ItemContextPredicate predicate, Optional<I
     );
 
     @Override
-    public boolean test(Object target, HitResult pos, ClientLevel level, AbstractClientPlayer player) {
-        if (target instanceof LivingEntity livingEntity) {
+    public boolean test(ContextSource contextSource) {
+        Optional<Entity> entity = contextSource.getHitResultEntity();
+        if (entity.isPresent() && entity.get() instanceof LivingEntity livingEntity) {
             if (hand().isEmpty() || hand.get().equals(InteractionHand.MAIN_HAND)) {
                 var handItem = livingEntity.getMainHandItem();
-                if (!predicate.matches(handItem)) {
-                    return false;
+                if (predicate.matches(handItem)) {
+                    return true;
                 }
             }
             if (hand().isEmpty() || hand.get().equals(InteractionHand.OFF_HAND)) {
                 var handItem = livingEntity.getOffhandItem();
-                if (!predicate.matches(handItem)) {
-                    return false;
+                if (predicate.matches(handItem)) {
+                    return true;
                 }
             }
-            return true;
         }
         return false;
     }

@@ -74,7 +74,7 @@ public class TestContextProvider extends ContextProvider {
                 .export(intName(), exporter);
 
         // 5
-        ContextBuilder.create(ItemKeyContext::new) // TODO: DOES NOT WORK DUE TO CURRENT CONDITION SYSTEM, CAN NEVER CHECK HITRESULT ENTITY
+        ContextBuilder.create(ItemKeyContext::new)
                 .addIcon(IconFactories.itemIcon(Items.ACACIA_PRESSURE_PLATE))
                 .addCondition(ConditionFactories.targetHeldItem(
                         ItemContextPredicate.Builder.create(Items.SUGAR).exactCount(7).build()
@@ -108,7 +108,7 @@ public class TestContextProvider extends ContextProvider {
                 .export(intName(), exporter);
 
         // 9
-        ContextBuilder.create(ItemKeyContext::new) // TODO: DOES NOT WORK DUE TO CURRENT CONDITION SYSTEM, CAN NEVER CHECK HITRESULT ENTITY
+        ContextBuilder.create(ItemKeyContext::new)
                 .addIcon(IconFactories.itemIcon(Items.ACACIA_PRESSURE_PLATE))
                 .addCondition(ConditionFactories.villagerProfession(VillagerProfession.BUTCHER))
                 .export(intName(), exporter);

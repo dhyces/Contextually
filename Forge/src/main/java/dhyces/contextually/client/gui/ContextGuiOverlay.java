@@ -3,12 +3,14 @@ package dhyces.contextually.client.gui;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.client.ContextuallyClient;
+import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.gui.screens.ContextScreen;
 import dhyces.contextually.client.textures.KeyMappingTextureManager;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -64,27 +66,29 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var clientPlayer = mc.player;
         var clientLevel = mc.level;
 
+        ContextSource source = ContextSource.of(gui, mc, clientPlayer, partialTick, null);
+
         // Gather contexts
         Set<ContextRenderHolder<?, ?>> contextSet = new LinkedHashSet<>();
 
         //  -Global contexts
         if (!ContextuallyClient.getContextManager().getGlobalContexts().isEmpty()) {
-            var contexts = ContextuallyClient.getContextManager().filterGlobalContexts(clientLevel, clientPlayer);
+            var contexts = ContextuallyClient.getContextManager().filterGlobalContexts(source);
             // TODO: add an event
             contextSet.add(new ContextRenderHolder<>(null, contexts));
         }
 
         //  -HitResult (entity and solid block) contexts
         var hitResult = mc.hitResult;
-        if (!hitResult.getType().equals(HitResult.Type.MISS)) {
+        if (hitResult != null && !hitResult.getType().equals(HitResult.Type.MISS)) {
             if (hitResult instanceof EntityHitResult entityHitResult) {
                 var entity = entityHitResult.getEntity();
-                var contexts = ContextuallyClient.getContextManager().filterContextsForEntity(entity, entityHitResult, clientLevel, clientPlayer);
+                var contexts = ContextuallyClient.getContextManager().filterContextsForEntity(source);
                 // TODO: add an event
                 contextSet.add(new ContextRenderHolder<>(entity, contexts));
             } else if (hitResult instanceof BlockHitResult blockHitResult) {
                 var block = clientLevel.getBlockState(blockHitResult.getBlockPos());
-                var contexts = ContextuallyClient.getContextManager().filterContextsForBlock(block, blockHitResult, clientLevel, clientPlayer);
+                var contexts = ContextuallyClient.getContextManager().filterContextsForBlock(source);
                 // TODO: add an event
                 contextSet.add(new ContextRenderHolder<>(block, contexts));
             }
@@ -95,7 +99,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
         if (!fluidHitResult.getType().equals(HitResult.Type.MISS) && fluidHitResult instanceof BlockHitResult fluidResult) {
             var fluid = clientLevel.getFluidState(fluidResult.getBlockPos());
             if (!fluid.isEmpty()) {
-                var contexts = ContextuallyClient.getContextManager().filterContextsForFluid(fluid, fluidResult, clientLevel, clientPlayer);
+                var contexts = ContextuallyClient.getContextManager().filterContextsForFluid(source);
                 // TODO: add an event
                 contextSet.add(new ContextRenderHolder<>(fluid.createLegacyBlock(), contexts));
             }
@@ -106,13 +110,13 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var offhand = clientPlayer.getOffhandItem();
         var mainhand = clientPlayer.getMainHandItem();
         if (!mainhand.isEmpty()) {
-            var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(mainhand.getItem(), hitResult, clientLevel, clientPlayer);
+            var mainContexts = ContextuallyClient.getContextManager().filterContextsForItem(source, InteractionHand.MAIN_HAND);
             if (!mainContexts.isEmpty()) {
                 contextSet.add(new ContextRenderHolder<>(mainhand, mainContexts));
             }
         }
         if (!offhand.isEmpty()) {
-            var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(offhand.getItem(), hitResult, clientLevel, clientPlayer);
+            var offContexts = ContextuallyClient.getContextManager().filterContextsForItem(source, InteractionHand.OFF_HAND);
             if (!offContexts.isEmpty()) {
                 contextSet.add(new ContextRenderHolder<>(offhand, offContexts));
             }
