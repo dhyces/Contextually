@@ -27,6 +27,13 @@ dependencies {
     implementation project(":Common")
 }
 
+sourceSets {
+    testMod {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+    }
+}
+
 loom {
     runs {
         client {
@@ -40,6 +47,17 @@ loom {
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("run")
+        }
+        testData {
+            server()
+            setConfigName("Fabric TestData")
+            ideConfigGenerated(true)
+            source sourceSets.testMod
+
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+
+            runDir "build/datagen"
         }
     }
 
