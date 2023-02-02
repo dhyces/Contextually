@@ -21,7 +21,7 @@ public class DefaultingMultiMapWrapper<K, V> {
     }
 
     public boolean isDefault(Collection<V> collection) {
-        return defaultValue.equals(collection) || collection.containsAll(defaultValue);
+        return !defaultValue.isEmpty() && (defaultValue.equals(collection) || collection.containsAll(defaultValue));
     }
 
     public Collection<V> getDefaultValue() {
