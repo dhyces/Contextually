@@ -4,10 +4,7 @@ import com.mojang.serialization.Codec;
 import dhyces.contextually.Contextually;
 import dhyces.contextually.client.core.INamed;
 import dhyces.contextually.client.core.KeyContextLoader;
-import dhyces.contextually.client.core.icons.objects.AnimatedIcon;
-import dhyces.contextually.client.core.icons.objects.ItemIcon;
-import dhyces.contextually.client.core.icons.objects.KeyIcon;
-import dhyces.contextually.client.core.icons.objects.KeyTextureIcon;
+import dhyces.contextually.client.core.icons.objects.*;
 import net.minecraft.resources.ResourceLocation;
 
 public interface IIconType<T extends IIcon> extends INamed {
@@ -15,6 +12,7 @@ public interface IIconType<T extends IIcon> extends INamed {
     IIconType<ItemIcon> ITEM = register("item", ItemIcon.CODEC);
     IIconType<KeyIcon> KEY = register("key", KeyIcon.CODEC);
     IIconType<KeyTextureIcon> KEY_TEXTURE = register("key_texture", KeyTextureIcon.CODEC);
+    IIconType<TextureAtlasIcon> TEXTURE_ATLAS = register("texture", TextureAtlasIcon.CODEC);
 
     Codec<T> getCodec();
 
