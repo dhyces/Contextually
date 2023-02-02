@@ -6,10 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import dhyces.contextually.Contextually;
 import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.contexts.IKeyContext;
-import dhyces.contextually.client.core.contexts.objects.BlockKeyContext;
-import dhyces.contextually.client.core.contexts.objects.EntityKeyContext;
-import dhyces.contextually.client.core.contexts.objects.GlobalKeyContext;
-import dhyces.contextually.client.core.contexts.objects.ItemKeyContext;
+import dhyces.contextually.client.core.contexts.objects.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -26,6 +23,7 @@ import net.minecraft.world.phys.HitResult;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -33,6 +31,7 @@ public final class KeyContextManager implements PreparableReloadListener {
 
 
     public static final FreezingDefaultingMapContextRegistry<BlockState, BlockState> BLOCK_STATE_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("block_state_contexts"));
+    public static final FreezingDefaultingMapContextRegistry<FluidState, FluidState> FLUID_STATE_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("fluid_state_contexts"));
     private final FreezingDefaultingMapContextRegistry<Item, ItemStack> ITEM_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("item_contexts"));
     private final FreezingDefaultingMapContextRegistry<EntityType<?>, Entity> ENTITY_CONTEXTS = FreezingDefaultingMapContextRegistry.create(Contextually.id("entity_type_contexts"));
     private ImmutableList<IKeyContext<Object, Object>> GLOBAL_CONTEXTS = ImmutableList.of();
@@ -49,8 +48,12 @@ public final class KeyContextManager implements PreparableReloadListener {
         return Sets.union(new HashSet<>(ret), new HashSet<>(BLOCK_STATE_CONTEXTS.getDefaultValue()));
     }
 
-    public Collection<IKeyContext<BlockState, BlockState>> getContextsForFluid(FluidState block) {
-        return BLOCK_STATE_CONTEXTS.get(block.createLegacyBlock());
+    public Collection<IKeyContext<FluidState, FluidState>> getContextsForFluid(FluidState fluidState) {
+        var ret = FLUID_STATE_CONTEXTS.get(fluidState);
+        if (FLUID_STATE_CONTEXTS.isDefault(ret)) {
+            return List.of();
+        }
+        return ret;
     }
 
     public Collection<IKeyContext<EntityType<?>, Entity>> getContextsForEntity(Entity entity) {
@@ -69,7 +72,7 @@ public final class KeyContextManager implements PreparableReloadListener {
         return getContextsForBlock(contextSource.getHitResultSolidBlock().get()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
-    public Collection<IKeyContext<BlockState, BlockState>> filterContextsForFluid(ContextSource contextSource) {
+    public Collection<IKeyContext<FluidState, FluidState>> filterContextsForFluid(ContextSource contextSource) {
         return getContextsForFluid(contextSource.getHitResultFluidBlock().get().getFluidState()).stream().filter(context -> context.testConditions(contextSource)).toList();
     }
 
@@ -87,6 +90,7 @@ public final class KeyContextManager implements PreparableReloadListener {
                 .thenCompose(pPreparationBarrier::wait)
                 .thenAcceptAsync(loader -> {
                     BLOCK_STATE_CONTEXTS.unfreezeReset();
+                    FLUID_STATE_CONTEXTS.unfreezeReset();
                     ITEM_CONTEXTS.unfreezeReset();
                     ENTITY_CONTEXTS.unfreezeReset();
                     ImmutableList.Builder<IKeyContext<Object, Object>> global = ImmutableList.builder();
@@ -99,6 +103,13 @@ public final class KeyContextManager implements PreparableReloadListener {
                             }
                             for (Object state : collection) {
                                 BLOCK_STATE_CONTEXTS.put((BlockState)state, blockKeyContext);
+                            }
+                        } else if (context instanceof FluidKeyContext fluidKeyContext) {
+                            if (collection.isEmpty()) {
+                                FLUID_STATE_CONTEXTS.addDefault(fluidKeyContext);
+                            }
+                            for (Object state : collection) {
+                                FLUID_STATE_CONTEXTS.put((FluidState)state, fluidKeyContext);
                             }
                         } else if (context instanceof ItemKeyContext itemKeyContext) {
                             if (collection.isEmpty()) {
@@ -119,6 +130,7 @@ public final class KeyContextManager implements PreparableReloadListener {
                         }
                     }
                     BLOCK_STATE_CONTEXTS.setFrozen(true);
+                    FLUID_STATE_CONTEXTS.setFrozen(true);
                     ITEM_CONTEXTS.setFrozen(true);
                     ENTITY_CONTEXTS.setFrozen(true);
                     GLOBAL_CONTEXTS = global.build();
