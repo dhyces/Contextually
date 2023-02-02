@@ -10,11 +10,10 @@ import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.core.conditions.objects.*;
 import dhyces.contextually.client.core.conditions.predicates.ItemContextPredicate;
 import dhyces.contextually.client.core.contexts.IKeyContext;
+import dhyces.contextually.client.core.contexts.PartialBlockState;
+import dhyces.contextually.client.core.contexts.objects.BlockKeyContext;
 import dhyces.contextually.client.core.icons.IIcon;
-import dhyces.contextually.client.core.icons.objects.AnimatedIcon;
-import dhyces.contextually.client.core.icons.objects.ItemIcon;
-import dhyces.contextually.client.core.icons.objects.KeyIcon;
-import dhyces.contextually.client.core.icons.objects.KeyTextureIcon;
+import dhyces.contextually.client.core.icons.objects.*;
 import dhyces.contextually.client.keys.CodeKey;
 import dhyces.contextually.client.keys.IKey;
 import dhyces.contextually.client.keys.MappingKey;
@@ -26,25 +25,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.common.data.LanguageProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 
 public abstract class ContextProvider implements DataProvider {
 
+    @Nullable
+    LanguageProvider langProvider;
     PackOutput.PathProvider pathProvider;
     ExistingFileHelper fileHelper;
     String modid;
     final String contextPath = "contexts";
-    final Map<ResourceLocation, IKeyContext<?, ?>> data = Maps.newHashMap();
 
-    public ContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
+    public ContextProvider(@Nullable LanguageProvider langProvider, @Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
+        this.langProvider = langProvider;
         Preconditions.checkNotNull(output);
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, contextPath);
         Preconditions.checkNotNull(fileHelper);
@@ -53,11 +55,18 @@ public abstract class ContextProvider implements DataProvider {
         this.modid = modid;
     }
 
-    protected abstract void addContexts(BiConsumer<String, IKeyContext<?, ?>> exporter);
+    protected abstract void addContexts(ContextExporter exporter);
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        addContexts((s, context) -> data.put(new ResourceLocation(modid, s), context));
+        final Map<ResourceLocation, IKeyContext<?, ?>> data = Maps.newHashMap();
+        addContexts((s, context, translation) -> {
+            ResourceLocation rl = new ResourceLocation(modid, s);
+            data.put(rl, context);
+            if (!translation.isBlank()) {
+                langProvider.add(rl.getNamespace() + ".contexts." + rl.getPath(), translation);
+            }
+        });
 
         return CompletableFuture.allOf(data.entrySet().stream().map(
                         entry -> {
@@ -75,47 +84,121 @@ public abstract class ContextProvider implements DataProvider {
         return "Contextually: Context Provider for " + modid;
     }
 
-    public static class ContextBuilder<K, V, T extends IKeyContext<K, V>> {
+    public interface ContextExporter {
+        void export(String id, IKeyContext<?, ?> context, String translation);
+    }
+
+    public static class ContextBuilder<K, V, F extends IKeyContext<K, V>> {
         private final Set<IIcon> iconSet = new HashSet<>();
         private final Set<IContextCondition> conditionSet = new HashSet<>();
         private final Set<K> targetSet = new HashSet<>();
-        private final ContextFactory<K, V, T> factory;
+        private final ContextFactory<K, V, F> factory;
+        private String translation = "";
 
-        private ContextBuilder(ContextFactory<K, V, T> factory) {
+        private ContextBuilder(ContextFactory<K, V, F> factory) {
             this.factory = factory;
         }
 
-        public static <K, V, T extends IKeyContext<K, V>> ContextBuilder<K, V, T> create(ContextFactory<K, V, T> factory) {
+        public static <K, V, F extends IKeyContext<K, V>> ContextBuilder<K, V, F> create(ContextFactory<K, V, F> factory) {
             return new ContextBuilder<>(factory);
         }
 
-        public ContextBuilder<K, V, T> addIcon(IIcon icon) {
+        public ContextBuilder<K, V, F> addIcon(IIcon icon) {
             iconSet.add(icon);
             return this;
         }
 
-        public ContextBuilder<K, V, T> addCondition(IContextCondition condition) {
+        public ContextBuilder<K, V, F> addCondition(IContextCondition condition) {
             conditionSet.add(condition);
             return this;
         }
 
-        public ContextBuilder<K, V, T> addTarget(K target) {
+        public ContextBuilder<K, V, F> addTarget(K target) {
             targetSet.add(target);
             return this;
         }
 
-        public ContextBuilder<K, V, T> addTargets(List<K> targets) {
+        public ContextBuilder<K, V, F> addTargets(List<K> targets) {
             targetSet.addAll(targets);
             return this;
         }
 
-        public void export(String id, BiConsumer<String, IKeyContext<?, ?>> consumer) {
+        public ContextBuilder<K, V, F> addTranslation(@Nonnull String translation) {
+            this.translation = translation;
+            return this;
+        }
+
+        public void export(String id, ContextExporter consumer) {
             var built = factory.create(iconSet, conditionSet, targetSet);
-            consumer.accept(id, built);
+            consumer.export(id, built, translation);
         }
 
         public interface ContextFactory<K, V, T extends IKeyContext<K, V>> {
             T create(@Nonnull Set<IIcon> icons, @Nonnull Set<IContextCondition> conditions, @Nonnull Set<K> targetedStates);
+        }
+    }
+
+    public static class BlockContextBuilder {
+        private final Set<IIcon> iconSet = new HashSet<>();
+        private final Set<IContextCondition> conditionSet = new HashSet<>();
+        private final Set<BlockState> targetSet = new HashSet<>();
+        private String translation = "";
+
+        private BlockContextBuilder() {
+        }
+
+        public static BlockContextBuilder create() {
+            return new BlockContextBuilder();
+        }
+
+        public BlockContextBuilder addIcon(IIcon icon) {
+            iconSet.add(icon);
+            return this;
+        }
+
+        public BlockContextBuilder addCondition(IContextCondition condition) {
+            conditionSet.add(condition);
+            return this;
+        }
+
+        public BlockContextBuilder addBlock(Block target) {
+            targetSet.addAll(target.getStateDefinition().getPossibleStates());
+            return this;
+        }
+
+        public BlockContextBuilder addBlocks(List<Block> targets) {
+            targets.forEach(block -> targetSet.addAll(block.getStateDefinition().getPossibleStates()));
+            return this;
+        }
+
+        public BlockContextBuilder addState(BlockState target) {
+            targetSet.add(target);
+            return this;
+        }
+
+        public BlockContextBuilder addStates(List<BlockState> targets) {
+            targetSet.addAll(targets);
+            return this;
+        }
+
+        public BlockContextBuilder addPartialState(PartialBlockState target) {
+            targetSet.addAll(target.toAvailableStates().getOrThrow(false, Contextually.LOGGER::error));
+            return this;
+        }
+
+        public BlockContextBuilder addPartialStates(List<PartialBlockState> targets) {
+            targets.forEach(partialBlockState -> targetSet.addAll(partialBlockState.toAvailableStates().getOrThrow(false, Contextually.LOGGER::error)));
+            return this;
+        }
+
+        public BlockContextBuilder addTranslation(@Nonnull String translation) {
+            this.translation = translation;
+            return this;
+        }
+
+        public void export(String id, ContextExporter consumer) {
+            BlockKeyContext built = new BlockKeyContext(iconSet, conditionSet, targetSet);
+            consumer.export(id, built, translation);
         }
     }
 
@@ -144,6 +227,10 @@ public abstract class ContextProvider implements DataProvider {
 
         public static KeyTextureIcon keyTextureIcon(ResourceLocation texture) {
             return IconUtils.of(texture);
+        }
+
+        public static TextureAtlasIcon textureAtlasIcon(ResourceLocation atlasLocation, ResourceLocation spriteLocation, int color) {
+            return new TextureAtlasIcon(atlasLocation, spriteLocation, color);
         }
 
         public static class AnimatedIconBuilder {
