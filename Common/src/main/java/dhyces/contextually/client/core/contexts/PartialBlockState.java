@@ -2,15 +2,15 @@ package dhyces.contextually.client.core.contexts;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -92,9 +92,22 @@ public record PartialBlockState(Block block, Map<String, String> propertyValueMa
             List<Property<?>> descendingProperties = entry.getKey().getStateDefinition().getProperties().stream()
                     .sorted((o1, o2) -> o2.getPossibleValues().size() - o1.getPossibleValues().size()).toList();
 
-            Set<PartialBlockState> mutableStates = Set.copyOf(condense(Util.make(new HashSet<>(), partialBlockStates -> partialBlockStates.addAll(entry.getValue().stream().map(PartialBlockState::fromBlockState).toList())), descendingProperties, 0));
+            Set<PartialBlockState> condensedStates = Set.copyOf(condense(Util.make(new HashSet<>(), partialBlockStates -> partialBlockStates.addAll(entry.getValue().stream().map(PartialBlockState::fromBlockState).toList())), descendingProperties, 0));
 
-            for (PartialBlockState partialBlockState : mutableStates) {
+            //TODO: Seems like permutation still doesn't fix it, so need to fix the condensing algorithm
+//            List<List<Property<?>>> lists = permuteOrder(descendingProperties);
+//
+//            if (lists.size() > 1) {
+//                for (List<Property<?>> propertyList : lists) {
+//                    Set<PartialBlockState> temp = Set.copyOf(condense(Util.make(new HashSet<>(), partialBlockStates -> partialBlockStates.addAll(entry.getValue().stream().map(PartialBlockState::fromBlockState).toList())), propertyList, 0));
+//
+//                    if (comparePropertyValues(condensedStates, temp)) {
+//                        condensedStates = temp;
+//                    }
+//                }
+//            }
+
+            for (PartialBlockState partialBlockState : condensedStates) {
                 builder.add(Either.right(partialBlockState));
             }
         }
@@ -102,12 +115,78 @@ public record PartialBlockState(Block block, Map<String, String> propertyValueMa
         return builder.build();
     }
 
+    private static boolean comparePropertyValues(Set<PartialBlockState> list1, Set<PartialBlockState> list2) {
+        for (PartialBlockState blockState : list1) {
+            for (PartialBlockState compareState : list2) {
+                if (blockState.equals(compareState)) {
+
+                }
+            }
+        }
+        return true;
+    }
+
+    private static List<List<Property<?>>> permuteOrder(List<Property<?>> properties) {
+        List<Property<?>> mutable = Util.make(new ArrayList<>(), properties1 -> properties1.addAll(properties));
+        List<List<Property<?>>> lists = new ArrayList<>();
+
+        Multimap<Integer, Property<?>> sizeMap = HashMultimap.create();
+        Object2IntMap<Property<?>> listPosMap = new Object2IntArrayMap<>();
+
+        for (int i = 0; i < properties.size(); i++) {
+            sizeMap.put(properties.get(i).getPossibleValues().size(), properties.get(i));
+            listPosMap.put(properties.get(i), i);
+        }
+
+        for (Map.Entry<Integer, Collection<Property<?>>> entry : sizeMap.asMap().entrySet()) {
+            int numProperties = entry.getValue().size();
+            if (numProperties > 1) {
+                int permutationCnt = factorial(numProperties);
+                IntList locations = Util.make(new IntArrayList(), integers -> entry.getValue().forEach(property -> integers.add(listPosMap.getInt(property))));
+                IntList indices = new IntArrayList(new int[locations.size()]);
+                List<Property<?>> permutation = new ArrayList<>();
+                int i = 0;
+                while (i < locations.size()) {
+                    if (indices.getInt(i) < i) {
+                        int move = i % 2 == 0 ? 0 : indices.getInt(i);
+                        int moveLocation = locations.getInt(move);
+                        Property<?> element = mutable.get(moveLocation);
+                        int iLocation = locations.getInt(i);
+                        Property<?> otherElement = mutable.get(iLocation);
+                        mutable.set(moveLocation, otherElement);
+                        mutable.set(iLocation, element);
+                        lists.add(List.copyOf(mutable));
+                        indices.set(i, indices.getInt(i)+1);
+                        i = 0;
+                    } else {
+                        indices.set(i, 0);
+                        i++;
+                    }
+                }
+            }
+        }
+
+        return lists;
+    }
+
+    private static int factorial(int num) {
+        if (num <= 2) {
+            return num;
+        }
+        return num * factorial(num-1);
+    }
+
     private String getValue(Property<?> property) {
         return propertyValueMap.get(property.getName());
     }
 
+    private PartialBlockState withoutProperty(Property<?> property) {
+        Map<String, String> copy = Maps.newHashMap(propertyValueMap);
+        return new PartialBlockState(block, copy);
+    }
+
     private boolean isValueSame(Property<?> property, PartialBlockState other) {
-        return this == other || getValue(property) == null || getValue(property).equals(other.getValue(property));
+        return this == other || (getValue(property) != null && getValue(property).equals(other.getValue(property)));
     }
 
     private static Set<PartialBlockState> condense(final Set<PartialBlockState> mutableStates, final List<Property<?>> descendingProperties, final int index) {
@@ -115,22 +194,12 @@ public record PartialBlockState(Block block, Map<String, String> propertyValueMa
             return mutableStates;
         }
         Property<?> property = descendingProperties.get(index);
-        // Loop through the states
 
-        Multimap<String, PartialBlockState> collected = Util.make(HashMultimap.create(), map -> mutableStates.forEach(partialBlockState -> map.put(partialBlockState.getValue(property), partialBlockState)));
+        // Collect all values for the property and point each to a set of partial states. Check if all unique values are
+        //  represented and are all of equal sizes. if this is true we want to see what would happen if we shrunk them
 
-        for (Map.Entry<String, Collection<PartialBlockState>> entry : collected.asMap().entrySet()) {
-            if (entry.getValue().size() > 1) {
-                condense(Util.make(new HashSet<>(), set -> set.addAll(entry.getValue())), descendingProperties, index+1);
-            }
-        }
 
-        if (collected.keySet().size() == property.getPossibleValues().size() && sameAmount(collected)) {
-            Set<PartialBlockState> compiled = mutableStates.stream().peek(partialBlockState -> partialBlockState.propertyValueMap.remove(property.getName())).collect(Collectors.toSet());
-            mutableStates.clear();
-            mutableStates.addAll(compiled);
-            return mutableStates;
-        }
+
         return condense(mutableStates, descendingProperties, index+1);
     }
 
