@@ -21,6 +21,7 @@ pluginManagement {
 		}
     }
 
+    // https://github.com/CraftTweaker/CraftTweaker/blob/1.19/settings.gradle.kts#L22-L31
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "org.spongepowered.mixin") {
