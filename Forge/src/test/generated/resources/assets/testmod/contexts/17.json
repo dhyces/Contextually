@@ -8,24 +8,21 @@
   ],
   "targets": [
     {
-      "id": "minecraft:lectern",
+      "id": "minecraft:redstone_wire",
       "properties": {
-        "facing": "north"
+        "east": "up"
       }
     },
     {
-      "id": "minecraft:lectern",
+      "id": "minecraft:redstone_wire",
       "properties": {
-        "facing": "south",
-        "has_book": "true"
+        "west": "up"
       }
     },
-    "minecraft:target",
     {
-      "id": "minecraft:lectern",
+      "id": "minecraft:redstone_wire",
       "properties": {
-        "facing": "east",
-        "has_book": "false"
+        "east": "side"
       }
     }
   ]

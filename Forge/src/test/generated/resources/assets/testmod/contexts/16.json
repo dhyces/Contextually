@@ -1,0 +1,76 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "animation": [
+        {
+          "icon": {
+            "color": 255,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 21930,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 43605,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 65280,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 5614080,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 11162880,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        },
+        {
+          "icon": {
+            "color": 16711680,
+            "icon_type": "contextually:texture",
+            "sprite": "minecraft:item/stone_pickaxe",
+            "texture_atlas": "minecraft:textures/atlas/blocks.png"
+          },
+          "ticks": 1
+        }
+      ],
+      "icon_type": "contextually:animated"
+    }
+  ],
+  "targets": [
+    "minecraft:gray_glazed_terracotta"
+  ]
+}
