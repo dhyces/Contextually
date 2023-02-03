@@ -4,13 +4,17 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.contextually.Contextually;
 import dhyces.contextually.client.core.conditions.IContextCondition;
 import dhyces.contextually.client.core.conditions.objects.*;
 import dhyces.contextually.client.core.conditions.predicates.ItemContextPredicate;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.core.contexts.PartialBlockState;
+import dhyces.contextually.client.core.contexts.objects.AbstractKeyContext;
 import dhyces.contextually.client.core.contexts.objects.BlockKeyContext;
 import dhyces.contextually.client.core.icons.IIcon;
 import dhyces.contextually.client.core.icons.objects.*;
@@ -18,6 +22,7 @@ import dhyces.contextually.client.keys.CodeKey;
 import dhyces.contextually.client.keys.IKey;
 import dhyces.contextually.client.keys.MappingKey;
 import dhyces.contextually.util.IconUtils;
+import dhyces.contextually.util.MoreCodecs;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -59,7 +64,7 @@ public abstract class ContextProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        final Map<ResourceLocation, IKeyContext<?, ?>> data = Maps.newHashMap();
+        final Map<ResourceLocation, GeneratedContext> data = Maps.newHashMap();
         addContexts((s, context, translation) -> {
             ResourceLocation rl = new ResourceLocation(modid, s);
             data.put(rl, context);
@@ -70,8 +75,8 @@ public abstract class ContextProvider implements DataProvider {
 
         return CompletableFuture.allOf(data.entrySet().stream().map(
                         entry -> {
-                            IKeyContext<?, ?> context = entry.getValue();
-                            JsonElement element = IKeyContext.CODEC.encodeStart(JsonOps.INSTANCE, context).getOrThrow(false, Contextually.LOGGER::error);
+                            GeneratedContext context = entry.getValue();
+                            JsonElement element = context.toJson().getOrThrow(false, Contextually.LOGGER::error);
                             Path path = this.pathProvider.json(entry.getKey());
                             return DataProvider.saveStable(cache, element, path);
                         }
@@ -84,8 +89,12 @@ public abstract class ContextProvider implements DataProvider {
         return "Contextually: Context Provider for " + modid;
     }
 
+    interface GeneratedContext {
+        DataResult<JsonElement> toJson();
+    }
+
     public interface ContextExporter {
-        void export(String id, IKeyContext<?, ?> context, String translation);
+        void export(String id, GeneratedContext context, String translation);
     }
 
     public static class ContextBuilder<K, V, F extends IKeyContext<K, V>> {
@@ -130,7 +139,7 @@ public abstract class ContextProvider implements DataProvider {
 
         public void export(String id, ContextExporter consumer) {
             var built = factory.create(iconSet, conditionSet, targetSet);
-            consumer.export(id, built, translation);
+            consumer.export(id, () -> IKeyContext.CODEC.encodeStart(JsonOps.INSTANCE, built), translation);
         }
 
         public interface ContextFactory<K, V, T extends IKeyContext<K, V>> {
@@ -139,12 +148,27 @@ public abstract class ContextProvider implements DataProvider {
     }
 
     public static class BlockContextBuilder {
-        private final Set<IIcon> iconSet = new HashSet<>();
-        private final Set<IContextCondition> conditionSet = new HashSet<>();
-        private final Set<BlockState> targetSet = new HashSet<>();
+        private static final Codec<BlockContextBuilder> CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        Codec.STRING.fieldOf("context_type").forGetter(blockContextBuilder -> "contextually:block_context"),
+                        IIcon.CODEC.listOf().fieldOf("icons").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.iconSet)),
+                        IContextCondition.CODEC.listOf().fieldOf("conditions").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.conditionSet)),
+                        MoreCodecs.BLOCK_OR_PARTIAL_CODEC.listOf().fieldOf("targets").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.targetSet))
+                ).apply(instance, BlockContextBuilder::new)
+        );
+        private final Set<IIcon> iconSet;
+        private final Set<IContextCondition> conditionSet;
+        private final Set<PartialBlockState> targetSet;
         private String translation = "";
 
         private BlockContextBuilder() {
+            this("", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        }
+
+        private BlockContextBuilder(String s, List<IIcon> iconSet, List<IContextCondition> conditionSet, List<PartialBlockState> targetSet) {
+            this.iconSet = new HashSet<>(iconSet);
+            this.conditionSet = new HashSet<>(conditionSet);
+            this.targetSet = new HashSet<>(targetSet);
         }
 
         public static BlockContextBuilder create() {
@@ -162,32 +186,32 @@ public abstract class ContextProvider implements DataProvider {
         }
 
         public BlockContextBuilder addBlock(Block target) {
-            targetSet.addAll(target.getStateDefinition().getPossibleStates());
+            targetSet.add(PartialBlockState.builder(target).build());
             return this;
         }
 
         public BlockContextBuilder addBlocks(List<Block> targets) {
-            targets.forEach(block -> targetSet.addAll(block.getStateDefinition().getPossibleStates()));
+            targets.forEach(block -> targetSet.add(PartialBlockState.builder(block).build()));
             return this;
         }
 
         public BlockContextBuilder addState(BlockState target) {
-            targetSet.add(target);
+            targetSet.add(PartialBlockState.fromBlockState(target));
             return this;
         }
 
         public BlockContextBuilder addStates(List<BlockState> targets) {
-            targetSet.addAll(targets);
+            targets.forEach(blockState -> targetSet.add(PartialBlockState.fromBlockState(blockState)));
             return this;
         }
 
         public BlockContextBuilder addPartialState(PartialBlockState target) {
-            targetSet.addAll(target.toAvailableStates().getOrThrow(false, Contextually.LOGGER::error));
+            targetSet.add(target);
             return this;
         }
 
         public BlockContextBuilder addPartialStates(List<PartialBlockState> targets) {
-            targets.forEach(partialBlockState -> targetSet.addAll(partialBlockState.toAvailableStates().getOrThrow(false, Contextually.LOGGER::error)));
+            targetSet.addAll(targets);
             return this;
         }
 
@@ -197,8 +221,7 @@ public abstract class ContextProvider implements DataProvider {
         }
 
         public void export(String id, ContextExporter consumer) {
-            BlockKeyContext built = new BlockKeyContext(iconSet, conditionSet, targetSet);
-            consumer.export(id, built, translation);
+            consumer.export(id, () -> CODEC.encodeStart(JsonOps.INSTANCE, this), translation);
         }
     }
 

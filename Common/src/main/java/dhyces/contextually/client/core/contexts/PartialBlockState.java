@@ -198,7 +198,20 @@ public record PartialBlockState(Block block, Map<String, String> propertyValueMa
         // Collect all values for the property and point each to a set of partial states. Check if all unique values are
         //  represented and are all of equal sizes. if this is true we want to see what would happen if we shrunk them
 
+        Multimap<String, PartialBlockState> collected = Util.make(HashMultimap.create(), map -> mutableStates.forEach(partialBlockState -> map.put(partialBlockState.getValue(property), partialBlockState)));
 
+        Set<PartialBlockState> ret;
+
+        if (collected.keySet().size() == property.getPossibleValues().size() && sameAmount(collected)) {
+            ret = mutableStates.stream().map(partialBlockState -> partialBlockState.withoutProperty(property)).collect(Collectors.toSet());
+            collected = Util.make(HashMultimap.create(), map -> ret.forEach(partialBlockState -> map.put(partialBlockState.getValue(property), partialBlockState)));
+        }
+
+        for (Map.Entry<String, Collection<PartialBlockState>> entry : collected.asMap().entrySet()) {
+            if (entry.getValue().size() > 1) {
+                condense(Util.make(new HashSet<>(), set -> set.addAll(entry.getValue())), descendingProperties, index+1);
+            }
+        }
 
         return condense(mutableStates, descendingProperties, index+1);
     }

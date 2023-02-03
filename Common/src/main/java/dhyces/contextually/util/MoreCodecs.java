@@ -3,10 +3,12 @@ package dhyces.contextually.util;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import dhyces.contextually.client.core.contexts.PartialBlockState;
 import dhyces.contextually.client.keys.CodeKey;
 import dhyces.contextually.client.keys.IKey;
 import dhyces.contextually.client.keys.MappingKey;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 
@@ -77,6 +79,12 @@ public final class MoreCodecs {
             s -> ResourceLocation.read(s.contains(":") ? s : "contextually:" + s),
             ResourceLocation::toString
     ).stable();
+
+    public static final Codec<PartialBlockState> BLOCK_OR_PARTIAL_CODEC = Codec.either(BuiltInRegistries.BLOCK.byNameCodec(), PartialBlockState.CODEC)
+            .xmap(
+                    blockPartialBlockStateEither -> blockPartialBlockStateEither.left().isPresent() ? PartialBlockState.builder(blockPartialBlockStateEither.left().get()).build() : blockPartialBlockStateEither.right().get(),
+                    partialBlockState -> partialBlockState.propertyValueMap().isEmpty() ? Either.left(partialBlockState.block()) : Either.right(partialBlockState)
+            ).stable();
 
     public static MapCodec<OptionalInt> optionalIntField(String field) {
         return new OptionalIntCodec(field);
