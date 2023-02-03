@@ -101,7 +101,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
             if (!fluid.isEmpty()) {
                 var contexts = ContextuallyClient.getContextManager().filterContextsForFluid(source);
                 // TODO: add an event
-                contextSet.add(new ContextRenderHolder<>(fluid.createLegacyBlock(), contexts));
+                contextSet.add(new ContextRenderHolder<>(fluid, contexts));
             }
         }
 
