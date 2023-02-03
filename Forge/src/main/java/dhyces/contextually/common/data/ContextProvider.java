@@ -43,15 +43,12 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class ContextProvider implements DataProvider {
 
-    @Nullable
-    LanguageProvider langProvider;
     PackOutput.PathProvider pathProvider;
     ExistingFileHelper fileHelper;
     String modid;
     final String contextPath = "contexts";
 
-    public ContextProvider(@Nullable LanguageProvider langProvider, @Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
-        this.langProvider = langProvider;
+    public ContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
         Preconditions.checkNotNull(output);
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, contextPath);
         Preconditions.checkNotNull(fileHelper);
@@ -65,12 +62,9 @@ public abstract class ContextProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         final Map<ResourceLocation, GeneratedContext> data = Maps.newHashMap();
-        addContexts((s, context, translation) -> {
+        addContexts((s, context) -> {
             ResourceLocation rl = new ResourceLocation(modid, s);
             data.put(rl, context);
-            if (!translation.isBlank()) {
-                langProvider.add(rl.getNamespace() + ".contexts." + rl.getPath(), translation);
-            }
         });
 
         return CompletableFuture.allOf(data.entrySet().stream().map(
@@ -94,7 +88,7 @@ public abstract class ContextProvider implements DataProvider {
     }
 
     public interface ContextExporter {
-        void export(String id, GeneratedContext context, String translation);
+        void export(String id, GeneratedContext context);
     }
 
     public static class ContextBuilder<K, V, F extends IKeyContext<K, V>> {
@@ -102,7 +96,6 @@ public abstract class ContextProvider implements DataProvider {
         private final Set<IContextCondition> conditionSet = new HashSet<>();
         private final Set<K> targetSet = new HashSet<>();
         private final ContextFactory<K, V, F> factory;
-        private String translation = "";
 
         private ContextBuilder(ContextFactory<K, V, F> factory) {
             this.factory = factory;
@@ -132,14 +125,9 @@ public abstract class ContextProvider implements DataProvider {
             return this;
         }
 
-        public ContextBuilder<K, V, F> addTranslation(@Nonnull String translation) {
-            this.translation = translation;
-            return this;
-        }
-
         public void export(String id, ContextExporter consumer) {
             var built = factory.create(iconSet, conditionSet, targetSet);
-            consumer.export(id, () -> IKeyContext.CODEC.encodeStart(JsonOps.INSTANCE, built), translation);
+            consumer.export(id, () -> IKeyContext.CODEC.encodeStart(JsonOps.INSTANCE, built));
         }
 
         public interface ContextFactory<K, V, T extends IKeyContext<K, V>> {
@@ -164,7 +152,6 @@ public abstract class ContextProvider implements DataProvider {
         private final Set<IIcon> iconSet;
         private final Set<IContextCondition> conditionSet;
         private final Set<PartialBlockState> targetSet;
-        private String translation = "";
 
         private BlockContextBuilder() {
             this("", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
@@ -220,13 +207,8 @@ public abstract class ContextProvider implements DataProvider {
             return this;
         }
 
-        public BlockContextBuilder addTranslation(@Nonnull String translation) {
-            this.translation = translation;
-            return this;
-        }
-
         public void export(String id, ContextExporter consumer) {
-            consumer.export(id, () -> CODEC.encodeStart(JsonOps.INSTANCE, this), translation);
+            consumer.export(id, () -> CODEC.encodeStart(JsonOps.INSTANCE, this));
         }
     }
 
