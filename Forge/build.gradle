@@ -7,6 +7,24 @@ plugins {
 
 archivesBaseName = "${mod_name}-Forge-${minecraft_version}-${version}"
 
+sourceSets {
+    test {
+        java {
+            srcDirs = [
+                    "$rootDir/Forge/src/test/java"
+            ]
+            compileClasspath += sourceSets.main.compileClasspath
+        }
+        resources {
+            srcDirs = [
+                    "$rootDir/Forge/src/test/resources",
+                    "$rootDir/Forge/src/test/generated/resources"
+            ]
+        }
+        output.dir("out/test")
+    }
+}
+
 minecraft {
     mappings channel: "${mapping_id}", version: "${mapping_version}"
     
@@ -78,24 +96,6 @@ tasks.withType(JavaCompile) {
 
 processResources {
     from project(":Common").sourceSets.main.resources
-}
-
-sourceSets {
-    test {
-        java {
-            srcDirs = [
-                    "$rootDir/Forge/src/test/java"
-            ]
-            compileClasspath += sourceSets.main.compileClasspath
-        }
-        resources {
-            srcDirs = [
-                    "$rootDir/Forge/src/test/resources",
-                    "$rootDir/Forge/src/test/generated/resources"
-            ]
-        }
-        output.dir("out/test")
-    }
 }
 
 sourceSets.test.compiledBy(JavaCompile)
