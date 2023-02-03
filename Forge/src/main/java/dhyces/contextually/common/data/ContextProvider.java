@@ -152,7 +152,12 @@ public abstract class ContextProvider implements DataProvider {
                 instance.group(
                         Codec.STRING.fieldOf("context_type").forGetter(blockContextBuilder -> "contextually:block_context"),
                         IIcon.CODEC.listOf().fieldOf("icons").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.iconSet)),
-                        IContextCondition.CODEC.listOf().fieldOf("conditions").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.conditionSet)),
+                        Codec.optionalField("conditions", IContextCondition.CODEC.listOf())
+                                .xmap(
+                                        optional -> optional.orElse(List.of()),
+                                        set -> Optional.ofNullable(set.isEmpty() ? null : List.copyOf(set))
+                                )
+                                .forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.conditionSet)),
                         MoreCodecs.BLOCK_OR_PARTIAL_CODEC.listOf().fieldOf("targets").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.targetSet))
                 ).apply(instance, BlockContextBuilder::new)
         );
