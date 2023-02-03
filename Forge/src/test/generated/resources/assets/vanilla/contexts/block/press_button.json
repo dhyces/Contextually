@@ -1,0 +1,77 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.use"
+    }
+  ],
+  "targets": [
+    {
+      "id": "minecraft:stone_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:warped_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:dark_oak_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:spruce_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:birch_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:jungle_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:acacia_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:polished_blackstone_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:oak_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:crimson_button",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    {
+      "id": "minecraft:mangrove_button",
+      "properties": {
+        "powered": "false"
+      }
+    }
+  ]
+}

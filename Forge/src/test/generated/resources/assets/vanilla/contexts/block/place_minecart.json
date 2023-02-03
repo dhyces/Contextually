@@ -1,0 +1,19 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:item",
+      "item": "minecraft:minecart"
+    },
+    {
+      "icon_type": "contextually:key",
+      "key": "key.use"
+    }
+  ],
+  "targets": [
+    "minecraft:powered_rail",
+    "minecraft:activator_rail",
+    "minecraft:detector_rail",
+    "minecraft:rail"
+  ]
+}

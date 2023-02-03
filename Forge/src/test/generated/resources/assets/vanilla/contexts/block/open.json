@@ -1,0 +1,52 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.use"
+    }
+  ],
+  "targets": [
+    "minecraft:brown_shulker_box",
+    "minecraft:orange_shulker_box",
+    "minecraft:blue_shulker_box",
+    "minecraft:grindstone",
+    "minecraft:shulker_box",
+    "minecraft:ender_chest",
+    "minecraft:red_shulker_box",
+    {
+      "id": "minecraft:lectern",
+      "properties": {
+        "has_book": "true"
+      }
+    },
+    "minecraft:black_shulker_box",
+    "minecraft:lime_shulker_box",
+    "minecraft:trapped_chest",
+    "minecraft:stonecutter",
+    "minecraft:loom",
+    "minecraft:hopper",
+    "minecraft:magenta_shulker_box",
+    "minecraft:green_shulker_box",
+    "minecraft:barrel",
+    "minecraft:beacon",
+    "minecraft:anvil",
+    "minecraft:furnace",
+    "minecraft:smithing_table",
+    "minecraft:yellow_shulker_box",
+    "minecraft:cartography_table",
+    "minecraft:dropper",
+    "minecraft:pink_shulker_box",
+    "minecraft:blast_furnace",
+    "minecraft:chest",
+    "minecraft:brewing_stand",
+    "minecraft:cyan_shulker_box",
+    "minecraft:enchanting_table",
+    "minecraft:white_shulker_box",
+    "minecraft:smoker",
+    "minecraft:light_gray_shulker_box",
+    "minecraft:gray_shulker_box",
+    "minecraft:purple_shulker_box",
+    "minecraft:light_blue_shulker_box"
+  ]
+}
