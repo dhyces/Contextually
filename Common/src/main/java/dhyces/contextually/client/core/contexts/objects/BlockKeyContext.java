@@ -42,7 +42,7 @@ public class BlockKeyContext extends AbstractKeyContext<BlockState, BlockState> 
                                                                                             : blockPartialBlockStateEither.right().get().toAvailableStates()
                                     ).flatMap(dataResult -> dataResult.getOrThrow(false, Contextually.LOGGER::error).stream()).collect(Collectors.toSet()),
                             PartialBlockState::toPartialStates
-                    ).forGetter(BlockKeyContext::getTargets)
+                    ).forGetter(blockKeyContext -> new TreeSet<>(Comparator.comparing((BlockState o) -> o.getBlockHolder().kind())))
             ).apply(instance, BlockKeyContext::new)
     );
 
