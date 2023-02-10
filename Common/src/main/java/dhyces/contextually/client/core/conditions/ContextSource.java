@@ -15,32 +15,39 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ContextSource {
-    // TODO: This class is to house all of the information regarding contexts. Now, it would be very easy to just slap
-    //  hitresult info in here, the player's held items, and a slot, but. Not very extensible. So I propose a map system
-    //  that utilizes some instance fields held elsewhere to access the targeted info. So you would have something like
-    //  a Map<SourceAccess, Object> which would then be cast to the appropriate type.
+
+    protected Map<SourceAccess<?>, Object> sourceMap = new HashMap<>();
 
     private Gui gui;
     private final Minecraft client;
     private AbstractClientPlayer player;
     private float partialTick;
-    @Nullable
-    private Slot slot = null;
 
-    public ContextSource(Gui gui, Minecraft minecraft, AbstractClientPlayer player, float partialTick) {
+    private ContextSource(Gui gui, Minecraft minecraft, AbstractClientPlayer player, float partialTick) {
         this.gui = gui;
         this.client = minecraft;
         this.player = player;
         this.partialTick = partialTick;
     }
 
-    public static ContextSource of(Gui gui, Minecraft minecraft, AbstractClientPlayer player, float partialTick, @Nullable Slot slot) {
-        ContextSource ret = new ContextSource(gui, minecraft, player, partialTick);
-        ret.slot = slot;
-        return ret;
+    public static ContextSource of(Gui gui, Minecraft minecraft, AbstractClientPlayer player, float partialTick) {
+        return new ContextSource(gui, minecraft, player, partialTick);
+    }
+
+    public <T> ContextSource with(SourceAccess<T> sourceAccess, T source) {
+        sourceMap.put(sourceAccess, source);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> getAccess(SourceAccess<T> sourceAccess) {
+        return Optional.ofNullable((T)sourceMap.get(sourceAccess));
     }
 
     public Gui getGui() {
@@ -92,8 +99,15 @@ public class ContextSource {
         return Optional.ofNullable(stack.isEmpty() ? null : stack);
     }
 
+    public static class SourceAccess<T> {
+        public static final SourceAccess<BlockHitResult> BLOCK = new SourceAccess<>(BlockHitResult.class);
+        public static final SourceAccess<BlockHitResult> FLUID = new SourceAccess<>(BlockHitResult.class);
+        public static final SourceAccess<EntityHitResult> ENTITY = new SourceAccess<>(EntityHitResult.class);
+        public static final SourceAccess<Slot> SLOT = new SourceAccess<>(Slot.class);
 
-    public Optional<Slot> getHoveredSlot() {
-        return Optional.ofNullable(slot);
+        Class<T> clazz;
+        private SourceAccess(Class<T> clazz) {
+            this.clazz = clazz;
+        }
     }
 }
