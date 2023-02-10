@@ -1,72 +1,44 @@
 package dhyces.contextually.client.gui;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dhyces.contextually.client.ContextuallyClient;
 import dhyces.contextually.client.core.conditions.ContextSource;
 import dhyces.contextually.client.core.contexts.IKeyContext;
 import dhyces.contextually.client.gui.screens.ContextScreen;
-import dhyces.contextually.client.textures.KeyMappingTextureManager;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import dhyces.contextually.mixins.client.GuiAccessor;
+import dhyces.contextually.services.Services;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+public class ContextGui {
 
-public class ContextGuiOverlay implements IGuiOverlay {
+    public static final ContextGui INSTANCE = new ContextGui();
 
-    public static final ContextGuiOverlay INSTANCE = new ContextGuiOverlay();
+    ContextGui() {}
 
-    enum RenderedSide {
-        LEFT((window, context) -> IKeyContext.PADDING,
-                (window, context) -> 2),
-        RIGHT((window, context) -> window - context - IKeyContext.PADDING, (value1, value2) -> 3);
-
-        private BiIntFunction xCalculator;
-        private BiIntFunction yCalculator;
-
-        RenderedSide(BiIntFunction xFunction, BiIntFunction yFunction) {
-            this.xCalculator = xFunction;
-            this.yCalculator = yFunction;
-        }
-
-        public int calculateXPosition(int windowWidth, int contextWidth) {
-            return xCalculator.apply(windowWidth, contextWidth);
-        }
-
-        public int calculateYPosition(int windowHeight, int contextHeight) {
-            return yCalculator.apply(windowHeight, contextHeight);
-        }
-    }
-
-    ContextGuiOverlay() {}
-
-    @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+    public void render(Gui gui, PoseStack poseStack, float partialTick, int width, int height) {
         Minecraft.getInstance().getProfiler().popPush("context_renderer");
         // If a screen is open, we don't want to render. Maybe there should be screen contexts?
-        if ((gui.getMinecraft().screen != null && !(gui.getMinecraft().screen instanceof ContextScreen)) || gui.getMinecraft().gameMode.getPlayerMode().equals(GameType.SPECTATOR)) {
+        if ((((GuiAccessor)gui).getClient().screen != null && !(((GuiAccessor)gui).getClient().screen instanceof ContextScreen)) || ((GuiAccessor)gui).getClient().gameMode.getPlayerMode().equals(GameType.SPECTATOR)) {
             return;
         }
-        gui.setupOverlayRenderState(true, false, KeyMappingTextureManager.KEYS);
+        Services.PLATFORM.setupRenderState(gui);
 
-        var mc = gui.getMinecraft();
+        var mc = ((GuiAccessor)gui).getClient();
         var clientPlayer = mc.player;
         var clientLevel = mc.level;
 
-        ContextSource source = ContextSource.of(gui, mc, clientPlayer, partialTick, null);
+        ContextSource source = ContextSource.of(gui, mc, clientPlayer, partialTick);
 
         // Gather contexts
         Set<ContextRenderHolder<?, ?>> contextSet = new LinkedHashSet<>();
@@ -82,11 +54,13 @@ public class ContextGuiOverlay implements IGuiOverlay {
         var hitResult = mc.hitResult;
         if (hitResult != null && !hitResult.getType().equals(HitResult.Type.MISS)) {
             if (hitResult instanceof EntityHitResult entityHitResult) {
+                source.with(ContextSource.SourceAccess.ENTITY, entityHitResult);
                 var entity = entityHitResult.getEntity();
                 var contexts = ContextuallyClient.getContextManager().filterContextsForEntity(source);
                 // TODO: add an event
                 contextSet.add(new ContextRenderHolder<>(entity, contexts));
             } else if (hitResult instanceof BlockHitResult blockHitResult) {
+                source.with(ContextSource.SourceAccess.BLOCK, blockHitResult);
                 var block = clientLevel.getBlockState(blockHitResult.getBlockPos());
                 var contexts = ContextuallyClient.getContextManager().filterContextsForBlock(source);
                 // TODO: add an event
@@ -97,6 +71,7 @@ public class ContextGuiOverlay implements IGuiOverlay {
         //  -Fluid HitResult contexts
         var fluidHitResult = fluidPass(clientPlayer, partialTick);
         if (!fluidHitResult.getType().equals(HitResult.Type.MISS) && fluidHitResult instanceof BlockHitResult fluidResult) {
+            source.with(ContextSource.SourceAccess.FLUID, fluidResult);
             var fluid = clientLevel.getFluidState(fluidResult.getBlockPos());
             if (!fluid.isEmpty()) {
                 var contexts = ContextuallyClient.getContextManager().filterContextsForFluid(source);
@@ -156,17 +131,8 @@ public class ContextGuiOverlay implements IGuiOverlay {
     }
 
     private HitResult fluidPass(AbstractClientPlayer pPlayer, float partialTick) {
-        return pPlayer.pick(pPlayer.getReachDistance(), partialTick, true);
+        return pPlayer.pick(Services.PLATFORM.getReachDistance(pPlayer), partialTick, true);
     }
 
     record ContextRenderHolder<K, T>(T contextObject, Collection<IKeyContext<K, T>> contextCollection) {}
-
-    interface BiIntFunction {
-        int apply(int value1, int value2);
-
-        default BiIntFunction andThen(@Nonnull Int2IntFunction function) {
-            Preconditions.checkNotNull(function);
-            return (v1, v2) -> function.apply(apply(v1, v2));
-        }
-    }
 }

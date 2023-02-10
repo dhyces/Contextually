@@ -1,14 +1,13 @@
 package dhyces.contextually;
 
-import dhyces.contextually.client.ContextGui;
 import dhyces.contextually.client.ContextuallyClient;
+import dhyces.contextually.client.gui.ContextGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import org.jetbrains.annotations.NotNull;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
@@ -23,25 +22,17 @@ import java.util.function.Supplier;
 
 public class QuiltContextually implements ClientModInitializer {
 
-    private static ContextGui contextHud;
-
     @Override
     public void onInitializeClient(ModContainer mod) {
         ClientResourceLoaderEvents.START_RESOURCE_PACK_RELOAD.register(this::clientInit);
         ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader(Contextually.id("key_textures"), ContextuallyClient::getTextureManager));
         ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(new WrappedReloader(Contextually.id("contexts"), ContextuallyClient::getContextManager));
-        ClientTickEvents.START.register(this::guiRenderTick);
     }
 
     private void clientInit(Minecraft client, ResourceManager resourceManager, boolean first) {
         if (first) {
             ContextuallyClient.init();
-            contextHud = new ContextGui(client, client.getItemRenderer());
         }
-    }
-
-    private void guiRenderTick(Minecraft client) {
-        contextHud.tick(client.isPaused());
     }
 
     record WrappedReloader(ResourceLocation id, Supplier<PreparableReloadListener> listenerSupplier) implements IdentifiableResourceReloader {

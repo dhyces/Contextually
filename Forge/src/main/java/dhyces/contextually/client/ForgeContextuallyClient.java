@@ -1,6 +1,6 @@
 package dhyces.contextually.client;
 
-import dhyces.contextually.client.gui.ContextGuiOverlay;
+import dhyces.contextually.client.gui.ForgeContextGuiOverlay;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -25,6 +25,6 @@ public class ForgeContextuallyClient {
     }
 
     private static void registerGuis(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(new ResourceLocation("item_name"), "key_contexts", ContextGuiOverlay.INSTANCE);
+        event.registerAbove(new ResourceLocation("item_name"), "key_contexts", new ForgeContextGuiOverlay());
     }
 }
