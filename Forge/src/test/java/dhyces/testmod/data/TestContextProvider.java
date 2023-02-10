@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TestContextProvider extends ContextProvider {
 
     public TestContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
-        super(null, output, fileHelper, modid);
+        super(output, fileHelper, modid);
     }
 
     AtomicInteger integer = new AtomicInteger();

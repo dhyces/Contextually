@@ -18,8 +18,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class VanillaContextProvider extends ContextProvider {
-    public VanillaContextProvider(@Nullable LanguageProvider languageProvider, @Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper) {
-        super(languageProvider, output, fileHelper, "vanilla");
+    public VanillaContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper) {
+        super(output, fileHelper, "vanilla");
     }
 
     @Override

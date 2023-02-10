@@ -18,13 +18,13 @@
   ],
   "targets": [
     {
-      "Name": "minecraft:water",
+      "Name": "minecraft:lava",
       "Properties": {
         "falling": "false"
       }
     },
     {
-      "Name": "minecraft:lava",
+      "Name": "minecraft:water",
       "Properties": {
         "falling": "false"
       }

@@ -1,6 +1,5 @@
 package dhyces.testmod;
 
-import dhyces.testmod.data.TestContextProvider;
 import dhyces.testmod.data.VanillaContextProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -22,8 +21,8 @@ public class TestMod {
         PackOutput packOutput = event.getGenerator().getPackOutput();
         ExistingFileHelper fileHelper = event.getExistingFileHelper();
         VanillaContextProvider.VanillaContextEN_USLangProvider en_usLangProvider = new VanillaContextProvider.VanillaContextEN_USLangProvider(packOutput);
-        event.getGenerator().addProvider(event.includeClient(), new VanillaContextProvider(en_usLangProvider, packOutput, fileHelper));
-//        event.getGenerator().addProvider(event.includeClient(), en_usLangProvider);
-        event.getGenerator().addProvider(event.includeClient(), new TestContextProvider(packOutput, fileHelper, "testmod"));
+        event.getGenerator().addProvider(event.includeClient(), new VanillaContextProvider(packOutput, fileHelper));
+        event.getGenerator().addProvider(event.includeClient(), en_usLangProvider);
+//        event.getGenerator().addProvider(event.includeClient(), new TestContextProvider(packOutput, fileHelper, "testmod"));
     }
 }
