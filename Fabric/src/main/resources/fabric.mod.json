@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "${mod_id}",
+    "id": "contextually",
     "version": "${version}",
 
     "name": "Contextually",

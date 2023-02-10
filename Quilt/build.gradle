@@ -1,8 +1,18 @@
 plugins {
-	id 'org.quiltmc.loom' version '1.+'
+	id 'org.quiltmc.loom' version '1.0.+'
 }
 
 archivesBaseName = "${mod_id}-Quilt"
+
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+					"$rootDir/Common/src/main/resources"
+			]
+		}
+	}
+}
 
 loom {
 	runs {
