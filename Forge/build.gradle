@@ -68,6 +68,7 @@ minecraft {
             parent data
             inheritArgs false
             args '--mod', 'testmod', '--all', '--output', file('src/test/generated/resources/'), '--existing', file('src/main/resources/'), '--launchTarget', 'forgedatauserdev', '--assetIndex', '2', '--assetsDir', 'C:\\Users\\pokmo\\.gradle\\caches\\forge_gradle\\assets', '--gameDir', '.', '--fml.forgeVersion', '44.1.2', '--fml.mcVersion', '1.19.3', '--fml.forgeGroup', 'net.minecraftforge', '--fml.mcpVersion', '20221207.122022'
+            ideaModule "${rootProject.name}.${project.name}.test"
             taskName 'TestData'
         }
     }
