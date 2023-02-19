@@ -23,6 +23,7 @@ import dhyces.contextually.client.keys.IKey;
 import dhyces.contextually.client.keys.MappingKey;
 import dhyces.contextually.util.IconUtils;
 import dhyces.contextually.util.MoreCodecs;
+import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -44,15 +45,12 @@ import java.util.concurrent.CompletableFuture;
 public abstract class ContextProvider implements DataProvider {
 
     PackOutput.PathProvider pathProvider;
-    ExistingFileHelper fileHelper;
     String modid;
     final String contextPath = "contexts";
 
-    public ContextProvider(@Nonnull PackOutput output, @Nonnull ExistingFileHelper fileHelper, @Nonnull String modid) {
+    public ContextProvider(@Nonnull PackOutput output, @Nonnull String modid) {
         Preconditions.checkNotNull(output);
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, contextPath);
-        Preconditions.checkNotNull(fileHelper);
-        this.fileHelper = fileHelper;
         Preconditions.checkNotNull(modid);
         this.modid = modid;
     }
@@ -92,8 +90,8 @@ public abstract class ContextProvider implements DataProvider {
     }
 
     public static class ContextBuilder<K, V, F extends IKeyContext<K, V>> {
-        private final Set<IIcon> iconSet = new HashSet<>();
-        private final Set<IContextCondition> conditionSet = new HashSet<>();
+        private final Set<IIcon> iconSet = new TreeSet<>(Comparator.comparing(o -> o.getType().getId()));
+        private final Set<IContextCondition> conditionSet = new TreeSet<>(Comparator.comparing(o -> o.getType().getId()));
         private final Set<K> targetSet = new HashSet<>();
         private final ContextFactory<K, V, F> factory;
 
@@ -139,28 +137,28 @@ public abstract class ContextProvider implements DataProvider {
         private static final Codec<BlockContextBuilder> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
                         Codec.STRING.fieldOf("context_type").forGetter(blockContextBuilder -> "contextually:block_context"),
-                        IIcon.CODEC.listOf().fieldOf("icons").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.iconSet)),
+                        IIcon.CODEC.listOf().fieldOf("icons").forGetter(blockContextBuilder -> blockContextBuilder.iconSet),
                         Codec.optionalField("conditions", IContextCondition.CODEC.listOf())
                                 .xmap(
                                         optional -> optional.orElse(List.of()),
-                                        set -> Optional.ofNullable(set.isEmpty() ? null : List.copyOf(set))
+                                        list -> Optional.ofNullable(list.isEmpty() ? null : list)
                                 )
                                 .forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.conditionSet)),
-                        MoreCodecs.BLOCK_OR_PARTIAL_CODEC.listOf().fieldOf("targets").forGetter(blockContextBuilder -> List.copyOf(blockContextBuilder.targetSet))
+                        MoreCodecs.BLOCK_OR_PARTIAL_CODEC.listOf().fieldOf("targets").forGetter(blockContextBuilder -> blockContextBuilder.targetSet)
                 ).apply(instance, BlockContextBuilder::new)
         );
-        private final Set<IIcon> iconSet;
-        private final Set<IContextCondition> conditionSet;
-        private final Set<PartialBlockState> targetSet;
+        private final List<IIcon> iconSet;
+        private final List<IContextCondition> conditionSet;
+        private final List<PartialBlockState> targetSet;
 
         private BlockContextBuilder() {
             this("", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
 
         private BlockContextBuilder(String s, List<IIcon> iconSet, List<IContextCondition> conditionSet, List<PartialBlockState> targetSet) {
-            this.iconSet = new HashSet<>(iconSet);
-            this.conditionSet = new HashSet<>(conditionSet);
-            this.targetSet = new HashSet<>(targetSet);
+            this.iconSet = iconSet;
+            this.conditionSet = conditionSet;
+            this.targetSet = targetSet;
         }
 
         public static BlockContextBuilder create() {
