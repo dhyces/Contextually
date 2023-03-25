@@ -32,4 +32,4 @@ pluginManagement {
 }
 
 rootProject.name = 'Contextually'
-include("Common", "Fabric", "Forge", "Quilt")
+include("Common", "Fabric", "Forge", "Forge:TestMod", "Quilt")
