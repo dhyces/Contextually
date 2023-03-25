@@ -1,0 +1,16 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.use"
+    },
+    {
+      "icon_type": "contextually:item",
+      "item": "minecraft:flint_and_steel"
+    }
+  ],
+  "targets": [
+    "minecraft:tnt"
+  ]
+}

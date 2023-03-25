@@ -1,0 +1,12 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.attack"
+    }
+  ],
+  "targets": [
+    "minecraft:note_block"
+  ]
+}

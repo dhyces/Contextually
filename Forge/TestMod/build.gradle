@@ -5,7 +5,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-archivesBaseName = "${mod_name}-Forge-${minecraft_version}-${version}"
+archivesBaseName = "${mod_name}-TESTMOD-DO-NOT-PUBLISH-Forge-${minecraft_version}-${version}"
 
 minecraft {
     mappings channel: "${mapping_id}", version: "${mapping_version}"
@@ -48,14 +48,21 @@ minecraft {
     }
 }
 
-sourceSets.main.resources.srcDir 'src/generated/resources'
+sourceSets.main.resources.srcDir "$rootDir/Forge/TestMod/src/generated/resources"
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly project(":Common")
-    compileOnly project(":Forge")
+    implementation project(":Forge")
+}
+
+mixin {
+    config "contextually.mixins.json"
+
+    debug.verbose = true
+    debug.export = true
 }
 
 tasks.withType(JavaCompile) {
@@ -68,6 +75,9 @@ processResources {
     from project(":Forge").sourceSets.main.resources
 
     filesMatching("/META-INF/mods.toml") {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+    filesMatching("pack.mcmeta") {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 }
