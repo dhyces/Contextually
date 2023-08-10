@@ -2,6 +2,7 @@ package dhyces.contextually.common;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dhyces.contextually.Contextually;
+import dhyces.contextually.client.gui.screens.ContextScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
@@ -30,10 +31,10 @@ public class Events {
     }
 
     //TODO: create a decent screen to move contexts around
-//    @SubscribeEvent
-//    static void test(InputEvent.Key e) {
-//        if (Minecraft.getInstance().screen == null && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_P)) {
-//            Minecraft.getInstance().setScreen(ContextScreen.INSTANCE);
-//        }
-//    }
+    @SubscribeEvent
+    static void test(InputEvent.Key e) {
+        if (Minecraft.getInstance().screen == null && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_P)) {
+            Minecraft.getInstance().setScreen(ContextScreen.INSTANCE);
+        }
+    }
 }

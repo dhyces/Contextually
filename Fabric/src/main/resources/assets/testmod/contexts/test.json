@@ -1,0 +1,68 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.sneak"
+    }
+  ],
+  "targets": [
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "east": "up"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "east": "side"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "south": "side"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "power": "4"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "west": "up",
+        "power": "4"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "north": "up",
+        "power": "1"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "east": "none",
+        "south": "none",
+        "north": "none",
+        "power": "10"
+      }
+    },
+    {
+      "id": "minecraft:redstone_wire",
+      "properties": {
+        "east": "none",
+        "south": "none",
+        "west": "none",
+        "north": "side",
+        "power": "0"
+      }
+    }
+  ]
+}

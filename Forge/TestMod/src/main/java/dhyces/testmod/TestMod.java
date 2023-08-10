@@ -1,6 +1,6 @@
 package dhyces.testmod;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import dhyces.testmod.data.TestContextProvider;
 import dhyces.testmod.data.VanillaContextProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -24,6 +24,6 @@ public class TestMod {
         VanillaContextProvider.VanillaContextEN_USLangProvider en_usLangProvider = new VanillaContextProvider.VanillaContextEN_USLangProvider(packOutput);
         event.getGenerator().addProvider(event.includeClient(), new VanillaContextProvider(packOutput));
         event.getGenerator().addProvider(event.includeClient(), en_usLangProvider);
-//        event.getGenerator().addProvider(event.includeClient(), new TestContextProvider(packOutput, fileHelper, "testmod"));
+        event.getGenerator().addProvider(event.includeClient(), new TestContextProvider(packOutput, "testmod"));
     }
 }

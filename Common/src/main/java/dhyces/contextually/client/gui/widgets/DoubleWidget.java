@@ -1,10 +1,11 @@
 package dhyces.contextually.client.gui.widgets;
 
+import dhyces.contextually.client.gui.ScreenspaceElement;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarratableEntry;
 
-public abstract class DoubleWidget extends GuiComponent implements Renderable, IGuiListener, NarratableEntry {
+public abstract class DoubleWidget extends GuiComponent implements Renderable, IGuiListener, NarratableEntry, ScreenspaceElement {
 
     double x;
     double y;
@@ -33,5 +34,25 @@ public abstract class DoubleWidget extends GuiComponent implements Renderable, I
     @Override
     public boolean check(double mouseX, double mouseY) {
         return active && visible && mouseX >= x && mouseX < (x + width) && mouseY >= y && mouseY < (y + height);
+    }
+
+    @Override
+    public int getX() {
+        return (int) x;
+    }
+
+    @Override
+    public int getY() {
+        return (int) y;
+    }
+
+    @Override
+    public int getWidth() {
+        return (int) width;
+    }
+
+    @Override
+    public int getHeight() {
+        return (int) height;
     }
 }

@@ -5,18 +5,25 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import dhyces.contextually.client.gui.screens.ContextScreen;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class ContextWidget extends DoubleWidget {
 
-    public ContextWidget(double pX, double pY, double pWidth, double pHeight) {
+    ContextScreen parent;
+
+    public ContextWidget(ContextScreen parent, double pX, double pY, double pWidth, double pHeight) {
         super(pX, pY, pWidth, pHeight);
+        this.parent = parent;
     }
+
+
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {

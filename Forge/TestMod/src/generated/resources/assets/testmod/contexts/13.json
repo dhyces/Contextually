@@ -1,0 +1,32 @@
+{
+  "context_type": "contextually:block_context",
+  "icons": [
+    {
+      "icon_type": "contextually:key",
+      "key": "key.crouch"
+    }
+  ],
+  "targets": [
+    "minecraft:target",
+    {
+      "id": "minecraft:lectern",
+      "properties": {
+        "facing": "north"
+      }
+    },
+    {
+      "id": "minecraft:lectern",
+      "properties": {
+        "facing": "south",
+        "has_book": "true"
+      }
+    },
+    {
+      "id": "minecraft:lectern",
+      "properties": {
+        "facing": "east",
+        "has_book": "false"
+      }
+    }
+  ]
+}

@@ -29,13 +29,13 @@ dependencies {
 }
 
 sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                    "$rootDir/Common/src/main/resources"
-            ]
-        }
-    }
+//    main {
+//        resources {
+//            srcDirs += [
+//                    "$rootDir/Common/src/main/resources"
+//            ]
+//        }
+//    }
     testMod {
         compileClasspath += main.compileClasspath
         runtimeClasspath += main.runtimeClasspath

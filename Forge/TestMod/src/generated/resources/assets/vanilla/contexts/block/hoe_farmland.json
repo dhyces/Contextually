@@ -4,12 +4,12 @@
       "condition_type": "contextually:held_item",
       "item_predicate": {
         "items": [
+          "minecraft:stone_hoe",
+          "minecraft:wooden_hoe",
+          "minecraft:netherite_hoe",
           "minecraft:iron_hoe",
           "minecraft:diamond_hoe",
-          "minecraft:stone_hoe",
-          "minecraft:netherite_hoe",
-          "minecraft:golden_hoe",
-          "minecraft:wooden_hoe"
+          "minecraft:golden_hoe"
         ]
       }
     }
